@@ -12,10 +12,10 @@ void Mod::start()
 	switch (m_currentEvent)
 	{
 	case CheckEvent::Mission:
-		m_apSocket.sendToServer("CHECK:" + m_checkListener.getMissionID() + "\n");
+		m_apSocket.sendToServer("CHECK:MISSION:" + m_checkListener.getMissionID() + "\n");
 		break;
 	case CheckEvent::PickUp:
-		//m_apSocket.sendToServer("CHECK:0\n");
+		m_apSocket.sendToServer("CHECK:PICKUP:0\n");
 		break;
 	case CheckEvent::None:
 		break;
