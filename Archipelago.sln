@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Archipelago", "Archipelago.vcxproj", "{A4DCCB3A-1092-4430-9986-3E07053B3B34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|GTA-SA = Debug|GTA-SA
+		Release|GTA-SA = Release|GTA-SA
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A4DCCB3A-1092-4430-9986-3E07053B3B34}.Debug|GTA-SA.ActiveCfg = Debug GTA-SA|Win32
+		{A4DCCB3A-1092-4430-9986-3E07053B3B34}.Debug|GTA-SA.Build.0 = Debug GTA-SA|Win32
+		{A4DCCB3A-1092-4430-9986-3E07053B3B34}.Release|GTA-SA.ActiveCfg = Release GTA-SA|Win32
+		{A4DCCB3A-1092-4430-9986-3E07053B3B34}.Release|GTA-SA.Build.0 = Release GTA-SA|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

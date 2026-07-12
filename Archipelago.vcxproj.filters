@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header">
+      <UniqueIdentifier>{d2737ed6-fe44-4e14-bdfa-12de75c1febf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{80eca0db-1570-4c8e-a998-44b61c8db291}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\WeaponGiver.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Mod.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CheckListener.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CheckGiver.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\APSocket.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="header\WeaponGiver.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Mod.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\CheckListener.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\CheckGiver.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\APSocket.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\EntityIDs.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
