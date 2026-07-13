@@ -1,6 +1,10 @@
 #include "APSocket.h"
-
 #include <CMessages.h>
+
+APSocket::~APSocket()
+{
+	closeConnection();
+}
 
 bool APSocket::connectToServer(const std::string& ip, int port)
 {
@@ -44,12 +48,18 @@ void APSocket::sendToServer(const std::string& msg)
 
 void APSocket::closeConnection()
 {
-	if (connected) 
-	{
+	if (sock != INVALID_SOCKET) {
+		shutdown(sock, SD_BOTH);
 		closesocket(sock);
-		WSACleanup();
-		connected = false;
+		sock = INVALID_SOCKET;
 	}
+
+	if (recvThread.joinable()) {
+		recvThread.join();
+	}
+
+	connected = false;
+	WSACleanup();
 }
 
 bool APSocket::tryGetMessage(std::string& outMsg)

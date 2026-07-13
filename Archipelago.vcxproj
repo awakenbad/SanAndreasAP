@@ -10,6 +10,24 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="header\APSocket.h" />
+    <ClInclude Include="header\CheckGiver.h" />
+    <ClInclude Include="header\CheckListener.h" />
+    <ClInclude Include="header\EntityIDs.h" />
+    <ClInclude Include="header\Mod.h" />
+    <ClInclude Include="header\Position.h" />
+    <ClInclude Include="header\WeaponGiver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\APSocket.cpp" />
+    <ClCompile Include="source\CheckGiver.cpp" />
+    <ClCompile Include="source\CheckListener.cpp" />
+    <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\Mod.cpp" />
+    <ClCompile Include="source\Position.cpp" />
+    <ClCompile Include="source\WeaponGiver.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A4DCCB3A-1092-4430-9986-3E07053B3B34}</ProjectGuid>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
@@ -56,8 +74,8 @@
     <IntDir>$(ProjectDir)obj\GTA-SA\Debug\</IntDir>
     <TargetName>Archipelago.SA</TargetName>
     <TargetExt>.asi</TargetExt>
-    <IncludePath>C:\Users\Owner\Desktop\git\plugin-sdk\tools\myplugin-gen\generated\Archipelago\header;$(IncludePath)</IncludePath>
-    <SourcePath>C:\Users\Owner\Desktop\git\plugin-sdk\tools\myplugin-gen\generated\Archipelago\source;$(SourcePath)</SourcePath>
+    <IncludePath>C:\Users\Owner\Desktop\git\SanAndreasAP\header;$(IncludePath)</IncludePath>
+    <SourcePath>C:\Users\Owner\Desktop\git\SanAndreasAP\source;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release GTA-SA|Win32'">
     <ClCompile>
@@ -131,22 +149,6 @@ xcopy /Y "$(TargetPath)" "$(GTA_SA_DIR)\scripts"
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="source\APSocket.cpp" />
-    <ClCompile Include="source\CheckGiver.cpp" />
-    <ClCompile Include="source\CheckListener.cpp" />
-    <ClCompile Include="source\Main.cpp" />
-    <ClCompile Include="source\Mod.cpp" />
-    <ClCompile Include="source\WeaponGiver.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="header\APSocket.h" />
-    <ClInclude Include="header\CheckGiver.h" />
-    <ClInclude Include="header\CheckListener.h" />
-    <ClInclude Include="header\EntityIDs.h" />
-    <ClInclude Include="header\Mod.h" />
-    <ClInclude Include="header\WeaponGiver.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

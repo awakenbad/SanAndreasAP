@@ -9,43 +9,49 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Main.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\WeaponGiver.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Mod.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\CheckListener.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\CheckGiver.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\APSocket.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="header\WeaponGiver.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\Mod.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\CheckListener.h">
+    <ClInclude Include="header\APSocket.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="header\CheckGiver.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="header\APSocket.h">
+    <ClInclude Include="header\CheckListener.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="header\EntityIDs.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="header\Mod.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\WeaponGiver.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Position.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\APSocket.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CheckGiver.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CheckListener.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Mod.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\WeaponGiver.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Position.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

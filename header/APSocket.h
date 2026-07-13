@@ -8,6 +8,7 @@
 class APSocket
 {
 public:
+    ~APSocket();
     bool connectToServer(const std::string& ip, int port);
     void sendToServer(const std::string& msg);
     void closeConnection();
