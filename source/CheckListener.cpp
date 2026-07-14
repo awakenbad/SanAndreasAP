@@ -28,6 +28,7 @@ bool CheckListener::pickUpChecker()
 bool CheckListener::missionChecker()
 {
 	currentMission = CStats::LastMissionPassedName;
+	enforceSubmissionRewards();
 	if (lastMission != currentMission)
 	{
 		std::ofstream outFile("mission_keys.txt", std::ios::app);
@@ -184,6 +185,18 @@ void CheckListener::initializeMissionList()
 	};
 }
 
+void CheckListener::enforceSubmissionRewards()
+{
+	if (healthCheckReceived && !paramedicCompleted)
+	{
+		CWorld::Players[0].m_nMaxHealth = 176;
+	}
+	if (!healthCheckReceived && paramedicCompleted)
+	{
+		CWorld::Players[0].m_nMaxHealth = 100;
+	}
+}
+
 void CheckListener::spawnPickup()
 {
 	CPickups::GenerateNewOne(CVector{ 2493.5, -1671.0, 13.3 }, 346, 2, 100, 1, false, new char('h'));
@@ -191,6 +204,7 @@ void CheckListener::spawnPickup()
 
 CheckEvent CheckListener::update()
 {
+	enforceSubmissionRewards();
 	CheckEvent event = CheckEvent::None;
 	if (pickUpChecker())
 	{
@@ -215,4 +229,9 @@ std::string CheckListener::getMissionID()
 		counter++;
 	}
 	return std::to_string(NO_MISSION);
+}
+
+void CheckListener::healthCheckWasReceived()
+{
+	healthCheckReceived = true;
 }

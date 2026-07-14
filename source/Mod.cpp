@@ -8,19 +8,18 @@ Mod::Mod()
 
 void Mod::start()
 {
+	int current = CWorld::Players[0].m_nMaxHealth;
+
+    if (current != lastValue) {
+        std::ofstream outFile("stat_watch.txt", std::ios::app);
+        if (outFile.is_open()) {
+            outFile << "m_nMaxHealth changed: " << lastValue << " -> " << current << "\n";
+            outFile.flush();
+        }
+        lastValue = current;
+    }
 	receiveCurrentCheckEvent();
-	switch (m_currentEvent)
-	{
-	case CheckEvent::Mission:
-        m_checkGiver.removeProgressiveMission();
-		m_apSocket.sendToServer("CHECK:MISSION:" + m_checkListener.getMissionID() + "\n");
-		break;
-	case CheckEvent::PickUp:
-		m_apSocket.sendToServer("CHECK:PICKUP:0\n");
-		break;
-	case CheckEvent::None:
-		break;
-	}
+    sendChecksToAP();
     
     if (m_checkGiver.getProgressiveMissionCounter() == 0 && !m_blockersSpawned) 
     {
@@ -30,11 +29,35 @@ void Mod::start()
     {
         removeMissionBlockers();
     }
+
+	parseIncomingMessages();
 	if (plugin::KeyPressed(VK_TAB))
 	{
-        m_checkGiver.giveProgressiveMission();
+        m_checkListener.healthCheckWasReceived();
 	}
-	parseIncomingMessages();
+    CPed* player = FindPlayerPed();
+    if (plugin::KeyPressed(VK_F5)) {
+        if (player) {
+            player->m_fHealth = 176.0f;
+        }
+    }
+
+    if (plugin::KeyPressed(VK_F6)) {
+        static uint32_t lastDecreaseTime = 0;
+        uint32_t now = CTimer::m_snTimeInMilliseconds;
+
+        if (now - lastDecreaseTime > 1000) { // 1 second cooldown
+            if (player) {
+                player->m_fHealth -= 175.0f;
+            }
+            lastDecreaseTime = now;
+        }
+    }
+    std::ofstream outFile("health_every_tick.txt", std::ios::app);
+    if (outFile.is_open()) {
+        int health = CWorld::Players[0].m_nMaxHealth;
+        outFile << health << "\n";
+    }
 }
 
 void Mod::spawnMissionBlockers()
@@ -71,6 +94,22 @@ void Mod::removeMissionBlockers()
     m_blockersSpawned = false;
 }
 
+void Mod::sendChecksToAP()
+{
+    switch (m_currentEvent)
+    {
+    case CheckEvent::Mission:
+        m_checkGiver.removeProgressiveMission();
+        m_apSocket.sendToServer("CHECK:MISSION:" + m_checkListener.getMissionID() + "\n");
+        break;
+    case CheckEvent::PickUp:
+        m_apSocket.sendToServer("CHECK:PICKUP:0\n");
+        break;
+    case CheckEvent::None:
+        break;
+    }
+}
+
 void Mod::parseIncomingMessages()
 {
     std::string msg;
@@ -94,6 +133,10 @@ void Mod::parseIncomingMessages()
         }
         else if (effectType == "progressive_map") {
             m_checkGiver.giveProgressiveMap();
+        }
+        else if (effectType == "health_upgrade")
+        {
+            m_checkListener.healthCheckWasReceived();
         }
     }
 }

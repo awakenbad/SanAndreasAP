@@ -21,6 +21,8 @@ public:
 private:
 	const int BLOCKER_MODEL_ID = 2973;
 	const float DISTANCE_TO_PLAYER = 60.0f;
+	int lastValue = 0;
+	bool initialized = false;
 
 	WeaponGiver m_weaponGiver;
 	CheckListener m_checkListener;
@@ -36,5 +38,6 @@ private:
 	void receiveCurrentCheckEvent();
 	void spawnMissionBlockers();
 	void removeMissionBlockers();
+	void sendChecksToAP();
 };
 
