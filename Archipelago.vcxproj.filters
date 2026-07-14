@@ -7,6 +7,12 @@
     <Filter Include="Source">
       <UniqueIdentifier>{80eca0db-1570-4c8e-a998-44b61c8db291}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header\Submissions">
+      <UniqueIdentifier>{d5fdb7e9-f68e-4b65-8334-c12418c56aeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Submissions">
+      <UniqueIdentifier>{e8d1bb44-cdb3-4eb3-ac0f-b995cdfae0a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\APSocket.h">
@@ -30,6 +36,18 @@
     <ClInclude Include="header\Position.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="header\SubmissionTracker.h">
+      <Filter>Header\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\ParamedicTracker.h">
+      <Filter>Header\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\VigilanteTracker.h">
+      <Filter>Header\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\FirefighterTracker.h">
+      <Filter>Header\Submissions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\APSocket.cpp">
@@ -52,6 +70,18 @@
     </ClCompile>
     <ClCompile Include="source\Position.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SubmissionTracker.cpp">
+      <Filter>Source\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ParamedicTracker.cpp">
+      <Filter>Source\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\VigilanteTracker.cpp">
+      <Filter>Source\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\FirefighterTracker.cpp">
+      <Filter>Source\Submissions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

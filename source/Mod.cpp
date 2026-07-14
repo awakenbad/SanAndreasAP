@@ -19,11 +19,12 @@ void Mod::start()
     {
         removeMissionBlockers();
     }
+
 	if (plugin::KeyPressed(VK_F5))
 	{
-        m_checkListener.fireCheckWasReceived();
+        m_checkListener.submissionCheckWasReceived(123);
 	}
-	m_weaponGiver.giveMolotov();
+    m_weaponGiver.giveMolotov();
 
 	parseIncomingMessages();
 }
@@ -104,7 +105,7 @@ void Mod::parseIncomingMessages()
         }
         else if (effectType == "health_upgrade")
         {
-            m_checkListener.healthCheckWasReceived();
+            m_checkListener.submissionCheckWasReceived(123);
         }
     }
 }

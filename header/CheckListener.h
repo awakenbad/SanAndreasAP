@@ -5,6 +5,11 @@
 #include <CStats.h>
 #include <CWorld.h>
 
+#include "SubmissionTracker.h"
+#include "ParamedicTracker.h"
+#include "FirefighterTracker.h"
+#include "VigilanteTracker.h"
+
 enum class CheckEvent
 {
 	None,
@@ -20,9 +25,7 @@ public:
 	void spawnPickup();
 	CheckEvent update();
 	std::string getMissionID();
-	void healthCheckWasReceived();
-	void armourCheckWasReceived();
-	void fireCheckWasReceived();
+	void submissionCheckWasReceived(int t_submissionID);
 private:
 	const int PARAMEDIC_ID = 122;
 	const int FIREFIGHTER_ID = 123;
@@ -34,12 +37,7 @@ private:
 	std::string currentMission;
 	std::string lastMission;
 	int const NO_MISSION = -1;
-	bool healthCheckReceived = false;
-	bool paramedicCompleted = false;
-	bool armourCheckReceived = false;
-	bool vigilanteCompleted = false;
-	bool fireCheckReceived = false;
-	bool firefighterCompleted = false;
+	std::vector<SubmissionTracker*> submissionTrackers;
 
 	bool tagChecker();
 	bool pickUpChecker();

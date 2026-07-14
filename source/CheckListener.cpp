@@ -7,6 +7,10 @@ CheckListener::CheckListener() : m_pickUpCounter(CPickups::aPickUpsCollected)
 	lastMission = CStats::LastMissionPassedName;
 	m_lastValuePickUpCounter = *m_pickUpCounter;
 	initializeMissionList();
+
+	submissionTrackers.push_back(new ParamedicTracker(PARAMEDIC_ID));
+	submissionTrackers.push_back(new VigilanteTracker(VIGILANTE_ID));
+	submissionTrackers.push_back(new FirefighterTracker(FIREFIGHTER_ID));
 }
 
 bool CheckListener::tagChecker()
@@ -31,13 +35,22 @@ bool CheckListener::missionChecker()
 	enforceSubmissionRewards();
 	if (lastMission != currentMission)
 	{
-		if (currentMission == missions[PARAMEDIC_ID])
+		int missionIDcounter = 0;
+		for (auto mission : missions)
 		{
-			paramedicCompleted = true;
+			if (mission == currentMission)
+			{
+				break;
+			}
+			missionIDcounter++;
 		}
-		if (currentMission == missions[VIGILANTE_ID])
+
+		for (auto st : submissionTrackers)
 		{
-			vigilanteCompleted = true;
+			if (st->getSubmissionID() == missionIDcounter)
+			{
+				st->submissionWasCompleted();
+			}
 		}
 
 		lastMission = currentMission;
@@ -190,31 +203,9 @@ void CheckListener::initializeMissionList()
 
 void CheckListener::enforceSubmissionRewards()
 {
-	if (healthCheckReceived && !paramedicCompleted)
+	for (auto st : submissionTrackers)
 	{
-		CWorld::Players[0].m_nMaxHealth = 176;
-	}
-	if (!healthCheckReceived && paramedicCompleted)
-	{
-		CWorld::Players[0].m_nMaxHealth = 100;
-	}
-
-	if (armourCheckReceived && !vigilanteCompleted)	
-	{
-		CWorld::Players[0].m_nMaxArmour = 150;
-	}
-	if (!armourCheckReceived && vigilanteCompleted)
-	{
-		CWorld::Players[0].m_nMaxArmour = 100;
-	}
-
-	if (fireCheckReceived && !firefighterCompleted)
-	{
-		CWorld::Players[0].m_bFireProof = true;
-	}
-	if (!fireCheckReceived && firefighterCompleted)
-	{
-		CWorld::Players[0].m_bFireProof = false;
+		st->enforceSubmissionReward();
 	}
 }
 
@@ -252,17 +243,13 @@ std::string CheckListener::getMissionID()
 	return std::to_string(NO_MISSION);
 }
 
-void CheckListener::healthCheckWasReceived()
+void CheckListener::submissionCheckWasReceived(int t_submissionID)
 {
-	healthCheckReceived = true;
-}
-
-void CheckListener::armourCheckWasReceived()
-{
-	armourCheckReceived = true;
-}
-
-void CheckListener::fireCheckWasReceived()
-{
-	fireCheckReceived = true;
+	for (auto st : submissionTrackers)
+	{
+		if (st->getSubmissionID() == t_submissionID)
+		{
+			st->checkWasReceived();
+		}
+	}
 }

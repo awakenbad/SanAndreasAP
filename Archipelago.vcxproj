@@ -15,17 +15,25 @@
     <ClInclude Include="header\CheckGiver.h" />
     <ClInclude Include="header\CheckListener.h" />
     <ClInclude Include="header\EntityIDs.h" />
+    <ClInclude Include="header\FirefighterTracker.h" />
     <ClInclude Include="header\Mod.h" />
+    <ClInclude Include="header\ParamedicTracker.h" />
     <ClInclude Include="header\Position.h" />
+    <ClInclude Include="header\SubmissionTracker.h" />
+    <ClInclude Include="header\VigilanteTracker.h" />
     <ClInclude Include="header\WeaponGiver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\APSocket.cpp" />
     <ClCompile Include="source\CheckGiver.cpp" />
     <ClCompile Include="source\CheckListener.cpp" />
+    <ClCompile Include="source\FirefighterTracker.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Mod.cpp" />
+    <ClCompile Include="source\ParamedicTracker.cpp" />
     <ClCompile Include="source\Position.cpp" />
+    <ClCompile Include="source\SubmissionTracker.cpp" />
+    <ClCompile Include="source\VigilanteTracker.cpp" />
     <ClCompile Include="source\WeaponGiver.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
