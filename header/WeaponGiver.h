@@ -10,6 +10,8 @@ public:
 	/// </summary>
 	void giveSprayCan();
 
+	void giveMolotov();
+
 private:
 };
 

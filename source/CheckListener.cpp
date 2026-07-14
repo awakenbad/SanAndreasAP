@@ -207,6 +207,15 @@ void CheckListener::enforceSubmissionRewards()
 	{
 		CWorld::Players[0].m_nMaxArmour = 100;
 	}
+
+	if (fireCheckReceived && !firefighterCompleted)
+	{
+		CWorld::Players[0].m_bFireProof = true;
+	}
+	if (!fireCheckReceived && firefighterCompleted)
+	{
+		CWorld::Players[0].m_bFireProof = false;
+	}
 }
 
 void CheckListener::spawnPickup()
@@ -251,4 +260,9 @@ void CheckListener::healthCheckWasReceived()
 void CheckListener::armourCheckWasReceived()
 {
 	armourCheckReceived = true;
+}
+
+void CheckListener::fireCheckWasReceived()
+{
+	fireCheckReceived = true;
 }

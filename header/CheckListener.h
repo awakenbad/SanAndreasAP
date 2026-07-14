@@ -22,8 +22,10 @@ public:
 	std::string getMissionID();
 	void healthCheckWasReceived();
 	void armourCheckWasReceived();
+	void fireCheckWasReceived();
 private:
 	const int PARAMEDIC_ID = 122;
+	const int FIREFIGHTER_ID = 123;
 	const int VIGILANTE_ID = 124;
 
 	int* m_pickUpCounter;
@@ -36,6 +38,8 @@ private:
 	bool paramedicCompleted = false;
 	bool armourCheckReceived = false;
 	bool vigilanteCompleted = false;
+	bool fireCheckReceived = false;
+	bool firefighterCompleted = false;
 
 	bool tagChecker();
 	bool pickUpChecker();

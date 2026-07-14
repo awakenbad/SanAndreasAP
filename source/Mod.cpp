@@ -19,6 +19,12 @@ void Mod::start()
     {
         removeMissionBlockers();
     }
+	if (plugin::KeyPressed(VK_F5))
+	{
+        m_checkListener.fireCheckWasReceived();
+	}
+	m_weaponGiver.giveMolotov();
+
 	parseIncomingMessages();
 }
 
