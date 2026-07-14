@@ -21,7 +21,11 @@ public:
 	CheckEvent update();
 	std::string getMissionID();
 	void healthCheckWasReceived();
+	void armourCheckWasReceived();
 private:
+	const int PARAMEDIC_ID = 122;
+	const int VIGILANTE_ID = 124;
+
 	int* m_pickUpCounter;
 	int m_lastValuePickUpCounter;
 	std::vector<std::string> missions;
@@ -30,6 +34,8 @@ private:
 	int const NO_MISSION = -1;
 	bool healthCheckReceived = false;
 	bool paramedicCompleted = false;
+	bool armourCheckReceived = false;
+	bool vigilanteCompleted = false;
 
 	bool tagChecker();
 	bool pickUpChecker();

@@ -8,16 +8,6 @@ Mod::Mod()
 
 void Mod::start()
 {
-	int current = CWorld::Players[0].m_nMaxHealth;
-
-    if (current != lastValue) {
-        std::ofstream outFile("stat_watch.txt", std::ios::app);
-        if (outFile.is_open()) {
-            outFile << "m_nMaxHealth changed: " << lastValue << " -> " << current << "\n";
-            outFile.flush();
-        }
-        lastValue = current;
-    }
 	receiveCurrentCheckEvent();
     sendChecksToAP();
     
@@ -29,35 +19,7 @@ void Mod::start()
     {
         removeMissionBlockers();
     }
-
 	parseIncomingMessages();
-	if (plugin::KeyPressed(VK_TAB))
-	{
-        m_checkListener.healthCheckWasReceived();
-	}
-    CPed* player = FindPlayerPed();
-    if (plugin::KeyPressed(VK_F5)) {
-        if (player) {
-            player->m_fHealth = 176.0f;
-        }
-    }
-
-    if (plugin::KeyPressed(VK_F6)) {
-        static uint32_t lastDecreaseTime = 0;
-        uint32_t now = CTimer::m_snTimeInMilliseconds;
-
-        if (now - lastDecreaseTime > 1000) { // 1 second cooldown
-            if (player) {
-                player->m_fHealth -= 175.0f;
-            }
-            lastDecreaseTime = now;
-        }
-    }
-    std::ofstream outFile("health_every_tick.txt", std::ios::app);
-    if (outFile.is_open()) {
-        int health = CWorld::Players[0].m_nMaxHealth;
-        outFile << health << "\n";
-    }
 }
 
 void Mod::spawnMissionBlockers()

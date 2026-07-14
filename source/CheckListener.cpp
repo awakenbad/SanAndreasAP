@@ -31,12 +31,15 @@ bool CheckListener::missionChecker()
 	enforceSubmissionRewards();
 	if (lastMission != currentMission)
 	{
-		std::ofstream outFile("mission_keys.txt", std::ios::app);
-		if (outFile.is_open()) {
-			outFile << currentMission << "\n";
-			outFile.flush();
-			outFile.close();
+		if (currentMission == missions[PARAMEDIC_ID])
+		{
+			paramedicCompleted = true;
 		}
+		if (currentMission == missions[VIGILANTE_ID])
+		{
+			vigilanteCompleted = true;
+		}
+
 		lastMission = currentMission;
 		return true;
 	}
@@ -195,6 +198,15 @@ void CheckListener::enforceSubmissionRewards()
 	{
 		CWorld::Players[0].m_nMaxHealth = 100;
 	}
+
+	if (armourCheckReceived && !vigilanteCompleted)	
+	{
+		CWorld::Players[0].m_nMaxArmour = 150;
+	}
+	if (!armourCheckReceived && vigilanteCompleted)
+	{
+		CWorld::Players[0].m_nMaxArmour = 100;
+	}
 }
 
 void CheckListener::spawnPickup()
@@ -234,4 +246,9 @@ std::string CheckListener::getMissionID()
 void CheckListener::healthCheckWasReceived()
 {
 	healthCheckReceived = true;
+}
+
+void CheckListener::armourCheckWasReceived()
+{
+	armourCheckReceived = true;
 }
