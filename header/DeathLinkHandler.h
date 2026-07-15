@@ -7,12 +7,15 @@ class DeathLinkHandler
 public:
 	void setEnabled(bool enabled);
 
-	/// Call once per game tick. Returns true exactly once when a new, organic player death is
-	/// detected - never for a death this handler itself triggered via killPlayer(), which
-	/// would otherwise cause an infinite DeathLink echo between players.
+	/// <summary>
+	/// Keeps track of dying inside of the game to prevent sending infinite death checks
+	/// </summary>
+	/// <returns>if the player should send deathlink or not</returns>
 	bool update();
 
-	/// Kills the player artificially, in response to an incoming DeathLink from another player.
+	/// <summary>
+	/// Kills the player in response to a Deathlink event from the server
+	/// </summary>
 	void killPlayer();
 
 private:
