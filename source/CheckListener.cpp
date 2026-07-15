@@ -78,7 +78,7 @@ void CheckListener::initializeMissionList()
 	missions =
 	{
 		"INITIAL",   // 0   Initial 1
-		"INITIL_2",  // 1   Initial 2
+		"INITIL2",   // 1   Initial 2
 		"INTRO",     // 2   Intro
 		"NONE",      // 3   Video Game: They Crawled From Uranus
 		"DUAL",      // 4   Video Game: Duality
@@ -115,8 +115,8 @@ void CheckListener::initializeMissionList()
 		"CPRACE",    // 35  Race Tournament / 8-track / Dirt Track
 		"CESAR_1",   // 36  Lowrider (High Stakes)
 		"DRUGS_4",   // 37  Reuniting The Families
-		"LA1FIN_2",  // 38  The Green Sabre
-		"BCRASH_1",  // 39  Badlands
+		"LA1FIN2",   // 38  The Green Sabre (confirmed via live breakpoint - no underscore)
+		"BCRASH1",   // 39  Badlands
 		"CATALIN",   // 40  First Date
 		"CAT_1",     // 41  Local Liquor Store
 		"CAT_2",     // 42  Small Town Bank
@@ -125,13 +125,13 @@ void CheckListener::initializeMissionList()
 		"CATCUT",    // 45  King in Exile
 		"TRUTH_1",   // 46  Body Harvest
 		"TRUTH_2",   // 47  Are you going to San Fierro?
-		"BCESAR_4",  // 48  Wu Zi Mu / Farewell, My Love...
+		"BCESAR4",   // 48  Wu Zi Mu / Farewell, My Love...
 		"GARAG_1",   // 49  Wear Flowers In Your Hair
 		"DECON",     // 50  Deconstruction
-		"SCRASH_3",  // 51  555 WE TIP
-		"SCRASH_2",  // 52  Snail Trail
+		"SCRASH3",   // 51  555 WE TIP
+		"SCRASH2",   // 52  Snail Trail
 		"WUZI_1",    // 53  Mountain Cloud Boys
-		"FARLIE_4",  // 54  Ran Fa Li
+		"FARLIE4",   // 54  Ran Fa Li
 		"DRIV_6",    // 55  Lure
 		"WUZI_2",    // 56  Amphibious Assault
 		"WUZI_5",    // 57  The Da Nang Thang
@@ -152,25 +152,25 @@ void CheckListener::initializeMissionList()
 		"ZERO_1",    // 72  Air Raid
 		"ZERO_2",    // 73  Supply Lines...
 		"ZERO_4",    // 74  New Model Army
-		"TORENO_1",  // 75  Monster
-		"TORENO_2",  // 76  Highjack
+		"TORENO1",   // 75  Monster
+		"TORENO2",   // 76  Highjack
 		"DES_3",     // 77  Interdiction
-		"DESERT_4",  // 78  Verdant Meadows
-		"DESERT_6",  // 79  N.O.E.
-		"DESERT_9",  // 80  Stowaway
+		"DESERT4",   // 78  Verdant Meadows
+		"DESERT6",   // 79  N.O.E.
+		"DESERT9",   // 80  Stowaway
 		"MAF_4",     // 81  Black Project
 		"DES_10",    // 82  Green Goo
-		"DESERT_5",  // 83  Learning to Fly
-		"CASINO_1",  // 84  Fender Ketchup
-		"CASINO_2",  // 85  Explosive Situation
-		"CASINO_3",  // 86  You've Had Your Chips
-		"CASINO_7",  // 87  Fish in a Barrel
-		"CASINO_4",  // 88  Don Peyote
-		"CASINO_5",  // 89  Intensive Care
-		"CASINO_6",  // 90  The Meat Business
-		"CASINO_9",  // 91  Freefall
-		"CASIN_10",  // 92  Saint Mark's Bistro
-		"VCRASH_1",  // 93  Misappropriation
+		"DESERT5",   // 83  Learning to Fly
+		"CASINO1",   // 84  Fender Ketchup
+		"CASINO2",   // 85  Explosive Situation
+		"CASINO3",   // 86  You've Had Your Chips
+		"CASINO7",   // 87  Fish in a Barrel
+		"CASINO4",   // 88  Don Peyote
+		"CASINO5",   // 89  Intensive Care
+		"CASINO6",   // 90  The Meat Business
+		"CASINO9",   // 91  Freefall
+		"CASIN10",   // 92  Saint Mark's Bistro
+		"VCRASH1",   // 93  Misappropriation
 		"VCR_2",     // 94  High Noon
 		"DOC_2",     // 95  Madd Dogg
 		"HEIST_1",   // 96  Architectural Espionage
@@ -179,10 +179,10 @@ void CheckListener::initializeMissionList()
 		"HEIST_4",   // 99  Cop Wheels
 		"HEIST_5",   // 100 Up, Up and Away!
 		"HEIST_9",   // 101 Breaking the Bank at Caligula's
-		"MANSIO_1",  // 102 A Home In The Hills
-		"MANSIO_2",  // 103 Vertical Bird
-		"MANSIO_3",  // 104 Home Coming
-		"MANSON_5",  // 105 Cut Throat Business
+		"MANSIO1",   // 102 A Home In The Hills
+		"MANSIO2",   // 103 Vertical Bird
+		"MANSIO3",   // 104 Home Coming
+		"MANSON5",   // 105 Cut Throat Business
 		"GROVE_1",   // 106 Beat Down on B Dup
 		"GROVE_2",   // 107 Grove 4 Life
 		"RIOT_1",    // 108 Riot
@@ -211,7 +211,7 @@ void CheckListener::initializeMissionList()
 		"BCOUR",     // 131 Courier
 		"MTBIKER",   // 132 The Chiliad Challenge
 		"STUNT",     // 133 BMX / NRG-500 STUNT Mission
-		"BUYPRO_1",  // 134 Buy Properties Mission
+		"BUYPRO1",   // 134 Buy Properties Mission
 	};
 }
 

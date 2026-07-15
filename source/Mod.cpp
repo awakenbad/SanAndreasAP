@@ -34,7 +34,7 @@ void Mod::spawnMissionBlockers()
 
     for (const auto& [missionId, pos] : missionStartPos) {
         CObject* blocker = CObject::Create(BLOCKER_MODEL_ID);
-        CMessages::AddMessageJumpQ(blocker ? "Blocker created" : "Blocker creation FAILED", 2000, 0);
+        //CMessages::AddMessageJumpQ(blocker ? "Blocker created" : "Blocker creation FAILED", 2000, 0);
 
         if (blocker) {
             blocker->SetPosition(CVector(pos.x, pos.y, pos.z));
