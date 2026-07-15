@@ -116,7 +116,7 @@ void CheckListener::initializeMissionList()
 		"CPRACE",    // 35  Race Tournament / 8-track / Dirt Track
 		"CESAR_1",   // 36  Lowrider (High Stakes)
 		"DRUGS_4",   // 37  Reuniting The Families
-		"LA1FIN2",   // 38  The Green Sabre (confirmed via live breakpoint - no underscore)
+		"LA1FIN2",   // 38  The Green Sabre
 		"BCRASH1",   // 39  Badlands
 		"CATALIN",   // 40  First Date
 		"CAT_1",     // 41  Local Liquor Store
@@ -267,4 +267,10 @@ void CheckListener::submissionCheckWasReceived(int t_submissionID)
 			st->checkWasReceived();
 		}
 	}
+}
+
+bool CheckListener::isStoryMission(int missionId)
+{
+	if (missionId == 35) return false;
+	return missionId >= 11 && missionId <= 112;
 }

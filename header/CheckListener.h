@@ -32,6 +32,8 @@ public:
 
 	void confirmPickUpSent();
 	void confirmMissionSent();
+
+	static bool isStoryMission(int missionId);
 private:
 	const int PARAMEDIC_ID = 122;
 	const int FIREFIGHTER_ID = 123;

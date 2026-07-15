@@ -66,12 +66,18 @@ void Mod::sendChecksToAP()
     switch (m_currentEvent)
     {
     case CheckEvent::Mission:
-        if (m_apSocket.sendToServer("CHECK:MISSION:" + m_checkListener.getMissionID() + "\n"))
+    {
+        std::string missionIDStr = m_checkListener.getMissionID();
+        if (m_apSocket.sendToServer("CHECK:MISSION:" + missionIDStr + "\n"))
         {
-            m_checkGiver.removeProgressiveMission();
+            if (m_checkListener.isStoryMission(std::stoi(missionIDStr)))
+            {
+                m_checkGiver.removeProgressiveMission();
+            }
             m_checkListener.confirmMissionSent();
         }
         break;
+    }
     case CheckEvent::PickUp:
         if (m_apSocket.sendToServer("CHECK:PICKUP:0\n"))
         {
