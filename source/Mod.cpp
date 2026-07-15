@@ -133,6 +133,10 @@ void Mod::parseIncomingMessages()
         {
             m_checkListener.submissionCheckWasReceived(121);
         }
+        else if (effectType == "boxing_style")
+        {
+            m_checkListener.submissionCheckWasReceived(114);
+        }
         else
         {
             continue;
@@ -171,6 +175,9 @@ void Mod::showReceivedItemMessage(const std::string& effectType, const std::stri
     }
     else if (effectType == "taxi_nitro") {
         text = "Archipelago: Received Taxi Nitro";
+    }
+    else if (effectType == "boxing_style") {
+        text = "Archipelago: Received Boxing Style";
     }
     else {
         return;

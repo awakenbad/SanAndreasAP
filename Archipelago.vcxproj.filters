@@ -54,6 +54,9 @@
     <ClInclude Include="header\TaxiTracker.h">
       <Filter>Header\Submissions</Filter>
     </ClInclude>
+    <ClInclude Include="header\LosSantosGymTracker.h">
+      <Filter>Header\Submissions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\APSocket.cpp">
@@ -93,6 +96,9 @@
       <Filter>Source\Submissions</Filter>
     </ClCompile>
     <ClCompile Include="source\TaxiTracker.cpp">
+      <Filter>Source\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\LosSantosGymTracker.cpp">
       <Filter>Source\Submissions</Filter>
     </ClCompile>
   </ItemGroup>

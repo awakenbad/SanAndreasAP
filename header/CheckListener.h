@@ -11,6 +11,7 @@
 #include "VigilanteTracker.h"
 #include "BurglaryTracker.h"
 #include "TaxiTracker.h"
+#include "LosSantosGymTracker.h"
 
 enum class CheckEvent
 {
@@ -37,6 +38,7 @@ private:
 	const int VIGILANTE_ID = 124;
 	const int BURGLARY_ID = 125;
 	const int TAXI_ID = 121;
+	const int LOS_SANTOS_GYM_ID = 114;
 
 	int* m_pickUpCounter;
 	int m_lastValuePickUpCounter;

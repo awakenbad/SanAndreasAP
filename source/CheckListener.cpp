@@ -13,6 +13,7 @@ CheckListener::CheckListener() : m_pickUpCounter(CPickups::aPickUpsCollected)
 	submissionTrackers.push_back(new FirefighterTracker(FIREFIGHTER_ID));
 	submissionTrackers.push_back(new BurglaryTracker(BURGLARY_ID));
 	submissionTrackers.push_back(new TaxiTracker(TAXI_ID));
+	submissionTrackers.push_back(new LosSantosGymTracker(LOS_SANTOS_GYM_ID));
 }
 
 bool CheckListener::tagChecker()

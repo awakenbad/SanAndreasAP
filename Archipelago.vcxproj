@@ -17,6 +17,7 @@
     <ClInclude Include="header\CheckListener.h" />
     <ClInclude Include="header\EntityIDs.h" />
     <ClInclude Include="header\FirefighterTracker.h" />
+    <ClInclude Include="header\LosSantosGymTracker.h" />
     <ClInclude Include="header\Mod.h" />
     <ClInclude Include="header\ParamedicTracker.h" />
     <ClInclude Include="header\Position.h" />
@@ -31,6 +32,7 @@
     <ClCompile Include="source\CheckGiver.cpp" />
     <ClCompile Include="source\CheckListener.cpp" />
     <ClCompile Include="source\FirefighterTracker.cpp" />
+    <ClCompile Include="source\LosSantosGymTracker.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Mod.cpp" />
     <ClCompile Include="source\ParamedicTracker.cpp" />
