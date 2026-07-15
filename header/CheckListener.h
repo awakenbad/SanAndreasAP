@@ -60,12 +60,6 @@ private:
 	int const NO_MISSION = -1;
 	std::vector<SubmissionTracker*> submissionTrackers;
 
-	// Tags are detected via a raw read of the 0xA9AD74 tags-sprayed global (a running count, not
-	// a per-tag identity) diffed each tick. When it increases by N, the N closest not-yet-claimed
-	// tags to the player's current position are queued as pending - this correctly handles both
-	// a normal single spray (N=1) and "Tagging Up Turf" auto-granting several tags at once
-	// (N>1, since the player is in that same neighborhood when it happens), without needing an
-	// unverified per-tag memory array.
 	float m_lastTagCount = 0.0f;
 	bool m_tagCountInitialized = false;
 	std::queue<int> m_pendingTagIndices;
@@ -76,5 +70,6 @@ private:
 	bool missionChecker();
 	void initializeMissionList();
 	void enforceSubmissionRewards();
+	void findClosestTag(CPlayerPed* player, int delta);
 };
 

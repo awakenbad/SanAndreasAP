@@ -38,23 +38,7 @@ bool CheckListener::tagChecker()
 		CPlayerPed* player = FindPlayerPed();
 		if (player)
 		{
-			CVector playerPos = player->GetPosition();
-
-			std::vector<std::pair<float, int>> distances;
-			for (int i = 0; i < static_cast<int>(tagPositions.size()); ++i)
-			{
-				if (m_tagClaimed[i]) continue;
-				distances.push_back({ CVector::Distance(playerPos, tagPositions[i]), i });
-			}
-			std::sort(distances.begin(), distances.end(),
-				[](const auto& a, const auto& b) { return a.first < b.first; });
-
-			for (int i = 0; i < delta && i < static_cast<int>(distances.size()); ++i)
-			{
-				int tagIndex = distances[i].second;
-				m_tagClaimed[tagIndex] = true;
-				m_pendingTagIndices.push(tagIndex);
-			}
+			findClosestTag(player, delta);
 		}
 	}
 
@@ -275,6 +259,27 @@ void CheckListener::enforceSubmissionRewards()
 	for (auto st : submissionTrackers)
 	{
 		st->enforceSubmissionReward();
+	}
+}
+
+void CheckListener::findClosestTag(CPlayerPed* player, int delta)
+{
+	CVector playerPos = player->GetPosition();
+
+	std::vector<std::pair<float, int>> distances;
+	for (int i = 0; i < static_cast<int>(tagPositions.size()); ++i)
+	{
+		if (m_tagClaimed[i]) continue;
+		distances.push_back({ CVector::Distance(playerPos, tagPositions[i]), i });
+	}
+	std::sort(distances.begin(), distances.end(),
+		[](const auto& a, const auto& b) { return a.first < b.first; });
+
+	for (int i = 0; i < delta && i < static_cast<int>(distances.size()); ++i)
+	{
+		int tagIndex = distances[i].second;
+		m_tagClaimed[tagIndex] = true;
+		m_pendingTagIndices.push(tagIndex);
 	}
 }
 
