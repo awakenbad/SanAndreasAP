@@ -9,9 +9,13 @@ Mod::Mod()
 void Mod::start()
 {
 	m_apSocket.update();
+	if (m_deathLinkHandler.update())
+	{
+		m_apSocket.sendToServer("PLAYER_DIED\n");
+	}
 	receiveCurrentCheckEvent();
     sendChecksToAP();
-    
+
     if (m_checkGiver.getProgressiveMissionCounter() == 0 && !m_blockersSpawned) 
     {
         spawnMissionBlockers();
@@ -22,7 +26,7 @@ void Mod::start()
     }
 	if (plugin::KeyPressed(VK_TAB))
 	{
-        m_checkListener.submissionCheckWasReceived(121);
+        m_weaponGiver.giveMolotov();
 	}
 	parseIncomingMessages();
 }
@@ -142,6 +146,14 @@ void Mod::parseIncomingMessages()
         else if (effectType == "boxing_style")
         {
             m_checkListener.submissionCheckWasReceived(114);
+        }
+        else if (effectType == "death_link")
+        {
+            m_deathLinkHandler.setEnabled(value == "1");
+        }
+        else if (effectType == "deathlink_kill")
+        {
+            m_deathLinkHandler.killPlayer();
         }
         else
         {

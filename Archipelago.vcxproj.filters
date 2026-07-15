@@ -27,6 +27,9 @@
     <ClInclude Include="header\EntityIDs.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="header\DeathLinkHandler.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="header\Mod.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -72,6 +75,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="source\Mod.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\DeathLinkHandler.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="source\WeaponGiver.cpp">

@@ -8,6 +8,7 @@
 #include "CRunningScript.h"
 #include "CTheScripts.h"
 #include "CHud.h"
+#include "DeathLinkHandler.h"
 
 class Mod
 {
@@ -32,6 +33,7 @@ private:
 	CheckEvent m_currentEvent;
 	std::unordered_map<int, CObject*> m_missionBlockers;
 	bool m_blockersSpawned = false;
+	DeathLinkHandler m_deathLinkHandler;
 
 	char m_helpMessageBuffer[400] = {};
 

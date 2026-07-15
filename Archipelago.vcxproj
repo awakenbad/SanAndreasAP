@@ -15,6 +15,7 @@
     <ClInclude Include="header\BurglaryTracker.h" />
     <ClInclude Include="header\CheckGiver.h" />
     <ClInclude Include="header\CheckListener.h" />
+    <ClInclude Include="header\DeathLinkHandler.h" />
     <ClInclude Include="header\EntityIDs.h" />
     <ClInclude Include="header\FirefighterTracker.h" />
     <ClInclude Include="header\LosSantosGymTracker.h" />
@@ -31,6 +32,7 @@
     <ClCompile Include="source\BurglaryTracker.cpp" />
     <ClCompile Include="source\CheckGiver.cpp" />
     <ClCompile Include="source\CheckListener.cpp" />
+    <ClCompile Include="source\DeathLinkHandler.cpp" />
     <ClCompile Include="source\FirefighterTracker.cpp" />
     <ClCompile Include="source\LosSantosGymTracker.cpp" />
     <ClCompile Include="source\Main.cpp" />
