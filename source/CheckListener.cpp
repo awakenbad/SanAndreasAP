@@ -22,20 +22,26 @@ bool CheckListener::tagChecker()
 
 bool CheckListener::pickUpChecker()
 {
-	if (m_lastValuePickUpCounter < *m_pickUpCounter)
+	if (!m_pickUpEventPending && m_lastValuePickUpCounter < *m_pickUpCounter)
 	{
 		CMessages::AddMessageJumpQ("Picked up an item", 100, 0);
-		m_lastValuePickUpCounter = *m_pickUpCounter;
-		return true;
+		m_pickUpEventPending = true;
 	}
-	return false;
+	return m_pickUpEventPending;
+}
+
+void CheckListener::confirmPickUpSent()
+{
+	m_lastValuePickUpCounter = *m_pickUpCounter;
+	m_pickUpEventPending = false;
 }
 
 bool CheckListener::missionChecker()
 {
 	currentMission = CStats::LastMissionPassedName;
 	enforceSubmissionRewards();
-	if (lastMission != currentMission)
+
+	if (!m_missionEventPending && lastMission != currentMission)
 	{
 		int missionIDcounter = 0;
 		for (auto mission : missions)
@@ -55,10 +61,16 @@ bool CheckListener::missionChecker()
 			}
 		}
 
-		lastMission = currentMission;
-		return true;
+		m_pendingMissionName = currentMission;
+		m_missionEventPending = true;
 	}
-	return false;
+	return m_missionEventPending;
+}
+
+void CheckListener::confirmMissionSent()
+{
+	lastMission = m_pendingMissionName;
+	m_missionEventPending = false;
 }
 
 void CheckListener::initializeMissionList()
@@ -236,7 +248,7 @@ std::string CheckListener::getMissionID()
 	int counter = 0;
 	for (std::string missionName : missions)
 	{
-		if (currentMission == missionName)
+		if (m_pendingMissionName == missionName)
 		{
 			return std::to_string(counter);
 		}

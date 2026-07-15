@@ -7,6 +7,7 @@
 #include "EntityIDs.h"
 #include "CRunningScript.h"
 #include "CTheScripts.h"
+#include "CHud.h"
 
 class Mod
 {
@@ -31,7 +32,13 @@ private:
 	CheckEvent m_currentEvent;
 	std::unordered_map<int, CObject*> m_missionBlockers;
 	bool m_blockersSpawned = false;
-	
+
+	// CHud::SetHelpMessage appears to keep re-rendering from whatever pointer it's given
+	// every frame rather than copying it immediately (every existing caller in this file
+	// only ever passed string literals, which are safe for that reason). This buffer is a
+	// Mod-lifetime-long, persistent backing store so the pointer we hand it never dangles.
+	char m_helpMessageBuffer[400] = {};
+
 
 
 	void parseIncomingMessages();
@@ -39,5 +46,7 @@ private:
 	void spawnMissionBlockers();
 	void removeMissionBlockers();
 	void sendChecksToAP();
+	void showReceivedItemMessage(const std::string& effectType, const std::string& value);
+	void showHelpText(const std::string& text);
 };
 

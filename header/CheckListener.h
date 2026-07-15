@@ -23,11 +23,14 @@ class CheckListener
 {
 public:
 	CheckListener();
-	
+
 	void spawnPickup();
 	CheckEvent update();
 	std::string getMissionID();
 	void submissionCheckWasReceived(int t_submissionID);
+
+	void confirmPickUpSent();
+	void confirmMissionSent();
 private:
 	const int PARAMEDIC_ID = 122;
 	const int FIREFIGHTER_ID = 123;
@@ -37,9 +40,13 @@ private:
 
 	int* m_pickUpCounter;
 	int m_lastValuePickUpCounter;
+	bool m_pickUpEventPending = false;
+
 	std::vector<std::string> missions;
 	std::string currentMission;
 	std::string lastMission;
+	std::string m_pendingMissionName;
+	bool m_missionEventPending = false;
 	int const NO_MISSION = -1;
 	std::vector<SubmissionTracker*> submissionTrackers;
 

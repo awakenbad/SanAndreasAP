@@ -1,5 +1,4 @@
 #include "APSocket.h"
-#include <CMessages.h>
 
 APSocket::~APSocket()
 {
@@ -8,17 +7,37 @@ APSocket::~APSocket()
 
 bool APSocket::connectToServer(const std::string& ip, int port)
 {
-	WSADATA wsaData;
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) 
+	m_ip = ip;
+	m_port = port;
+	m_lastConnectAttempt = std::chrono::steady_clock::now();
+
+	if (connected || connecting) return false;
+
+	if (sock != INVALID_SOCKET || recvThread.joinable() || connectThread.joinable())
 	{
-		return false;
+		closeConnection();
 	}
-	
-	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (sock == INVALID_SOCKET)
+
+	connecting = true;
+	connectThread = std::thread(&APSocket::connectAttemptThreadFunc, this, ip, port);
+	return true;
+}
+
+void APSocket::connectAttemptThreadFunc(std::string ip, int port)
+{
+	WSADATA wsaData;
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+	{
+		connecting = false;
+		return;
+	}
+
+	SOCKET newSock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (newSock == INVALID_SOCKET)
 	{
 		WSACleanup();
-		return false;
+		connecting = false;
+		return;
 	}
 
 	sockaddr_in addr{};
@@ -26,28 +45,46 @@ bool APSocket::connectToServer(const std::string& ip, int port)
 	addr.sin_port = htons(port);
 	inet_pton(AF_INET, ip.c_str(), &addr.sin_addr);
 
-	if (connect(sock, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) 
+	if (connect(newSock, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
 	{
-		closesocket(sock);
+		closesocket(newSock);
 		WSACleanup();
-		connected = false;
-		return false;
+		connecting = false;
+		return;
 	}
-	
-	recvThread = std::thread(&APSocket::recvLoop, this);
-	recvThread.detach();
+
+	sock = newSock;
 	connected = true;
-	return true;
+	connecting = false;
+	{
+		std::lock_guard<std::mutex> lock(queueMutex);
+		incomingMessages.push("STATUS:connection restored");
+	}
+	recvThread = std::thread(&APSocket::recvLoop, this);
 }
 
-void APSocket::sendToServer(const std::string& msg)
+void APSocket::update()
 {
-	if (!connected) return;
-	send(sock, msg.c_str(), (int)msg.size(), 0);
+	if (connected || connecting) return;
+
+	auto now = std::chrono::steady_clock::now();
+	if (now - m_lastConnectAttempt < RECONNECT_INTERVAL) return;
+
+	connectToServer(m_ip, m_port);
+}
+
+bool APSocket::sendToServer(const std::string& msg)
+{
+	if (!connected) return false;
+	return send(sock, msg.c_str(), (int)msg.size(), 0) != SOCKET_ERROR;
 }
 
 void APSocket::closeConnection()
 {
+	if (connectThread.joinable()) {
+		connectThread.join();
+	}
+
 	if (sock != INVALID_SOCKET) {
 		shutdown(sock, SD_BOTH);
 		closesocket(sock);
@@ -80,6 +117,10 @@ void APSocket::recvLoop()
 		int bytesReceived = recv(sock, buffer, sizeof(buffer) - 1, 0);
 		if (bytesReceived <= 0) {
 			connected = false;
+			{
+				std::lock_guard<std::mutex> lock(queueMutex);
+				incomingMessages.push("STATUS:connection lost, will retry");
+			}
 			break;
 		}
 
@@ -93,8 +134,6 @@ void APSocket::recvLoop()
 
 			std::lock_guard<std::mutex> lock(queueMutex);
 			incomingMessages.push(line);
-			//Log("Socket received line: %s", line.c_str());
-			CMessages::AddMessageJumpQ(line.c_str(), 10000, 0);
 		}
 	}
 }

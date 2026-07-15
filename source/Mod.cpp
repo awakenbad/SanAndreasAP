@@ -8,6 +8,7 @@ Mod::Mod()
 
 void Mod::start()
 {
+	m_apSocket.update();
 	receiveCurrentCheckEvent();
     sendChecksToAP();
     
@@ -65,11 +66,17 @@ void Mod::sendChecksToAP()
     switch (m_currentEvent)
     {
     case CheckEvent::Mission:
-        m_checkGiver.removeProgressiveMission();
-        m_apSocket.sendToServer("CHECK:MISSION:" + m_checkListener.getMissionID() + "\n");
+        if (m_apSocket.sendToServer("CHECK:MISSION:" + m_checkListener.getMissionID() + "\n"))
+        {
+            m_checkGiver.removeProgressiveMission();
+            m_checkListener.confirmMissionSent();
+        }
         break;
     case CheckEvent::PickUp:
-        m_apSocket.sendToServer("CHECK:PICKUP:0\n");
+        if (m_apSocket.sendToServer("CHECK:PICKUP:0\n"))
+        {
+            m_checkListener.confirmPickUpSent();
+        }
         break;
     case CheckEvent::None:
         break;
@@ -80,6 +87,12 @@ void Mod::parseIncomingMessages()
 {
     std::string msg;
     while (m_apSocket.tryGetMessage(msg)) {
+        if (msg.rfind("STATUS:", 0) == 0)
+        {
+            showHelpText(msg.substr(7));
+            continue;
+        }
+
         if (msg.rfind("GIVE:", 0) != 0) continue;
 
         std::string rest = msg.substr(5); // strip "GIVE:"
@@ -120,8 +133,56 @@ void Mod::parseIncomingMessages()
         {
             m_checkListener.submissionCheckWasReceived(121);
         }
+        else
+        {
+            continue;
+        }
 
+        showReceivedItemMessage(effectType, value);
     }
+}
+
+void Mod::showReceivedItemMessage(const std::string& effectType, const std::string& value)
+{
+    std::string text;
+    if (effectType == "money") {
+        text = "Archipelago: Received $" + value;
+    }
+    else if (effectType == "weapon") {
+        text = "Archipelago: Received weapon (" + value + ")";
+    }
+    else if (effectType == "progressive_mission") {
+        text = "Archipelago: Received a Progressive Mission";
+    }
+    else if (effectType == "progressive_map") {
+        text = "Archipelago: Received a Progressive Map";
+    }
+    else if (effectType == "health_upgrade") {
+        text = "Archipelago: Received Max Health Upgrade";
+    }
+    else if (effectType == "armor_upgrade") {
+        text = "Archipelago: Received Max Armor Upgrade";
+    }
+    else if (effectType == "fire_immunity") {
+        text = "Archipelago: Received Fire Immunity";
+    }
+    else if (effectType == "stamina_upgrade") {
+        text = "Archipelago: Received Infinite Sprint";
+    }
+    else if (effectType == "taxi_nitro") {
+        text = "Archipelago: Received Taxi Nitro";
+    }
+    else {
+        return;
+    }
+
+    showHelpText(text);
+}
+
+void Mod::showHelpText(const std::string& text)
+{
+    strncpy_s(m_helpMessageBuffer, sizeof(m_helpMessageBuffer), text.c_str(), _TRUNCATE);
+    CHud::SetHelpMessage(m_helpMessageBuffer, true, false, false);
 }
 
 void Mod::receiveCurrentCheckEvent()
