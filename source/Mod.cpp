@@ -15,8 +15,9 @@ void Mod::start()
 	}
 	receiveCurrentCheckEvent();
     sendChecksToAP();
+    processPendingDisplayMessages();
 
-    if (m_checkGiver.getProgressiveMissionCounter() == 0 && !m_blockersSpawned) 
+    if (m_checkGiver.getProgressiveMissionCounter() == 0 && !m_blockersSpawned)
     {
         spawnMissionBlockers();
     }
@@ -26,7 +27,7 @@ void Mod::start()
     }
 	if (plugin::KeyPressed(VK_TAB))
 	{
-        m_weaponGiver.giveMolotov();
+        m_weaponGiver.giveSprayCan();
 	}
 	parseIncomingMessages();
 }
@@ -38,7 +39,6 @@ void Mod::spawnMissionBlockers()
 
     for (const auto& [missionId, pos] : missionStartPos) {
         CObject* blocker = CObject::Create(BLOCKER_MODEL_ID);
-        //CMessages::AddMessageJumpQ(blocker ? "Blocker created" : "Blocker creation FAILED", 2000, 0);
 
         if (blocker) {
             blocker->SetPosition(CVector(pos.x, pos.y, pos.z));
@@ -86,6 +86,13 @@ void Mod::sendChecksToAP()
         if (m_apSocket.sendToServer("CHECK:PICKUP:0\n"))
         {
             m_checkListener.confirmPickUpSent();
+        }
+        break;
+    case CheckEvent::Tag:
+        if (m_apSocket.sendToServer("CHECK:TAG:" + std::to_string(m_checkListener.getPendingTagIndex()) + "\n"))
+        {
+            m_lastTagSentTime = std::chrono::steady_clock::now();
+            m_checkListener.confirmTagSent();
         }
         break;
     case CheckEvent::None:
@@ -201,7 +208,25 @@ void Mod::showReceivedItemMessage(const std::string& effectType, const std::stri
         return;
     }
 
-    showHelpText(text);
+    auto now = std::chrono::steady_clock::now();
+    if (now - m_lastTagSentTime < TAG_MESSAGE_DELAY)
+    {
+        m_pendingDisplayMessages.push({ now + TAG_MESSAGE_DELAY, text });
+    }
+    else
+    {
+        showHelpText(text);
+    }
+}
+
+void Mod::processPendingDisplayMessages()
+{
+    auto now = std::chrono::steady_clock::now();
+    while (!m_pendingDisplayMessages.empty() && m_pendingDisplayMessages.front().first <= now)
+    {
+        showHelpText(m_pendingDisplayMessages.front().second);
+        m_pendingDisplayMessages.pop();
+    }
 }
 
 void Mod::showHelpText(const std::string& text)

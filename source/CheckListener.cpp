@@ -1,5 +1,7 @@
 #include "CheckListener.h"
-
+#include "TagPositions.h"
+#include "common.h"
+#include <algorithm>
 
 CheckListener::CheckListener() : m_pickUpCounter(CPickups::aPickUpsCollected)
 {
@@ -16,9 +18,61 @@ CheckListener::CheckListener() : m_pickUpCounter(CPickups::aPickUpsCollected)
 	submissionTrackers.push_back(new LosSantosGymTracker(LOS_SANTOS_GYM_ID));
 }
 
+
 bool CheckListener::tagChecker()
 {
-	return false;
+	float currentTagCount = static_cast<float>(*reinterpret_cast<int32_t*>(TAGS_SPRAYED_ADDR));
+
+	if (!m_tagCountInitialized)
+	{
+		m_lastTagCount = currentTagCount;
+		m_tagCountInitialized = true;
+		return !m_pendingTagIndices.empty();
+	}
+
+	int delta = static_cast<int>(currentTagCount) - static_cast<int>(m_lastTagCount);
+	if (delta > 0)
+	{
+		m_lastTagCount = currentTagCount;
+
+		CPlayerPed* player = FindPlayerPed();
+		if (player)
+		{
+			CVector playerPos = player->GetPosition();
+
+			std::vector<std::pair<float, int>> distances;
+			for (int i = 0; i < static_cast<int>(tagPositions.size()); ++i)
+			{
+				if (m_tagClaimed[i]) continue;
+				distances.push_back({ CVector::Distance(playerPos, tagPositions[i]), i });
+			}
+			std::sort(distances.begin(), distances.end(),
+				[](const auto& a, const auto& b) { return a.first < b.first; });
+
+			for (int i = 0; i < delta && i < static_cast<int>(distances.size()); ++i)
+			{
+				int tagIndex = distances[i].second;
+				m_tagClaimed[tagIndex] = true;
+				m_pendingTagIndices.push(tagIndex);
+			}
+		}
+	}
+
+	return !m_pendingTagIndices.empty();
+}
+
+int CheckListener::getPendingTagIndex()
+{
+	if (m_pendingTagIndices.empty()) return -1;
+	return m_pendingTagIndices.front();
+}
+
+void CheckListener::confirmTagSent()
+{
+	if (!m_pendingTagIndices.empty())
+	{
+		m_pendingTagIndices.pop();
+	}
 }
 
 bool CheckListener::pickUpChecker()
@@ -240,6 +294,10 @@ CheckEvent CheckListener::update()
 	if (missionChecker())
 	{
 		event = CheckEvent::Mission;
+	}
+	if (tagChecker())
+	{
+		event = CheckEvent::Tag;
 	}
 	return event;
 }

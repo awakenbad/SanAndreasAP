@@ -23,6 +23,7 @@
     <ClInclude Include="header\ParamedicTracker.h" />
     <ClInclude Include="header\Position.h" />
     <ClInclude Include="header\SubmissionTracker.h" />
+    <ClInclude Include="header\TagPositions.h" />
     <ClInclude Include="header\TaxiTracker.h" />
     <ClInclude Include="header\VigilanteTracker.h" />
     <ClInclude Include="header\WeaponGiver.h" />

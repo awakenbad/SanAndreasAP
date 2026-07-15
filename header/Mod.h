@@ -1,4 +1,6 @@
 #pragma once
+#include <chrono>
+#include <queue>
 #include <APSocket.h>
 #include "WeaponGiver.h"
 #include "CheckListener.h"
@@ -37,7 +39,9 @@ private:
 
 	char m_helpMessageBuffer[400] = {};
 
-
+	static constexpr std::chrono::seconds TAG_MESSAGE_DELAY{ 5 };
+	std::chrono::steady_clock::time_point m_lastTagSentTime = std::chrono::steady_clock::now() - std::chrono::hours(24);
+	std::queue<std::pair<std::chrono::steady_clock::time_point, std::string>> m_pendingDisplayMessages;
 
 	void parseIncomingMessages();
 	void receiveCurrentCheckEvent();
@@ -46,5 +50,6 @@ private:
 	void sendChecksToAP();
 	void showReceivedItemMessage(const std::string& effectType, const std::string& value);
 	void showHelpText(const std::string& text);
+	void processPendingDisplayMessages();
 };
 
