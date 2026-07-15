@@ -19,13 +19,10 @@ void Mod::start()
     {
         removeMissionBlockers();
     }
-
-	if (plugin::KeyPressed(VK_F5))
+	if (plugin::KeyPressed(VK_TAB))
 	{
-        m_checkListener.submissionCheckWasReceived(123);
+        m_checkListener.submissionCheckWasReceived(121);
 	}
-    m_weaponGiver.giveMolotov();
-
 	parseIncomingMessages();
 }
 
@@ -105,8 +102,25 @@ void Mod::parseIncomingMessages()
         }
         else if (effectType == "health_upgrade")
         {
+            m_checkListener.submissionCheckWasReceived(122);
+        }
+        else if (effectType == "armor_upgrade")
+        {
+            m_checkListener.submissionCheckWasReceived(124);
+        }
+        else if (effectType == "fire_immunity")
+        {
             m_checkListener.submissionCheckWasReceived(123);
         }
+        else if (effectType == "stamina_upgrade")
+        {
+            m_checkListener.submissionCheckWasReceived(125);
+        }
+        else if (effectType == "taxi_nitro")
+        {
+            m_checkListener.submissionCheckWasReceived(121);
+        }
+
     }
 }
 

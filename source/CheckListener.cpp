@@ -11,6 +11,8 @@ CheckListener::CheckListener() : m_pickUpCounter(CPickups::aPickUpsCollected)
 	submissionTrackers.push_back(new ParamedicTracker(PARAMEDIC_ID));
 	submissionTrackers.push_back(new VigilanteTracker(VIGILANTE_ID));
 	submissionTrackers.push_back(new FirefighterTracker(FIREFIGHTER_ID));
+	submissionTrackers.push_back(new BurglaryTracker(BURGLARY_ID));
+	submissionTrackers.push_back(new TaxiTracker(TAXI_ID));
 }
 
 bool CheckListener::tagChecker()

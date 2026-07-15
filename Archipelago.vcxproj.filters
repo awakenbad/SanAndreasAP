@@ -48,6 +48,12 @@
     <ClInclude Include="header\FirefighterTracker.h">
       <Filter>Header\Submissions</Filter>
     </ClInclude>
+    <ClInclude Include="header\BurglaryTracker.h">
+      <Filter>Header\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\TaxiTracker.h">
+      <Filter>Header\Submissions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\APSocket.cpp">
@@ -81,6 +87,12 @@
       <Filter>Source\Submissions</Filter>
     </ClCompile>
     <ClCompile Include="source\FirefighterTracker.cpp">
+      <Filter>Source\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BurglaryTracker.cpp">
+      <Filter>Source\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\TaxiTracker.cpp">
       <Filter>Source\Submissions</Filter>
     </ClCompile>
   </ItemGroup>
