@@ -78,6 +78,8 @@
     <IntDir>$(ProjectDir)obj\GTA-SA\Release\</IntDir>
     <TargetName>Archipelago.SA</TargetName>
     <TargetExt>.asi</TargetExt>
+    <IncludePath>C:\Users\Owner\Desktop\git\SanAndreasAP\header;$(IncludePath)</IncludePath>
+    <SourcePath>C:\Users\Owner\Desktop\git\SanAndreasAP\source;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GTA-SA|Win32'">
     <LinkIncremental>true</LinkIncremental>
