@@ -345,6 +345,18 @@ bool CheckListener::submissionLevelChecker()
 		}
 	}
 
+	for (auto st : submissionTrackers)
+	{
+		if (st->getSubmissionID() == LOS_SANTOS_GYM_ID && !st->getSubmissionCompleted())
+		{
+			if (static_cast<LosSantosGymTracker*>(st)->pollCompletion())
+			{
+				st->submissionWasCompleted();
+				m_pendingSubmissionIds.push(LOS_SANTOS_GYM_ID);
+			}
+		}
+	}
+
 	return !m_pendingSubmissionIds.empty();
 }
 

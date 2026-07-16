@@ -266,21 +266,33 @@ void Mod::drawOverlay()
 
 void Mod::drawDebugStatsOverlay()
 {
-    // Two separate CFont::PrintString calls in one frame didn't stack as two lines (only the
-    // second call's text showed, at roughly the first call's position) - NotificationOverlay
-    // never needed more than one call per frame, so this is untested territory. Combining into a
-    // single call with GTA's own "~n~" line-break token sidesteps it entirely.
-    // Candidate raw addresses for taxi fares progress, from https://gtamods.com/wiki/Memory_Addresses_(SA)
-    // - unverified, purely to observe live and see what they actually track.
     int32_t taxiStatsValue = *reinterpret_cast<int32_t*>(0xB79078);
     int32_t taxiRewardValue = *reinterpret_cast<int32_t*>(0xA49C30);
+
+    // Live m_nFightingStyle readout for the LS Gym investigation: need to observe whether it
+    // jumps to 5 (STYLE_BOXING) automatically the moment the gym challenge completes, or only
+    // after manually equipping the style. -1 = no player ped.
+    int fightingStyle = -1;
+    CPlayerPed* debugPlayer = FindPlayerPed();
+    if (debugPlayer) fightingStyle = static_cast<int>(debugPlayer->m_nFightingStyle);
+
+    // Active script names, to identify the LS gym's script while standing inside it. m_szName
+    // is char[8] with no guaranteed null terminator, so copy with an explicit length cap.
+    std::string scriptNames;
+    int scriptCount = 0;
+    for (CRunningScript* s = CTheScripts::pActiveScripts; s && scriptCount < 12; s = s->m_pNext, ++scriptCount)
+    {
+        scriptNames += std::string(s->m_szName, strnlen(s->m_szName, 8)) + " ";
+    }
 
     std::string text = "DEBUG LastMission: " + std::string(CStats::LastMissionPassedName) + "~n~"
         + "DEBUG Vigilante=" + std::to_string(static_cast<int>(CStats::GetStatValue(STAT_HIGHEST_VIGILANTE_MISSION_LEVEL)))
         + " Paramedic=" + std::to_string(static_cast<int>(CStats::GetStatValue(STAT_HIGHEST_PARAMEDIC_MISSION_LEVEL)))
         + " Firefighter=" + std::to_string(static_cast<int>(CStats::GetStatValue(STAT_HIGHEST_FIREFIGHTER_MISSION_LEVEL))) + "~n~"
         + "DEBUG TaxiStatsAddr(0xB79078)=" + std::to_string(taxiStatsValue)
-        + " TaxiRewardAddr(0xA49C30)=" + std::to_string(taxiRewardValue);
+        + " TaxiRewardAddr(0xA49C30)=" + std::to_string(taxiRewardValue) + "~n~"
+        + "DEBUG FightStyle=" + std::to_string(fightingStyle) + " (4=standard 5=boxing)" + "~n~"
+        + "DEBUG Scripts: " + scriptNames;
 
     CFont::SetFontStyle(FONT_SUBTITLES);
     CFont::SetScale(0.5f, 1.0f);
