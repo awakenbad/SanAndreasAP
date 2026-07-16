@@ -337,3 +337,18 @@ bool CheckListener::isStoryMission(int missionId)
 	if (missionId == 35) return false;
 	return missionId >= 11 && missionId <= 112;
 }
+
+const std::vector<SubmissionTracker*>& CheckListener::getSubmissionTrackers() const
+{
+	return submissionTrackers;
+}
+
+void CheckListener::resyncBaselines()
+{
+	currentMission = CStats::LastMissionPassedName;
+	lastMission = currentMission;
+
+	m_lastValuePickUpCounter = *m_pickUpCounter;
+
+	m_lastTagCount = static_cast<float>(*reinterpret_cast<int32_t*>(TAGS_SPRAYED_ADDR));
+}

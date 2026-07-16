@@ -13,6 +13,7 @@ public:
 	void removeProgressiveMission();
 	void giveProgressiveMap();
 	int getProgressiveMissionCounter();
+	void setProgressiveMissionCounter(int t_value);
 private:
 	int progressiveMissionCounter = 1;
 };

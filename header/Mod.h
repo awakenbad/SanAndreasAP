@@ -11,6 +11,7 @@
 #include "CTheScripts.h"
 #include "CHud.h"
 #include "DeathLinkHandler.h"
+#include "SaveDataManager.h"
 
 class Mod
 {
@@ -36,6 +37,7 @@ private:
 	std::unordered_map<int, CObject*> m_missionBlockers;
 	bool m_blockersSpawned = false;
 	DeathLinkHandler m_deathLinkHandler;
+	SaveDataManager m_saveDataManager;
 
 	char m_helpMessageBuffer[400] = {};
 
@@ -51,5 +53,6 @@ private:
 	void showReceivedItemMessage(const std::string& effectType, const std::string& value);
 	void showHelpText(const std::string& text);
 	void processPendingDisplayMessages();
+	void persistAndRestoreState();
 };
 

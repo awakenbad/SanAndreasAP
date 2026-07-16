@@ -13,6 +13,7 @@ void Mod::start()
 	{
 		m_apSocket.sendToServer("PLAYER_DIED\n");
 	}
+ 	persistAndRestoreState();
 	receiveCurrentCheckEvent();
     sendChecksToAP();
     processPendingDisplayMessages();
@@ -238,4 +239,31 @@ void Mod::showHelpText(const std::string& text)
 void Mod::receiveCurrentCheckEvent()
 {
 	m_currentEvent = m_checkListener.update();
+}
+
+void Mod::persistAndRestoreState()
+{
+	bool restoreNeeded = m_saveDataManager.poll();
+	if (restoreNeeded)
+	{
+		m_checkListener.resyncBaselines();
+		m_checkGiver.setProgressiveMissionCounter(std::stoi(m_saveDataManager.getValue("progressive_mission", "1")));
+
+		for (SubmissionTracker* tracker : m_checkListener.getSubmissionTrackers())
+		{
+			std::string prefix = "submission_" + std::to_string(tracker->getSubmissionID()) + "_";
+			bool received = m_saveDataManager.getValue(prefix + "received", "0") == "1";
+			bool completed = m_saveDataManager.getValue(prefix + "completed", "0") == "1";
+			tracker->restoreState(received, completed);
+		}
+	}
+
+	m_saveDataManager.setValue("progressive_mission", std::to_string(m_checkGiver.getProgressiveMissionCounter()));
+
+	for (SubmissionTracker* tracker : m_checkListener.getSubmissionTrackers())
+	{
+		std::string prefix = "submission_" + std::to_string(tracker->getSubmissionID()) + "_";
+		m_saveDataManager.setValue(prefix + "received", tracker->getCheckReceived() ? "1" : "0");
+		m_saveDataManager.setValue(prefix + "completed", tracker->getSubmissionCompleted() ? "1" : "0");
+	}
 }

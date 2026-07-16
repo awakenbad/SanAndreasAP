@@ -40,6 +40,10 @@ public:
 
 	int getPendingTagIndex();
 	void confirmTagSent();
+
+	const std::vector<SubmissionTracker*>& getSubmissionTrackers() const;
+
+	void resyncBaselines();
 private:
 	const int PARAMEDIC_ID = 122;
 	const int FIREFIGHTER_ID = 123;

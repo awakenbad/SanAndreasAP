@@ -22,6 +22,7 @@
     <ClInclude Include="header\Mod.h" />
     <ClInclude Include="header\ParamedicTracker.h" />
     <ClInclude Include="header\Position.h" />
+    <ClInclude Include="header\SaveDataManager.h" />
     <ClInclude Include="header\SubmissionTracker.h" />
     <ClInclude Include="header\TagPositions.h" />
     <ClInclude Include="header\TaxiTracker.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="source\Mod.cpp" />
     <ClCompile Include="source\ParamedicTracker.cpp" />
     <ClCompile Include="source\Position.cpp" />
+    <ClCompile Include="source\SaveDataManager.cpp" />
     <ClCompile Include="source\SubmissionTracker.cpp" />
     <ClCompile Include="source\TaxiTracker.cpp" />
     <ClCompile Include="source\VigilanteTracker.cpp" />

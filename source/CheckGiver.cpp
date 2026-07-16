@@ -31,3 +31,8 @@ int CheckGiver::getProgressiveMissionCounter()
 {
 	return progressiveMissionCounter;
 }
+
+void CheckGiver::setProgressiveMissionCounter(int t_value)
+{
+	progressiveMissionCounter = t_value;
+}

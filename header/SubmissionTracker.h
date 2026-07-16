@@ -7,6 +7,10 @@ public:
 	void checkWasReceived();
 	void submissionWasCompleted();
 	int getSubmissionID();
+
+	bool getCheckReceived() const;
+	bool getSubmissionCompleted() const;
+	void restoreState(bool t_checkReceived, bool t_submissionCompleted);
 protected:
 	const int SUBMISSION_ID;
 	bool checkReceived = false;

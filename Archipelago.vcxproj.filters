@@ -42,6 +42,9 @@
     <ClInclude Include="header\Position.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="header\SaveDataManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="header\SubmissionTracker.h">
       <Filter>Header\Submissions</Filter>
     </ClInclude>
@@ -87,6 +90,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="source\Position.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SaveDataManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="source\SubmissionTracker.cpp">
