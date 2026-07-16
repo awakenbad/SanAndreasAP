@@ -1,6 +1,4 @@
 #pragma once
-#include <chrono>
-#include <queue>
 #include <APSocket.h>
 #include "WeaponGiver.h"
 #include "CheckListener.h"
@@ -12,6 +10,7 @@
 #include "CHud.h"
 #include "DeathLinkHandler.h"
 #include "SaveDataManager.h"
+#include "NotificationOverlay.h"
 
 class Mod
 {
@@ -22,6 +21,9 @@ public:
 	/// Starts mod logic
 	/// </summary>
 	void start();
+
+	// Call every frame from Events::drawHudEvent, after the native HUD draw.
+	void drawOverlay();
 
 private:
 	const int BLOCKER_MODEL_ID = 2973;
@@ -38,12 +40,9 @@ private:
 	bool m_blockersSpawned = false;
 	DeathLinkHandler m_deathLinkHandler;
 	SaveDataManager m_saveDataManager;
+	NotificationOverlay m_notificationOverlay;
 
 	char m_helpMessageBuffer[400] = {};
-
-	static constexpr std::chrono::seconds TAG_MESSAGE_DELAY{ 5 };
-	std::chrono::steady_clock::time_point m_lastTagSentTime = std::chrono::steady_clock::now() - std::chrono::hours(24);
-	std::queue<std::pair<std::chrono::steady_clock::time_point, std::string>> m_pendingDisplayMessages;
 
 	void parseIncomingMessages();
 	void receiveCurrentCheckEvent();
@@ -52,7 +51,6 @@ private:
 	void sendChecksToAP();
 	void showReceivedItemMessage(const std::string& effectType, const std::string& value);
 	void showHelpText(const std::string& text);
-	void processPendingDisplayMessages();
 	void persistAndRestoreState();
 };
 

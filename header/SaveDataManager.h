@@ -26,6 +26,8 @@ private:
 	std::string m_lastSeenSaveFileName;
 	std::string m_lastSeenLoadFileName;
 
+	bool m_initialized = false;
+
 	std::string getFilePath() const;
 	void loadFromDisk();
 	void writeToDisk() const;

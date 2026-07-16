@@ -20,6 +20,7 @@
     <ClInclude Include="header\FirefighterTracker.h" />
     <ClInclude Include="header\LosSantosGymTracker.h" />
     <ClInclude Include="header\Mod.h" />
+    <ClInclude Include="header\NotificationOverlay.h" />
     <ClInclude Include="header\ParamedicTracker.h" />
     <ClInclude Include="header\Position.h" />
     <ClInclude Include="header\SaveDataManager.h" />
@@ -39,6 +40,7 @@
     <ClCompile Include="source\LosSantosGymTracker.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Mod.cpp" />
+    <ClCompile Include="source\NotificationOverlay.cpp" />
     <ClCompile Include="source\ParamedicTracker.cpp" />
     <ClCompile Include="source\Position.cpp" />
     <ClCompile Include="source\SaveDataManager.cpp" />

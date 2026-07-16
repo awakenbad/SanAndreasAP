@@ -36,6 +36,9 @@
     <ClInclude Include="header\Mod.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="header\NotificationOverlay.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="header\WeaponGiver.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -81,6 +84,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="source\Mod.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\NotificationOverlay.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="source\DeathLinkHandler.cpp">

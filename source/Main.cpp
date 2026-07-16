@@ -16,6 +16,7 @@ struct Main
     {
         // register event callbacks
         Events::gameProcessEvent += []{ gInstance.OnGameProcess(); };
+        Events::drawHudEvent += []{ gInstance.mod.drawOverlay(); };
     }
 
     void OnGameProcess()

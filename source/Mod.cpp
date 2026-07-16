@@ -16,7 +16,6 @@ void Mod::start()
  	persistAndRestoreState();
 	receiveCurrentCheckEvent();
     sendChecksToAP();
-    processPendingDisplayMessages();
 
     if (m_checkGiver.getProgressiveMissionCounter() == 0 && !m_blockersSpawned)
     {
@@ -92,7 +91,6 @@ void Mod::sendChecksToAP()
     case CheckEvent::Tag:
         if (m_apSocket.sendToServer("CHECK:TAG:" + std::to_string(m_checkListener.getPendingTagIndex()) + "\n"))
         {
-            m_lastTagSentTime = std::chrono::steady_clock::now();
             m_checkListener.confirmTagSent();
         }
         break;
@@ -209,25 +207,22 @@ void Mod::showReceivedItemMessage(const std::string& effectType, const std::stri
         return;
     }
 
-    auto now = std::chrono::steady_clock::now();
-    if (now - m_lastTagSentTime < TAG_MESSAGE_DELAY)
-    {
-        m_pendingDisplayMessages.push({ now + TAG_MESSAGE_DELAY, text });
-    }
-    else
-    {
-        showHelpText(text);
-    }
+    NotificationIcon icon = NotificationIcon::None;
+    if (effectType == "money") icon = NotificationIcon::Money;
+    else if (effectType == "progressive_mission") icon = NotificationIcon::ProgressiveMission;
+    else if (effectType == "health_upgrade") icon = NotificationIcon::HealthUpgrade;
+    else if (effectType == "armor_upgrade") icon = NotificationIcon::ArmorUpgrade;
+    else if (effectType == "taxi_nitro") icon = NotificationIcon::Taxi;
+    else if (effectType == "stamina_upgrade") icon = NotificationIcon::Stamina;
+    else if (effectType == "fire_immunity") icon = NotificationIcon::FireImmunity;
+    else if (effectType == "boxing_style") icon = NotificationIcon::Boxing;
+
+    m_notificationOverlay.show(text, icon);
 }
 
-void Mod::processPendingDisplayMessages()
+void Mod::drawOverlay()
 {
-    auto now = std::chrono::steady_clock::now();
-    while (!m_pendingDisplayMessages.empty() && m_pendingDisplayMessages.front().first <= now)
-    {
-        showHelpText(m_pendingDisplayMessages.front().second);
-        m_pendingDisplayMessages.pop();
-    }
+    m_notificationOverlay.draw();
 }
 
 void Mod::showHelpText(const std::string& text)
