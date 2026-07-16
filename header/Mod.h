@@ -50,6 +50,12 @@ private:
 	bool m_debugDecrementKeyWasPressed = false;
 	bool m_debugIncrementKeyWasPressed = false;
 
+	// Temporary debug readout - remove once the AMBULAN/etc. GXT-key question is settled. Shows
+	// the live CStats::LastMissionPassedName value plus the three HIGHEST_..._MISSION_LEVEL stats
+	// every frame, top-left, so this can be observed passively during normal play instead of
+	// needing a dedicated from-scratch test run.
+	void drawDebugStatsOverlay();
+
 	void parseIncomingMessages();
 	void receiveCurrentCheckEvent();
 	void spawnMissionBlockers();

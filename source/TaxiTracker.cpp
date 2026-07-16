@@ -7,12 +7,6 @@ TaxiTracker::TaxiTracker(int t_submissionID)
 
 void TaxiTracker::enforceSubmissionReward()
 {
-	if (checkReceived && !submissionCompleted)
-	{
-		CCheat::m_aCheatsActive[CHEAT_ALL_TAXIS_NITRO] = true;
-	}
-	if (!checkReceived && submissionCompleted)
-	{
-		CCheat::m_aCheatsActive[CHEAT_ALL_TAXIS_NITRO] = false;
-	}
+	
+	CCheat::m_aCheatsActive[CHEAT_ALL_TAXIS_NITRO] = checkReceived;
 }

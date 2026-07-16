@@ -26,16 +26,24 @@ bool SaveDataManager::poll()
 		return false;
 	}
 
-	if (!loadName.empty() && loadName != m_lastSeenLoadFileName)
+	bool loadChanged = !loadName.empty() && loadName != m_lastSeenLoadFileName;
+	bool saveChanged = !saveName.empty() && saveName != m_lastSeenSaveFileName;
+
+	bool saveMasqueradingAsLoad = loadChanged && saveChanged && loadName == saveName;
+
+	if (loadChanged)
 	{
 		m_lastSeenLoadFileName = loadName;
-		m_currentSaveKey = loadName;
-		m_lastSeenSaveFileName = loadName;
-		loadFromDisk();
-		restoreNeeded = true;
+		if (!saveMasqueradingAsLoad)
+		{
+			m_currentSaveKey = loadName;
+			m_lastSeenSaveFileName = loadName;
+			loadFromDisk();
+			restoreNeeded = true;
+		}
 	}
 
-	if (!saveName.empty() && saveName != m_lastSeenSaveFileName)
+	if (saveChanged)
 	{
 		m_lastSeenSaveFileName = saveName;
 		m_currentSaveKey = saveName;

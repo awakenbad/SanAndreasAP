@@ -20,7 +20,8 @@ enum class CheckEvent
 	None,
 	Mission,
 	PickUp,
-	Tag
+	Tag,
+	Submission
 };
 
 class CheckListener
@@ -44,6 +45,9 @@ public:
 	const std::vector<SubmissionTracker*>& getSubmissionTrackers() const;
 
 	void resyncBaselines();
+
+	int getPendingSubmissionId();
+	void confirmSubmissionSent();
 private:
 	const int PARAMEDIC_ID = 122;
 	const int FIREFIGHTER_ID = 123;
@@ -51,6 +55,9 @@ private:
 	const int BURGLARY_ID = 125;
 	const int TAXI_ID = 121;
 	const int LOS_SANTOS_GYM_ID = 114;
+
+	static constexpr uintptr_t TAXI_FARES_ADDR = 0xA49C30;
+	static constexpr int32_t TAXI_FARES_FOR_COMPLETION = 50;
 
 	int* m_pickUpCounter;
 	int m_lastValuePickUpCounter;
@@ -69,9 +76,12 @@ private:
 	std::queue<int> m_pendingTagIndices;
 	std::array<bool, 100> m_tagClaimed{};
 
+	std::queue<int> m_pendingSubmissionIds;
+
 	bool tagChecker();
 	bool pickUpChecker();
 	bool missionChecker();
+	bool submissionLevelChecker();
 	void initializeMissionList();
 	void enforceSubmissionRewards();
 	void findClosestTag(CPlayerPed* player, int delta);

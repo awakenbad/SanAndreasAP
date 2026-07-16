@@ -304,7 +304,62 @@ CheckEvent CheckListener::update()
 	{
 		event = CheckEvent::Tag;
 	}
+	if (submissionLevelChecker())
+	{
+		event = CheckEvent::Submission;
+	}
 	return event;
+}
+
+bool CheckListener::submissionLevelChecker()
+{
+	const std::vector<std::pair<int, unsigned short>> submissionIdToLevelStat = {
+		{ PARAMEDIC_ID, STAT_HIGHEST_PARAMEDIC_MISSION_LEVEL },
+		{ FIREFIGHTER_ID, STAT_HIGHEST_FIREFIGHTER_MISSION_LEVEL },
+		{ VIGILANTE_ID, STAT_HIGHEST_VIGILANTE_MISSION_LEVEL },
+	};
+
+	for (const auto& [submissionId, stat] : submissionIdToLevelStat)
+	{
+		if (CStats::GetStatValue(stat) < 12.0f) continue;
+
+		for (auto st : submissionTrackers)
+		{
+			if (st->getSubmissionID() == submissionId && !st->getSubmissionCompleted())
+			{
+				st->submissionWasCompleted();
+				m_pendingSubmissionIds.push(submissionId);
+			}
+		}
+	}
+
+	if (*reinterpret_cast<int32_t*>(TAXI_FARES_ADDR) >= TAXI_FARES_FOR_COMPLETION)
+	{
+		for (auto st : submissionTrackers)
+		{
+			if (st->getSubmissionID() == TAXI_ID && !st->getSubmissionCompleted())
+			{
+				st->submissionWasCompleted();
+				m_pendingSubmissionIds.push(TAXI_ID);
+			}
+		}
+	}
+
+	return !m_pendingSubmissionIds.empty();
+}
+
+int CheckListener::getPendingSubmissionId()
+{
+	if (m_pendingSubmissionIds.empty()) return -1;
+	return m_pendingSubmissionIds.front();
+}
+
+void CheckListener::confirmSubmissionSent()
+{
+	if (!m_pendingSubmissionIds.empty())
+	{
+		m_pendingSubmissionIds.pop();
+	}
 }
 
 std::string CheckListener::getMissionID()

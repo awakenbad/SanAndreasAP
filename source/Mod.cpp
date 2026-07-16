@@ -125,6 +125,12 @@ void Mod::sendChecksToAP()
             m_checkListener.confirmTagSent();
         }
         break;
+    case CheckEvent::Submission:
+        if (m_apSocket.sendToServer("CHECK:MISSION:" + std::to_string(m_checkListener.getPendingSubmissionId()) + "\n"))
+        {
+            m_checkListener.confirmSubmissionSent();
+        }
+        break;
     case CheckEvent::None:
         break;
     }
@@ -255,6 +261,37 @@ void Mod::showReceivedItemMessage(const std::string& effectType, const std::stri
 void Mod::drawOverlay()
 {
     m_notificationOverlay.draw();
+    drawDebugStatsOverlay();
+}
+
+void Mod::drawDebugStatsOverlay()
+{
+    // Two separate CFont::PrintString calls in one frame didn't stack as two lines (only the
+    // second call's text showed, at roughly the first call's position) - NotificationOverlay
+    // never needed more than one call per frame, so this is untested territory. Combining into a
+    // single call with GTA's own "~n~" line-break token sidesteps it entirely.
+    // Candidate raw addresses for taxi fares progress, from https://gtamods.com/wiki/Memory_Addresses_(SA)
+    // - unverified, purely to observe live and see what they actually track.
+    int32_t taxiStatsValue = *reinterpret_cast<int32_t*>(0xB79078);
+    int32_t taxiRewardValue = *reinterpret_cast<int32_t*>(0xA49C30);
+
+    std::string text = "DEBUG LastMission: " + std::string(CStats::LastMissionPassedName) + "~n~"
+        + "DEBUG Vigilante=" + std::to_string(static_cast<int>(CStats::GetStatValue(STAT_HIGHEST_VIGILANTE_MISSION_LEVEL)))
+        + " Paramedic=" + std::to_string(static_cast<int>(CStats::GetStatValue(STAT_HIGHEST_PARAMEDIC_MISSION_LEVEL)))
+        + " Firefighter=" + std::to_string(static_cast<int>(CStats::GetStatValue(STAT_HIGHEST_FIREFIGHTER_MISSION_LEVEL))) + "~n~"
+        + "DEBUG TaxiStatsAddr(0xB79078)=" + std::to_string(taxiStatsValue)
+        + " TaxiRewardAddr(0xA49C30)=" + std::to_string(taxiRewardValue);
+
+    CFont::SetFontStyle(FONT_SUBTITLES);
+    CFont::SetScale(0.5f, 1.0f);
+    CFont::SetColor(CRGBA(255, 255, 0, 255));
+    CFont::SetProportional(true);
+    CFont::SetOrientation(ALIGN_LEFT);
+    CFont::SetDropShadowPosition(1);
+    CFont::SetBackground(false, false);
+    CFont::SetWrapx(700.0f);
+
+    CFont::PrintString(20.0f, 20.0f, text.c_str());
 }
 
 void Mod::showHelpText(const std::string& text)
