@@ -48,6 +48,9 @@
     <ClInclude Include="header\SaveDataManager.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="header\WeaponData.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="header\SubmissionTracker.h">
       <Filter>Header\Submissions</Filter>
     </ClInclude>

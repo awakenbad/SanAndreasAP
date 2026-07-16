@@ -28,6 +28,7 @@
     <ClInclude Include="header\TagPositions.h" />
     <ClInclude Include="header\TaxiTracker.h" />
     <ClInclude Include="header\VigilanteTracker.h" />
+    <ClInclude Include="header\WeaponData.h" />
     <ClInclude Include="header\WeaponGiver.h" />
   </ItemGroup>
   <ItemGroup>

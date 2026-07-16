@@ -1,4 +1,7 @@
 #include "CheckGiver.h"
+#include "common.h"
+#include "CStreaming.h"
+#include "WeaponData.h"
 
 void CheckGiver::giveMoney(int t_amount)
 {
@@ -7,6 +10,17 @@ void CheckGiver::giveMoney(int t_amount)
 
 void CheckGiver::giveWeapon(std::string t_weaponType)
 {
+	auto it = weaponDataByName.find(t_weaponType);
+	if (it == weaponDataByName.end()) return;
+
+	CPlayerPed* player = FindPlayerPed();
+	if (!player) return;
+
+	const WeaponInfo& info = it->second;
+	CStreaming::RequestModel(info.model, 2);
+	CStreaming::LoadAllRequestedModels(false);
+	player->GiveWeapon(info.type, info.ammo, true);
+	CStreaming::SetModelIsDeletable(info.model);
 }
 
 void CheckGiver::giveProgressiveMission()
