@@ -19,6 +19,7 @@ enum class NotificationIcon
 	Stamina,
 	FireImmunity,
 	Boxing,
+	Weapon,
 };
 
 class NotificationOverlay

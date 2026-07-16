@@ -48,7 +48,6 @@ void Mod::spawnMissionBlockers()
             blocker->m_nObjectType = OBJECT_MISSION;
             CWorld::Add(blocker);
             m_missionBlockers[missionId] = blocker;
-            m_checkGiver.giveMoney(1000);
         }
     }
     m_blockersSpawned = true;
@@ -216,6 +215,7 @@ void Mod::showReceivedItemMessage(const std::string& effectType, const std::stri
     else if (effectType == "stamina_upgrade") icon = NotificationIcon::Stamina;
     else if (effectType == "fire_immunity") icon = NotificationIcon::FireImmunity;
     else if (effectType == "boxing_style") icon = NotificationIcon::Boxing;
+    else if (effectType == "weapon") icon = NotificationIcon::Weapon;
 
     m_notificationOverlay.show(text, icon);
 }
