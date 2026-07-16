@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <APSocket.h>
 #include "WeaponGiver.h"
 #include "CheckListener.h"
@@ -27,6 +28,8 @@ public:
 
 private:
 	const int BLOCKER_MODEL_ID = 2973;
+	const int BARRICADE_MODEL_ID = MODEL_CJ_ROADBARRIER;
+	const float BARRICADE_Z_OFFSET = 0.6f;
 	const float DISTANCE_TO_PLAYER = 60.0f;
 	int lastValue = 0;
 	bool initialized = false;
@@ -36,13 +39,16 @@ private:
 	CheckGiver m_checkGiver;
 	APSocket m_apSocket;
 	CheckEvent m_currentEvent;
-	std::unordered_map<int, CObject*> m_missionBlockers;
+	std::vector<CObject*> m_missionBlockers;
 	bool m_blockersSpawned = false;
 	DeathLinkHandler m_deathLinkHandler;
 	SaveDataManager m_saveDataManager;
 	NotificationOverlay m_notificationOverlay;
 
 	char m_helpMessageBuffer[400] = {};
+
+	bool m_debugDecrementKeyWasPressed = false;
+	bool m_debugIncrementKeyWasPressed = false;
 
 	void parseIncomingMessages();
 	void receiveCurrentCheckEvent();

@@ -20,6 +20,7 @@ void Mod::start()
     if (m_checkGiver.getProgressiveMissionCounter() == 0 && !m_blockersSpawned)
     {
         spawnMissionBlockers();
+        m_notificationOverlay.show("Note: You are out of Progressive Missions. Missions will be blocked until you unlock more.");
     }
     else if (m_checkGiver.getProgressiveMissionCounter() > 0 && m_blockersSpawned)
     {
@@ -29,15 +30,33 @@ void Mod::start()
 	{
         m_weaponGiver.giveSprayCan();
 	}
+
+    bool debugDecrementKeyPressed = plugin::KeyPressed(VK_F9);
+    if (debugDecrementKeyPressed && !m_debugDecrementKeyWasPressed)
+    {
+        m_checkGiver.removeProgressiveMission();
+        m_notificationOverlay.show("DEBUG: Progressive Mission -> " + std::to_string(m_checkGiver.getProgressiveMissionCounter()));
+    }
+    m_debugDecrementKeyWasPressed = debugDecrementKeyPressed;
+
+    bool debugIncrementKeyPressed = plugin::KeyPressed(VK_F10);
+    if (debugIncrementKeyPressed && !m_debugIncrementKeyWasPressed)
+    {
+        m_checkGiver.giveProgressiveMission();
+        m_notificationOverlay.show("DEBUG: Progressive Mission -> " + std::to_string(m_checkGiver.getProgressiveMissionCounter()));
+    }
+    m_debugIncrementKeyWasPressed = debugIncrementKeyPressed;
+
 	parseIncomingMessages();
 }
 
 void Mod::spawnMissionBlockers()
 {
     CStreaming::RequestModel(BLOCKER_MODEL_ID, 0);
+    CStreaming::RequestModel(BARRICADE_MODEL_ID, 0);
     CStreaming::LoadAllRequestedModels(false);
 
-    for (const auto& [missionId, pos] : missionStartPos) {
+    for (const Position& pos : missionStartPos) {
         CObject* blocker = CObject::Create(BLOCKER_MODEL_ID);
 
         if (blocker) {
@@ -45,9 +64,22 @@ void Mod::spawnMissionBlockers()
             blocker->SetIsStatic(true);
             blocker->bStreamingDontDelete = true;
             blocker->bDistanceFade = true;
+            blocker->bIsVisible = false;
             blocker->m_nObjectType = OBJECT_MISSION;
             CWorld::Add(blocker);
-            m_missionBlockers[missionId] = blocker;
+            m_missionBlockers.push_back(blocker);
+        }
+
+        CObject* barricade = CObject::Create(BARRICADE_MODEL_ID);
+
+        if (barricade) {
+            barricade->SetPosition(CVector(pos.x, pos.y, pos.z + BARRICADE_Z_OFFSET));
+            barricade->SetIsStatic(true);
+            barricade->bStreamingDontDelete = true;
+            barricade->bDistanceFade = true;
+            barricade->m_nObjectType = OBJECT_MISSION;
+            CWorld::Add(barricade);
+            m_missionBlockers.push_back(barricade);
         }
     }
     m_blockersSpawned = true;
@@ -55,7 +87,7 @@ void Mod::spawnMissionBlockers()
 
 void Mod::removeMissionBlockers()
 {
-    for (auto& [missionId, blocker] : m_missionBlockers) {
+    for (CObject* blocker : m_missionBlockers) {
         CWorld::Remove(blocker);
         delete blocker;
     }
