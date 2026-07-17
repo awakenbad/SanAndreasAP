@@ -2,6 +2,16 @@
 #include <vector>
 #include "Position.h"
 
+// AP mission/location IDs of the six side-activity submissions (indices into CheckListener's
+// missions table). Shared between check detection (CheckListener) and item receipt (Mod), which
+// must always agree on them.
+inline constexpr int LOS_SANTOS_GYM_ID = 114;
+inline constexpr int TAXI_ID = 121;
+inline constexpr int PARAMEDIC_ID = 122;
+inline constexpr int FIREFIGHTER_ID = 123;
+inline constexpr int VIGILANTE_ID = 124;
+inline constexpr int BURGLARY_ID = 125;
+
 inline std::vector<Position> missionStartPos = {
     { 700, -3328, 20, 180 },
     { 2495.214, -1687.03, 12.5144, 0 },

@@ -22,6 +22,7 @@
     <ClInclude Include="header\Mod.h" />
     <ClInclude Include="header\NotificationOverlay.h" />
     <ClInclude Include="header\ParamedicTracker.h" />
+    <ClInclude Include="header\PendingChecks.h" />
     <ClInclude Include="header\Position.h" />
     <ClInclude Include="header\SaveDataManager.h" />
     <ClInclude Include="header\SubmissionTracker.h" />
@@ -29,7 +30,7 @@
     <ClInclude Include="header\TaxiTracker.h" />
     <ClInclude Include="header\VigilanteTracker.h" />
     <ClInclude Include="header\WeaponData.h" />
-    <ClInclude Include="header\WeaponGiver.h" />
+    <ClInclude Include="header\EdgeTriggeredKey.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\APSocket.cpp" />
@@ -48,7 +49,6 @@
     <ClCompile Include="source\SubmissionTracker.cpp" />
     <ClCompile Include="source\TaxiTracker.cpp" />
     <ClCompile Include="source\VigilanteTracker.cpp" />
-    <ClCompile Include="source\WeaponGiver.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A4DCCB3A-1092-4430-9986-3E07053B3B34}</ProjectGuid>

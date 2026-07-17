@@ -8,7 +8,7 @@ public:
 	CheckGiver() = default;
 	
 	void giveMoney(int t_amount);
-	void giveWeapon(std::string t_weaponType);
+	void giveWeapon(const std::string& t_weaponType, bool t_equip = false);
 	void giveProgressiveMission();
 	void removeProgressiveMission();
 	void giveProgressiveMap();

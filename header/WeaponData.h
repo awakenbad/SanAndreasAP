@@ -31,4 +31,8 @@ inline const std::unordered_map<std::string, WeaponInfo> weaponDataByName = {
 	{ "Molotov Cocktail",   { WEAPONTYPE_MOLOTOV,         MODEL_MOLOTOV,        5 } },
 	{ "Tear Gas",           { WEAPONTYPE_TEARGAS,         MODEL_TEARGAS,        5 } },
 	{ "Satchel Charge",     { WEAPONTYPE_SATCHEL_CHARGE,  MODEL_SATCHEL,        5 } },
+
+	// Not an AP filler item (absent from the Python side's WEAPON_FILLER_ITEMS) - only used by
+	// the TAB dev hotkey in Mod::start().
+	{ "Spray Can",          { WEAPONTYPE_SPRAYCAN,        MODEL_SPRAYCAN,     100 } },
 };

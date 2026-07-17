@@ -1,7 +1,8 @@
 #pragma once
 #include <array>
-#include <queue>
+#include <memory>
 #include "plugin.h"
+#include "PendingChecks.h"
 #include "CPickups.h"
 #include "CMessages.h"
 #include <CStats.h>
@@ -42,42 +43,35 @@ public:
 	int getPendingTagIndex();
 	void confirmTagSent();
 
-	const std::vector<SubmissionTracker*>& getSubmissionTrackers() const;
+	const std::vector<std::unique_ptr<SubmissionTracker>>& getSubmissionTrackers() const;
 
 	void resyncBaselines();
 
 	int getPendingSubmissionId();
 	void confirmSubmissionSent();
 private:
-	const int PARAMEDIC_ID = 122;
-	const int FIREFIGHTER_ID = 123;
-	const int VIGILANTE_ID = 124;
-	const int BURGLARY_ID = 125;
-	const int TAXI_ID = 121;
-	const int LOS_SANTOS_GYM_ID = 114;
-
 	static constexpr uintptr_t TAXI_FARES_ADDR = 0xA49C30;
 	static constexpr int32_t TAXI_FARES_FOR_COMPLETION = 50;
 
 	int* m_pickUpCounter;
 	int m_lastValuePickUpCounter;
-	bool m_pickUpEventPending = false;
 
 	std::vector<std::string> missions;
 	std::string currentMission;
 	std::string lastMission;
-	std::string m_pendingMissionName;
-	bool m_missionEventPending = false;
 	int const NO_MISSION = -1;
-	std::vector<SubmissionTracker*> submissionTrackers;
+	std::vector<std::unique_ptr<SubmissionTracker>> submissionTrackers;
 
 	float m_lastTagCount = 0.0f;
 	bool m_tagCountInitialized = false;
-	std::queue<int> m_pendingTagIndices;
 	std::array<bool, 100> m_tagClaimed{};
 
-	std::queue<int> m_pendingSubmissionIds;
+	PendingChecks<int> m_pendingPickUps;
+	PendingChecks<std::string> m_pendingMissions;
+	PendingChecks<int> m_pendingTags;
+	PendingChecks<int> m_pendingSubmissions;
 
+	SubmissionTracker* findTracker(int t_submissionID);
 	bool tagChecker();
 	bool pickUpChecker();
 	bool missionChecker();

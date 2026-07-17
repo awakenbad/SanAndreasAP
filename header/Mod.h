@@ -1,14 +1,13 @@
 #pragma once
 #include <vector>
 #include <APSocket.h>
-#include "WeaponGiver.h"
+#include "EdgeTriggeredKey.h"
 #include "CheckListener.h"
 #include "CheckGiver.h"
 #include "CStats.h"
 #include "EntityIDs.h"
 #include "CRunningScript.h"
 #include "CTheScripts.h"
-#include "CHud.h"
 #include "DeathLinkHandler.h"
 #include "SaveDataManager.h"
 #include "NotificationOverlay.h"
@@ -30,11 +29,7 @@ private:
 	const int BLOCKER_MODEL_ID = 2973;
 	const int BARRICADE_MODEL_ID = MODEL_CJ_ROADBARRIER;
 	const float BARRICADE_Z_OFFSET = 0.6f;
-	const float DISTANCE_TO_PLAYER = 60.0f;
-	int lastValue = 0;
-	bool initialized = false;
 
-	WeaponGiver m_weaponGiver;
 	CheckListener m_checkListener;
 	CheckGiver m_checkGiver;
 	APSocket m_apSocket;
@@ -45,10 +40,9 @@ private:
 	SaveDataManager m_saveDataManager;
 	NotificationOverlay m_notificationOverlay;
 
-	char m_helpMessageBuffer[400] = {};
-
-	bool m_debugDecrementKeyWasPressed = false;
-	bool m_debugIncrementKeyWasPressed = false;
+	EdgeTriggeredKey m_sprayCanKey{ VK_TAB };
+	EdgeTriggeredKey m_debugDecrementKey{ VK_F9 };
+	EdgeTriggeredKey m_debugIncrementKey{ VK_F10 };
 
 	void drawDebugStatsOverlay();
 
@@ -58,7 +52,6 @@ private:
 	void removeMissionBlockers();
 	void sendChecksToAP();
 	void showReceivedItemMessage(const std::string& effectType, const std::string& value);
-	void showHelpText(const std::string& text);
 	void persistAndRestoreState();
 };
 

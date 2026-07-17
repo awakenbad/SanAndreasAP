@@ -15,8 +15,8 @@ bool SaveDataManager::poll()
 {
 	bool restoreNeeded = false;
 
-	std::string loadName = extractFileName(CGenericGameStorage::ms_LoadFileName ? CGenericGameStorage::ms_LoadFileName : "");
-	std::string saveName = extractFileName(CGenericGameStorage::ms_SaveFileNameJustSaved ? CGenericGameStorage::ms_SaveFileNameJustSaved : "");
+	std::string loadName = extractFileName(CGenericGameStorage::ms_LoadFileName);
+	std::string saveName = extractFileName(CGenericGameStorage::ms_SaveFileNameJustSaved);
 
 	if (!m_initialized)
 	{

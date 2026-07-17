@@ -8,7 +8,7 @@ void CheckGiver::giveMoney(int t_amount)
 	CWorld::Players[0].m_nMoney += t_amount;
 }
 
-void CheckGiver::giveWeapon(std::string t_weaponType)
+void CheckGiver::giveWeapon(const std::string& t_weaponType, bool t_equip)
 {
 	auto it = weaponDataByName.find(t_weaponType);
 	if (it == weaponDataByName.end()) return;
@@ -20,6 +20,10 @@ void CheckGiver::giveWeapon(std::string t_weaponType)
 	CStreaming::RequestModel(info.model, 2);
 	CStreaming::LoadAllRequestedModels(false);
 	player->GiveWeapon(info.type, info.ammo, true);
+	if (t_equip)
+	{
+		player->SetCurrentWeapon(info.type);
+	}
 	CStreaming::SetModelIsDeletable(info.model);
 }
 

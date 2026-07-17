@@ -1,5 +1,6 @@
 #include "CheckListener.h"
 #include "TagPositions.h"
+#include "EntityIDs.h"
 #include "common.h"
 #include <algorithm>
 
@@ -10,12 +11,12 @@ CheckListener::CheckListener() : m_pickUpCounter(CPickups::aPickUpsCollected)
 	m_lastValuePickUpCounter = *m_pickUpCounter;
 	initializeMissionList();
 
-	submissionTrackers.push_back(new ParamedicTracker(PARAMEDIC_ID));
-	submissionTrackers.push_back(new VigilanteTracker(VIGILANTE_ID));
-	submissionTrackers.push_back(new FirefighterTracker(FIREFIGHTER_ID));
-	submissionTrackers.push_back(new BurglaryTracker(BURGLARY_ID));
-	submissionTrackers.push_back(new TaxiTracker(TAXI_ID));
-	submissionTrackers.push_back(new LosSantosGymTracker(LOS_SANTOS_GYM_ID));
+	submissionTrackers.push_back(std::make_unique<ParamedicTracker>(PARAMEDIC_ID));
+	submissionTrackers.push_back(std::make_unique<VigilanteTracker>(VIGILANTE_ID));
+	submissionTrackers.push_back(std::make_unique<FirefighterTracker>(FIREFIGHTER_ID));
+	submissionTrackers.push_back(std::make_unique<BurglaryTracker>(BURGLARY_ID));
+	submissionTrackers.push_back(std::make_unique<TaxiTracker>(TAXI_ID));
+	submissionTrackers.push_back(std::make_unique<LosSantosGymTracker>(LOS_SANTOS_GYM_ID));
 }
 
 
@@ -27,7 +28,7 @@ bool CheckListener::tagChecker()
 	{
 		m_lastTagCount = currentTagCount;
 		m_tagCountInitialized = true;
-		return !m_pendingTagIndices.empty();
+		return m_pendingTags.hasPending();
 	}
 
 	int delta = static_cast<int>(currentTagCount) - static_cast<int>(m_lastTagCount);
@@ -42,48 +43,45 @@ bool CheckListener::tagChecker()
 		}
 	}
 
-	return !m_pendingTagIndices.empty();
+	return m_pendingTags.hasPending();
 }
 
 int CheckListener::getPendingTagIndex()
 {
-	if (m_pendingTagIndices.empty()) return -1;
-	return m_pendingTagIndices.front();
+	if (!m_pendingTags.hasPending()) return -1;
+	return m_pendingTags.front();
 }
 
 void CheckListener::confirmTagSent()
 {
-	if (!m_pendingTagIndices.empty())
-	{
-		m_pendingTagIndices.pop();
-	}
+	m_pendingTags.confirm();
 }
 
 bool CheckListener::pickUpChecker()
 {
-	if (!m_pickUpEventPending && m_lastValuePickUpCounter < *m_pickUpCounter)
+	if (m_lastValuePickUpCounter < *m_pickUpCounter)
 	{
-		CMessages::AddMessageJumpQ("Picked up an item", 100, 0);
-		m_pickUpEventPending = true;
+		m_lastValuePickUpCounter = *m_pickUpCounter;
+		m_pendingPickUps.push(0);
 	}
-	return m_pickUpEventPending;
+	return m_pendingPickUps.hasPending();
 }
 
 void CheckListener::confirmPickUpSent()
 {
-	m_lastValuePickUpCounter = *m_pickUpCounter;
-	m_pickUpEventPending = false;
+	m_pendingPickUps.confirm();
 }
 
 bool CheckListener::missionChecker()
 {
 	currentMission = CStats::LastMissionPassedName;
-	enforceSubmissionRewards();
 
-	if (!m_missionEventPending && lastMission != currentMission)
+	if (lastMission != currentMission)
 	{
+		lastMission = currentMission;
+
 		int missionIDcounter = 0;
-		for (auto mission : missions)
+		for (const auto& mission : missions)
 		{
 			if (mission == currentMission)
 			{
@@ -92,24 +90,23 @@ bool CheckListener::missionChecker()
 			missionIDcounter++;
 		}
 
-		for (auto st : submissionTrackers)
+		if (missionIDcounter < static_cast<int>(missions.size()))
 		{
-			if (st->getSubmissionID() == missionIDcounter)
+			if (SubmissionTracker* st = findTracker(missionIDcounter))
 			{
 				st->submissionWasCompleted();
 			}
-		}
 
-		m_pendingMissionName = currentMission;
-		m_missionEventPending = true;
+			m_pendingMissions.push(currentMission);
+		}
+		// Unknown GXT keys fall through unqueued instead of sending CHECK:MISSION:-1.
 	}
-	return m_missionEventPending;
+	return m_pendingMissions.hasPending();
 }
 
 void CheckListener::confirmMissionSent()
 {
-	lastMission = m_pendingMissionName;
-	m_missionEventPending = false;
+	m_pendingMissions.confirm();
 }
 
 void CheckListener::initializeMissionList()
@@ -256,7 +253,7 @@ void CheckListener::initializeMissionList()
 
 void CheckListener::enforceSubmissionRewards()
 {
-	for (auto st : submissionTrackers)
+	for (const auto& st : submissionTrackers)
 	{
 		st->enforceSubmissionReward();
 	}
@@ -279,7 +276,7 @@ void CheckListener::findClosestTag(CPlayerPed* player, int delta)
 	{
 		int tagIndex = distances[i].second;
 		m_tagClaimed[tagIndex] = true;
-		m_pendingTagIndices.push(tagIndex);
+		m_pendingTags.push(tagIndex);
 	}
 }
 
@@ -323,63 +320,55 @@ bool CheckListener::submissionLevelChecker()
 	{
 		if (CStats::GetStatValue(stat) < 12.0f) continue;
 
-		for (auto st : submissionTrackers)
+		SubmissionTracker* st = findTracker(submissionId);
+		if (st && !st->getSubmissionCompleted())
 		{
-			if (st->getSubmissionID() == submissionId && !st->getSubmissionCompleted())
-			{
-				st->submissionWasCompleted();
-				m_pendingSubmissionIds.push(submissionId);
-			}
+			st->submissionWasCompleted();
+			m_pendingSubmissions.push(submissionId);
 		}
 	}
 
 	if (*reinterpret_cast<int32_t*>(TAXI_FARES_ADDR) >= TAXI_FARES_FOR_COMPLETION)
 	{
-		for (auto st : submissionTrackers)
+		SubmissionTracker* st = findTracker(TAXI_ID);
+		if (st && !st->getSubmissionCompleted())
 		{
-			if (st->getSubmissionID() == TAXI_ID && !st->getSubmissionCompleted())
-			{
-				st->submissionWasCompleted();
-				m_pendingSubmissionIds.push(TAXI_ID);
-			}
+			st->submissionWasCompleted();
+			m_pendingSubmissions.push(TAXI_ID);
 		}
 	}
 
-	for (auto st : submissionTrackers)
+	if (SubmissionTracker* st = findTracker(LOS_SANTOS_GYM_ID))
 	{
-		if (st->getSubmissionID() == LOS_SANTOS_GYM_ID && !st->getSubmissionCompleted())
+		if (!st->getSubmissionCompleted() && static_cast<LosSantosGymTracker*>(st)->pollCompletion())
 		{
-			if (static_cast<LosSantosGymTracker*>(st)->pollCompletion())
-			{
-				st->submissionWasCompleted();
-				m_pendingSubmissionIds.push(LOS_SANTOS_GYM_ID);
-			}
+			st->submissionWasCompleted();
+			m_pendingSubmissions.push(LOS_SANTOS_GYM_ID);
 		}
 	}
 
-	return !m_pendingSubmissionIds.empty();
+	return m_pendingSubmissions.hasPending();
 }
 
 int CheckListener::getPendingSubmissionId()
 {
-	if (m_pendingSubmissionIds.empty()) return -1;
-	return m_pendingSubmissionIds.front();
+	if (!m_pendingSubmissions.hasPending()) return -1;
+	return m_pendingSubmissions.front();
 }
 
 void CheckListener::confirmSubmissionSent()
 {
-	if (!m_pendingSubmissionIds.empty())
-	{
-		m_pendingSubmissionIds.pop();
-	}
+	m_pendingSubmissions.confirm();
 }
 
 std::string CheckListener::getMissionID()
 {
+	if (!m_pendingMissions.hasPending()) return std::to_string(NO_MISSION);
+
 	int counter = 0;
-	for (std::string missionName : missions)
+	for (const std::string& missionName : missions)
 	{
-		if (m_pendingMissionName == missionName)
+		if (m_pendingMissions.front() == missionName)
 		{
 			return std::to_string(counter);
 		}
@@ -390,13 +379,19 @@ std::string CheckListener::getMissionID()
 
 void CheckListener::submissionCheckWasReceived(int t_submissionID)
 {
-	for (auto st : submissionTrackers)
+	if (SubmissionTracker* st = findTracker(t_submissionID))
 	{
-		if (st->getSubmissionID() == t_submissionID)
-		{
-			st->checkWasReceived();
-		}
+		st->checkWasReceived();
 	}
+}
+
+SubmissionTracker* CheckListener::findTracker(int t_submissionID)
+{
+	for (const auto& st : submissionTrackers)
+	{
+		if (st->getSubmissionID() == t_submissionID) return st.get();
+	}
+	return nullptr;
 }
 
 bool CheckListener::isStoryMission(int missionId)
@@ -405,7 +400,7 @@ bool CheckListener::isStoryMission(int missionId)
 	return missionId >= 11 && missionId <= 112;
 }
 
-const std::vector<SubmissionTracker*>& CheckListener::getSubmissionTrackers() const
+const std::vector<std::unique_ptr<SubmissionTracker>>& CheckListener::getSubmissionTrackers() const
 {
 	return submissionTrackers;
 }

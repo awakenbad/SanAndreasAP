@@ -4,6 +4,7 @@
 #include <mutex>
 #include <queue>
 #include <string>
+#include <thread>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
@@ -23,9 +24,10 @@ private:
     void recvLoop();
     void connectAttemptThreadFunc(std::string ip, int port);
 
-    SOCKET sock = INVALID_SOCKET;
-    bool connected = false;
-    bool connecting = false;
+    // Written by the connect/recv threads, read by the game thread every tick.
+    std::atomic<SOCKET> sock{ INVALID_SOCKET };
+    std::atomic<bool> connected{ false };
+    std::atomic<bool> connecting{ false };
 
     std::string m_ip;
     int m_port = 0;
