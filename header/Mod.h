@@ -44,8 +44,6 @@ private:
 	EdgeTriggeredKey m_debugDecrementKey{ VK_F9 };
 	EdgeTriggeredKey m_debugIncrementKey{ VK_F10 };
 
-	void drawDebugStatsOverlay();
-
 	void parseIncomingMessages();
 	void receiveCurrentCheckEvent();
 	void spawnMissionBlockers();

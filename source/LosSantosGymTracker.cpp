@@ -38,7 +38,13 @@ void LosSantosGymTracker::enforceSubmissionReward()
 	// m_nFightingStyle also holds weapon-melee styles while certain weapons are equipped
 	// (observed live as 15 in the gym), so only ever swap between STANDARD and BOXING and
 	// leave every other value alone.
-	if (checkReceived && player->m_nFightingStyle == STYLE_STANDARD)
+	// The unarmed baseline isn't reliably STYLE_STANDARD (a real save was observed holding 15
+	// here), so the grant overwrites anything except the other gyms' earned styles - stomping
+	// those every tick would make kung fu / the LV gym style permanently unlearnable.
+	if (checkReceived
+		&& player->m_nFightingStyle != STYLE_BOXING
+		&& player->m_nFightingStyle != STYLE_KUNG_FU
+		&& player->m_nFightingStyle != STYLE_KNEE_HEAD)
 	{
 		player->m_nFightingStyle = STYLE_BOXING;
 	}

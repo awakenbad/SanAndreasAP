@@ -53,6 +53,10 @@ private:
 	static constexpr uintptr_t TAXI_FARES_ADDR = 0xA49C30;
 	static constexpr int32_t TAXI_FARES_FOR_COMPLETION = 50;
 
+	// Vanilla grants the infinite sprint reward once $10000 worth of goods has been stolen
+	// across burglary runs (STAT_MONEY_MADE_FROM_BURGLARY tracks it).
+	static constexpr float BURGLARY_LOOT_FOR_COMPLETION = 10000.0f;
+
 	int* m_pickUpCounter;
 	int m_lastValuePickUpCounter;
 

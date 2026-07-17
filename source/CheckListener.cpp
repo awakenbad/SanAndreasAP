@@ -338,6 +338,16 @@ bool CheckListener::submissionLevelChecker()
 		}
 	}
 
+	if (CStats::GetStatValue(STAT_MONEY_MADE_FROM_BURGLARY) >= BURGLARY_LOOT_FOR_COMPLETION)
+	{
+		SubmissionTracker* st = findTracker(BURGLARY_ID);
+		if (st && !st->getSubmissionCompleted())
+		{
+			st->submissionWasCompleted();
+			m_pendingSubmissions.push(BURGLARY_ID);
+		}
+	}
+
 	if (SubmissionTracker* st = findTracker(LOS_SANTOS_GYM_ID))
 	{
 		if (!st->getSubmissionCompleted() && static_cast<LosSantosGymTracker*>(st)->pollCompletion())
