@@ -267,6 +267,23 @@ void Mod::drawOverlay()
     m_tagBlipManager.drawTagNumbers(m_checkListener.getClaimedTags());
 }
 
+void Mod::drawMenuOverlay()
+{
+    bool connected = m_apSocket.isConnected();
+
+    CFont::SetFontStyle(FONT_SUBTITLES);
+    CFont::SetScale(0.7f, 1.4f);
+    CFont::SetColor(connected ? CRGBA(80, 220, 80, 255) : CRGBA(220, 80, 80, 255));
+    CFont::SetProportional(true);
+    CFont::SetOrientation(ALIGN_LEFT);
+    CFont::SetDropShadowPosition(1);
+    CFont::SetBackground(false, false);
+    CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
+
+    CFont::PrintString(20.0f, static_cast<float>(RsGlobal.maximumHeight) - 55.0f,
+        connected ? "Archipelago: Connected" : "Archipelago: Disconnected");
+}
+
 void Mod::receiveCurrentCheckEvent()
 {
 	m_currentEvent = m_checkListener.update();

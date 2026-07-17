@@ -20,6 +20,8 @@ public:
 
     bool tryGetMessage(std::string& outMsg);
 
+    bool isConnected() const { return connected; }
+
 private:
     void recvLoop();
     void connectAttemptThreadFunc(std::string ip, int port);

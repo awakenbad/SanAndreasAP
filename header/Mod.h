@@ -26,6 +26,10 @@ public:
 	// Call every frame from Events::drawHudEvent, after the native HUD draw.
 	void drawOverlay();
 
+	// Call every frame from Events::drawMenuBackgroundEvent - shows the AP client connection
+	// status in the menu corner so players see at a glance that everything works.
+	void drawMenuOverlay();
+
 private:
 	const int BLOCKER_MODEL_ID = 2973;
 	const int BARRICADE_MODEL_ID = MODEL_CJ_ROADBARRIER;
