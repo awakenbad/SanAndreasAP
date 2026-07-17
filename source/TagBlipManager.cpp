@@ -27,6 +27,19 @@ bool TagBlipManager::update(const std::array<bool, 100>& t_claimed)
 		m_locatedTagIndex = -1;
 	}
 
+	if (!m_blipsEnabled)
+	{
+		for (int& handle : m_blipHandles)
+		{
+			if (handle != -1 && CRadar::GetActualBlipArrayIndex(handle) >= 0)
+			{
+				CRadar::ClearBlip(handle);
+			}
+			handle = -1;
+		}
+		return worldWiped;
+	}
+
 	for (int i = 0; i < static_cast<int>(tagPositions.size()); ++i)
 	{
 		int& handle = m_blipHandles[i];
@@ -79,8 +92,15 @@ void TagBlipManager::setLocatedTag(int t_tagIndex)
 	m_locatedTagIndex = (t_tagIndex >= 0 && t_tagIndex < static_cast<int>(tagPositions.size())) ? t_tagIndex : -1;
 }
 
+void TagBlipManager::setBlipsEnabled(bool t_enabled)
+{
+	m_blipsEnabled = t_enabled;
+}
+
 void TagBlipManager::drawTagNumbers(const std::array<bool, 100>& t_claimed)
 {
+	if (!m_blipsEnabled) return;
+
 	CFont::SetFontStyle(FONT_SUBTITLES);
 	CFont::SetScale(0.3f, 0.6f);
 	CFont::SetColor(CRGBA(255, 255, 255, 255));

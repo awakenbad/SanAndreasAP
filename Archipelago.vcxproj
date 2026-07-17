@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header\AmmuNationShop.h" />
     <ClInclude Include="header\APSocket.h" />
     <ClInclude Include="header\BurglaryTracker.h" />
     <ClInclude Include="header\CheckGiver.h" />
@@ -27,6 +28,7 @@
     <ClInclude Include="header\SaveDataManager.h" />
     <ClInclude Include="header\SubmissionTracker.h" />
     <ClInclude Include="header\TagBlipManager.h" />
+    <ClInclude Include="header\TrapHandler.h" />
     <ClInclude Include="header\TagPositions.h" />
     <ClInclude Include="header\TaxiTracker.h" />
     <ClInclude Include="header\VigilanteTracker.h" />
@@ -34,6 +36,7 @@
     <ClInclude Include="header\EdgeTriggeredKey.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\AmmuNationShop.cpp" />
     <ClCompile Include="source\APSocket.cpp" />
     <ClCompile Include="source\BurglaryTracker.cpp" />
     <ClCompile Include="source\CheckGiver.cpp" />
@@ -49,6 +52,7 @@
     <ClCompile Include="source\SaveDataManager.cpp" />
     <ClCompile Include="source\SubmissionTracker.cpp" />
     <ClCompile Include="source\TagBlipManager.cpp" />
+    <ClCompile Include="source\TrapHandler.cpp" />
     <ClCompile Include="source\TaxiTracker.cpp" />
     <ClCompile Include="source\VigilanteTracker.cpp" />
   </ItemGroup>

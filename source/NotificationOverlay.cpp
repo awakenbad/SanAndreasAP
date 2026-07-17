@@ -82,6 +82,7 @@ void NotificationOverlay::drawOne(const Notification& notification, int slot, st
 	case NotificationIcon::FireImmunity: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_FIRE]; break;
 	case NotificationIcon::Boxing: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_GYM]; break;
 	case NotificationIcon::Weapon: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_AMMUGUN]; break;
+	case NotificationIcon::Trap: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_ENEMYATTACK]; break;
 	default: break;
 	}
 

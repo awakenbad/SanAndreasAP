@@ -12,9 +12,11 @@ inline constexpr int FIREFIGHTER_ID = 123;
 inline constexpr int VIGILANTE_ID = 124;
 inline constexpr int BURGLARY_ID = 125;
 
+// Deliberately absent: the marker in front of CJ's house (2495.214, -1687.03) - only Big
+// Smoke starts there, which is the first story mission and needs zero Progressive Missions
+// per the AP rules, so blocking it is never correct and only gets in the way afterwards.
 inline std::vector<Position> missionStartPos = {
     { 700, -3328, 20, 180 },
-    { 2495.214, -1687.03, 12.5144, 0 },
     { 2459.55, -1687.75, 12.56, 0 },
     { 2515.07, -1673.98, 12.71, 0 },
     { 1365.251, -1280.12, 12.5469, 0 },

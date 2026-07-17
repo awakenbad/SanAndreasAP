@@ -14,7 +14,17 @@ public:
 	void giveProgressiveMap();
 	int getProgressiveMissionCounter();
 	void setProgressiveMissionCounter(int t_value);
+
+	// Refills armor to the player's current maximum (respects the Max Armor Upgrade).
+	void giveArmorRefill();
+
+	// Fully repairs the current vehicle, or the next one CJ enters if on foot.
+	void giveCarRepair();
+
+	// Call once per tick - applies a pending car repair once CJ is in a vehicle.
+	void update();
 private:
 	int progressiveMissionCounter = 1;
+	bool m_carRepairPending = false;
 };
 

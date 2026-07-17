@@ -45,6 +45,31 @@ void CheckGiver::giveProgressiveMap()
 {
 }
 
+void CheckGiver::giveArmorRefill()
+{
+	CPlayerPed* player = FindPlayerPed();
+	if (!player) return;
+
+	player->m_fArmour = static_cast<float>(CWorld::Players[0].m_nMaxArmour);
+}
+
+void CheckGiver::giveCarRepair()
+{
+	m_carRepairPending = true;
+}
+
+void CheckGiver::update()
+{
+	if (!m_carRepairPending) return;
+
+	CPlayerPed* player = FindPlayerPed();
+	if (!player || !player->bInVehicle || !player->m_pVehicle) return;
+
+	m_carRepairPending = false;
+	player->m_pVehicle->Fix();
+	player->m_pVehicle->m_fHealth = 1000.0f;
+}
+
 int CheckGiver::getProgressiveMissionCounter()
 {
 	return progressiveMissionCounter;

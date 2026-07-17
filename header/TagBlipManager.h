@@ -26,9 +26,14 @@ public:
 	// Driven by the client's /tag console command.
 	void setLocatedTag(int t_tagIndex);
 
+	// Player preference (pause-menu toggle): disabling clears all tag blips and stops drawing
+	// numbers. The wipe-detection sentinel stays alive regardless.
+	void setBlipsEnabled(bool t_enabled);
+
 private:
 	std::array<int, 100> m_blipHandles;
 	int m_locatedTagIndex = -1;
+	bool m_blipsEnabled = true;
 
 	// Never-displayed blip whose death is the wipe detector - kept separate from the tag
 	// blips so the signal works even if every tag is claimed.

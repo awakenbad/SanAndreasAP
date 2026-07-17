@@ -30,7 +30,6 @@ class CheckListener
 public:
 	CheckListener();
 
-	void spawnPickup();
 	CheckEvent update();
 	std::string getMissionID();
 	void submissionCheckWasReceived(int t_submissionID);

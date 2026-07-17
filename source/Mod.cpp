@@ -26,10 +26,21 @@ void Mod::start()
 	{
 		m_apSocket.sendToServer("PLAYER_DIED\n");
 	}
+	m_tagBlipManager.setBlipsEnabled(m_showTagBlips);
 	bool worldWiped = m_tagBlipManager.update(m_checkListener.getClaimedTags());
  	persistAndRestoreState(worldWiped);
 	receiveCurrentCheckEvent();
     sendChecksToAP();
+    m_ammuNationShop.update();
+    m_trapHandler.update();
+    m_checkGiver.update();
+
+    int purchasedSlot = m_ammuNationShop.pollPurchasedSlot();
+    if (purchasedSlot >= 0)
+    {
+        m_pendingShopChecks.push(purchasedSlot);
+        m_notificationOverlay.show("Archipelago: Checked Ammu-Nation (" + std::string(shopItems[purchasedSlot].displayName) + ")");
+    }
 
     if (m_checkGiver.getProgressiveMissionCounter() == 0 && !m_blockersSpawned)
     {
@@ -40,23 +51,6 @@ void Mod::start()
     {
         removeMissionBlockers();
     }
-	if (m_sprayCanKey.justPressed())
-	{
-        m_checkGiver.giveWeapon("Spray Can", true);
-	}
-
-    if (m_debugDecrementKey.justPressed())
-    {
-        m_checkGiver.removeProgressiveMission();
-        m_notificationOverlay.show("DEBUG: Progressive Mission -> " + std::to_string(m_checkGiver.getProgressiveMissionCounter()));
-    }
-
-    if (m_debugIncrementKey.justPressed())
-    {
-        m_checkGiver.giveProgressiveMission();
-        m_notificationOverlay.show("DEBUG: Progressive Mission -> " + std::to_string(m_checkGiver.getProgressiveMissionCounter()));
-    }
-
 	parseIncomingMessages();
 }
 
@@ -150,6 +144,15 @@ void Mod::sendChecksToAP()
     case CheckEvent::None:
         break;
     }
+
+    // Shop purchases live outside CheckListener's event system - send independently.
+    if (m_pendingShopChecks.hasPending())
+    {
+        if (m_apSocket.sendToServer("CHECK:SHOP:" + std::to_string(m_pendingShopChecks.front()) + "\n"))
+        {
+            m_pendingShopChecks.confirm();
+        }
+    }
 }
 
 void Mod::parseIncomingMessages()
@@ -169,6 +172,17 @@ void Mod::parseIncomingMessages()
             if (tagIndex >= 0)
             {
                 m_notificationOverlay.show("Locating LS Tag #" + std::to_string(tagIndex + 1));
+            }
+            continue;
+        }
+
+        if (msg.rfind("SHOPITEM:", 0) == 0)
+        {
+            std::string rest = msg.substr(9);
+            size_t colon = rest.find(':');
+            if (colon != std::string::npos)
+            {
+                m_ammuNationShop.setSlotContents(parseIntOr(rest.substr(0, colon), -1), rest.substr(colon + 1));
             }
             continue;
         }
@@ -217,6 +231,18 @@ void Mod::parseIncomingMessages()
         {
             m_checkListener.submissionCheckWasReceived(LOS_SANTOS_GYM_ID);
         }
+        else if (effectType == "armor_refill")
+        {
+            m_checkGiver.giveArmorRefill();
+        }
+        else if (effectType == "car_repair")
+        {
+            m_checkGiver.giveCarRepair();
+        }
+        else if (effectType.rfind("trap_", 0) == 0)
+        {
+            m_trapHandler.giveTrap(effectType.substr(5));
+        }
         else if (effectType == "death_link")
         {
             m_deathLinkHandler.setEnabled(value == "1");
@@ -254,6 +280,12 @@ void Mod::showReceivedItemMessage(const std::string& effectType, const std::stri
         { "stamina_upgrade",     { "Archipelago: Received Infinite Sprint",       NotificationIcon::Stamina } },
         { "taxi_nitro",          { "Archipelago: Received Taxi Nitro",            NotificationIcon::Taxi } },
         { "boxing_style",        { "Archipelago: Received Boxing Style",          NotificationIcon::Boxing } },
+        { "armor_refill",        { "Archipelago: Received Full Armor",            NotificationIcon::ArmorUpgrade } },
+        { "car_repair",          { "Archipelago: Received Car Repair",            NotificationIcon::Taxi } },
+        { "trap_tires",          { "Archipelago: Flat Tires Trap!",               NotificationIcon::Trap } },
+        { "trap_fat",            { "Archipelago: Fat CJ Trap!",                   NotificationIcon::Trap } },
+        { "trap_wanted",         { "Archipelago: Wanted Level Trap!",             NotificationIcon::Trap } },
+        { "trap_carfire",        { "Archipelago: Car Fire Trap!",                 NotificationIcon::Trap } },
     };
 
     auto it = messageByEffect.find(effectType);
@@ -265,11 +297,21 @@ void Mod::drawOverlay()
 {
     m_notificationOverlay.draw();
     m_tagBlipManager.drawTagNumbers(m_checkListener.getClaimedTags());
+    m_ammuNationShop.drawShopContents();
+    m_trapHandler.drawTimers();
 }
 
 void Mod::drawMenuOverlay()
 {
+    // The pause menu is also where the mod's little settings live - poll the toggle here,
+    // since this only runs while a menu is open.
+    if (m_tagBlipToggleKey.justPressed())
+    {
+        m_showTagBlips = !m_showTagBlips;
+    }
+
     bool connected = m_apSocket.isConnected();
+    float bottom = static_cast<float>(RsGlobal.maximumHeight);
 
     CFont::SetFontStyle(FONT_SUBTITLES);
     CFont::SetScale(0.7f, 1.4f);
@@ -280,13 +322,45 @@ void Mod::drawMenuOverlay()
     CFont::SetBackground(false, false);
     CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
-    CFont::PrintString(20.0f, static_cast<float>(RsGlobal.maximumHeight) - 55.0f,
+    CFont::PrintString(20.0f, bottom - 100.0f,
         connected ? "Archipelago: Connected" : "Archipelago: Disconnected");
+
+    CFont::SetFontStyle(FONT_SUBTITLES);
+    CFont::SetScale(0.55f, 1.1f);
+    CFont::SetColor(CRGBA(255, 255, 255, 255));
+    CFont::SetProportional(true);
+    CFont::SetOrientation(ALIGN_LEFT);
+    CFont::SetDropShadowPosition(1);
+    CFont::SetBackground(false, false);
+
+    CFont::PrintString(20.0f, bottom - 55.0f,
+        m_showTagBlips ? "F8 - Tag blips on map: ON" : "F8 - Tag blips on map: OFF");
 }
 
 void Mod::receiveCurrentCheckEvent()
 {
 	m_currentEvent = m_checkListener.update();
+}
+
+void Mod::spawnSprayCanPickup()
+{
+	// Pickups created this way are stored in the game save's pickup pool, so spawning blindly
+	// every session would stack duplicates - skip if ours (or the regeneration placeholder of
+	// ours) is already in the pool.
+	for (int i = 0; i < 620; ++i)
+	{
+		const CPickup& pickup = CPickups::aPickUps[i];
+		if (pickup.m_nPickupType == PICKUP_NONE) continue;
+		if (pickup.m_nModelIndex != MODEL_SPRAYCAN) continue;
+
+		CVector pos = const_cast<CPickup&>(pickup).GetPosn();
+		if (std::fabs(pos.x - SPRAYCAN_PICKUP_POS.x) < 2.0f && std::fabs(pos.y - SPRAYCAN_PICKUP_POS.y) < 2.0f)
+		{
+			return;
+		}
+	}
+
+	CPickups::GenerateNewOne(SPRAYCAN_PICKUP_POS, MODEL_SPRAYCAN, PICKUP_ON_STREET, SPRAYCAN_PICKUP_AMMO, 0, false, nullptr);
 }
 
 void Mod::persistAndRestoreState(bool t_worldWiped)
@@ -309,6 +383,12 @@ void Mod::persistAndRestoreState(bool t_worldWiped)
 	if ((t_worldWiped || firstInGameTick) && CStats::LastMissionPassedName[0] != '\0')
 	{
 		restoreNeeded = m_saveDataManager.restoreFromCurrentLoadName();
+	}
+
+	// Any fresh world (session start, load, or new game) may be missing the spray can pickup.
+	if (firstInGameTick || t_worldWiped)
+	{
+		spawnSprayCanPickup();
 	}
 
 	if (restoreNeeded)
@@ -339,6 +419,8 @@ void Mod::persistAndRestoreState(bool t_worldWiped)
 			claimed[i] = i < tagBits.size() && tagBits[i] == '1';
 		}
 		m_checkListener.restoreClaimedTags(claimed);
+
+		m_showTagBlips = m_saveDataManager.getValue("show_tag_blips", "1") == "1";
 	}
 
 	m_saveDataManager.setValue("progressive_mission", std::to_string(m_checkGiver.getProgressiveMissionCounter()));
@@ -357,4 +439,5 @@ void Mod::persistAndRestoreState(bool t_worldWiped)
 		if (claimed[i]) tagBits[i] = '1';
 	}
 	m_saveDataManager.setValue("tags_claimed", tagBits);
+	m_saveDataManager.setValue("show_tag_blips", m_showTagBlips ? "1" : "0");
 }

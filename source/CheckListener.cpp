@@ -290,11 +290,6 @@ void CheckListener::findClosestTag(CPlayerPed* player, int delta)
 	}
 }
 
-void CheckListener::spawnPickup()
-{
-	CPickups::GenerateNewOne(CVector{ 2493.5, -1671.0, 13.3 }, 346, 2, 100, 1, false, new char('h'));
-}
-
 CheckEvent CheckListener::update()
 {
 	enforceSubmissionRewards();

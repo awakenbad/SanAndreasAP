@@ -20,6 +20,7 @@ enum class NotificationIcon
 	FireImmunity,
 	Boxing,
 	Weapon,
+	Trap,
 };
 
 class NotificationOverlay

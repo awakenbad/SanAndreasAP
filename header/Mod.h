@@ -12,6 +12,8 @@
 #include "SaveDataManager.h"
 #include "NotificationOverlay.h"
 #include "TagBlipManager.h"
+#include "AmmuNationShop.h"
+#include "TrapHandler.h"
 
 class Mod
 {
@@ -35,6 +37,11 @@ private:
 	const int BARRICADE_MODEL_ID = MODEL_CJ_ROADBARRIER;
 	const float BARRICADE_Z_OFFSET = 0.6f;
 
+	// A permanent respawning spray can outside CJ's house, so tag hunting never requires
+	// trips back for ammo.
+	const CVector SPRAYCAN_PICKUP_POS{ 2493.5f, -1671.0f, 13.3f };
+	static constexpr unsigned int SPRAYCAN_PICKUP_AMMO = 5000;
+
 	CheckListener m_checkListener;
 	CheckGiver m_checkGiver;
 	APSocket m_apSocket;
@@ -45,15 +52,18 @@ private:
 	SaveDataManager m_saveDataManager;
 	NotificationOverlay m_notificationOverlay;
 	TagBlipManager m_tagBlipManager;
+	AmmuNationShop m_ammuNationShop;
+	TrapHandler m_trapHandler;
+	PendingChecks<int> m_pendingShopChecks;
 
 	bool m_firstInGameTickHandled = false;
+	bool m_showTagBlips = true;
 
-	EdgeTriggeredKey m_sprayCanKey{ VK_TAB };
-	EdgeTriggeredKey m_debugDecrementKey{ VK_F9 };
-	EdgeTriggeredKey m_debugIncrementKey{ VK_F10 };
+	EdgeTriggeredKey m_tagBlipToggleKey{ VK_F8 };
 
 	void parseIncomingMessages();
 	void receiveCurrentCheckEvent();
+	void spawnSprayCanPickup();
 	void spawnMissionBlockers();
 	void removeMissionBlockers();
 	void sendChecksToAP();
