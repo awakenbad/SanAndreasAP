@@ -141,26 +141,26 @@ void CheckListener::initializeMissionList()
 		"SWEET_3",   // 15  Drive-Thru
 		"SWEET_2",   // 16  Nines And AK's
 		"SWEET_4",   // 17  Drive-By
-		"HOODS_5",   // 18  Sweet's Girl
+		"SWEET_5",   // 18  Sweet's Girl
 		"SWEET_6",   // 19  Cesar Vialpando
 		"SWEET_7",   // 20  Los Sepulcros
-		"CRASH_4",   // 21  Doberman
+		"CRASH_2",   // 21  Doberman
 		"CRASH_1",   // 22  Burning Desire
-		"DRUGS_3",   // 23  Gray Imports
-		"GUNS_1",    // 24  Home Invasion
+		"CRASH_3",   // 23  Gray Imports
+		"RYDER_1",    // 24  Home Invasion
 		"RYDER_3",   // 25  Catalyst
 		"RYDER_2",   // 26  Robbing Uncle Sam
-		"TWAR_7",    // 27  OG Loc
+		"SMOKE_1",    // 27  OG Loc
 		"SMOKE_2",   // 28  Running Dog
 		"SMOKE_3",   // 29  Wrong Side of the Tracks
-		"DRUGS_1",   // 30  Just Business
-		"MUSIC_1",   // 31  Life's a Beach
-		"MUSIC_2",   // 32  Madd Dogg's Rhymes
-		"MUSIC_3",   // 33  Management Issues
-		"MUSIC_5",   // 34  House Party
+		"SMOKE_4",   // 30  Just Business
+		"STRAP_1",   // 31  Life's a Beach
+		"STRAP_2",   // 32  Madd Dogg's Rhymes
+		"STRAP_3",   // 33  Management Issues
+		"STRAP_4",   // 34  House Party
 		"CPRACE",    // 35  Race Tournament / 8-track / Dirt Track
 		"CESAR_1",   // 36  Lowrider (High Stakes)
-		"DRUGS_4",   // 37  Reuniting The Families
+		"LA1FIN1",   // 37  Reuniting The Families
 		"LA1FIN2",   // 38  The Green Sabre
 		"BCRASH1",   // 39  Badlands
 		"CATALIN",   // 40  First Date
