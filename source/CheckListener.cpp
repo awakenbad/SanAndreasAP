@@ -57,6 +57,16 @@ void CheckListener::confirmTagSent()
 	m_pendingTags.confirm();
 }
 
+const std::array<bool, 100>& CheckListener::getClaimedTags() const
+{
+	return m_tagClaimed;
+}
+
+void CheckListener::restoreClaimedTags(const std::array<bool, 100>& t_claimed)
+{
+	m_tagClaimed = t_claimed;
+}
+
 bool CheckListener::pickUpChecker()
 {
 	if (m_lastValuePickUpCounter < *m_pickUpCounter)
@@ -288,6 +298,20 @@ void CheckListener::spawnPickup()
 CheckEvent CheckListener::update()
 {
 	enforceSubmissionRewards();
+
+	// Baselines captured in the constructor are meaningless - nothing is loaded at process
+	// start, so every polled counter reads its pre-game value. And the session's first Load
+	// Game can slip past SaveDataManager's change detection entirely (the game pre-populates
+	// the last-used slot name at startup, so re-loading that same slot changes nothing
+	// observable). Waiting until the player actually exists and resyncing right then stops
+	// the menu-to-loaded-save jump in those counters from firing phantom checks.
+	if (!m_baselinesInitialized)
+	{
+		if (!FindPlayerPed()) return CheckEvent::None;
+		resyncBaselines();
+		m_baselinesInitialized = true;
+	}
+
 	CheckEvent event = CheckEvent::None;
 	if (pickUpChecker())
 	{

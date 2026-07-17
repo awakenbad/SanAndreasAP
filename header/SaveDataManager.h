@@ -9,9 +9,17 @@
 class SaveDataManager
 {
 public:
-	// Call once per tick. Returns true if an existing save was just loaded, meaning callers
-	// should re-pull every tracked value back into game state via getValue().
-	bool poll();
+	// Call once per tick: detects completed game saves and writes the companion file through.
+	// Loads are deliberately NOT detected here - ms_LoadFileName changes while merely browsing
+	// the load menu, so restores are driven by the caller's world-wipe signal instead.
+	void poll();
+
+	// Restore path, called when the caller has established a save really was just loaded (the
+	// blip-pool wipe signal plus a non-fresh-game check): adopts whatever ms_LoadFileName
+	// currently holds as the active save and restores its companion file.
+	bool restoreFromCurrentLoadName();
+
+	const std::string& getCurrentSaveKey() const;
 
 	void setValue(const std::string& key, const std::string& value);
 	std::string getValue(const std::string& key, const std::string& defaultValue) const;
@@ -24,7 +32,6 @@ private:
 	// loaded or saved at least once this process - there is no save to associate data with yet.
 	std::string m_currentSaveKey;
 	std::string m_lastSeenSaveFileName;
-	std::string m_lastSeenLoadFileName;
 
 	bool m_initialized = false;
 

@@ -26,6 +26,7 @@
     <ClInclude Include="header\Position.h" />
     <ClInclude Include="header\SaveDataManager.h" />
     <ClInclude Include="header\SubmissionTracker.h" />
+    <ClInclude Include="header\TagBlipManager.h" />
     <ClInclude Include="header\TagPositions.h" />
     <ClInclude Include="header\TaxiTracker.h" />
     <ClInclude Include="header\VigilanteTracker.h" />
@@ -47,6 +48,7 @@
     <ClCompile Include="source\Position.cpp" />
     <ClCompile Include="source\SaveDataManager.cpp" />
     <ClCompile Include="source\SubmissionTracker.cpp" />
+    <ClCompile Include="source\TagBlipManager.cpp" />
     <ClCompile Include="source\TaxiTracker.cpp" />
     <ClCompile Include="source\VigilanteTracker.cpp" />
   </ItemGroup>

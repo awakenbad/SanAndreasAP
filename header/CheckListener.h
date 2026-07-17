@@ -43,6 +43,9 @@ public:
 	int getPendingTagIndex();
 	void confirmTagSent();
 
+	const std::array<bool, 100>& getClaimedTags() const;
+	void restoreClaimedTags(const std::array<bool, 100>& t_claimed);
+
 	const std::vector<std::unique_ptr<SubmissionTracker>>& getSubmissionTrackers() const;
 
 	void resyncBaselines();
@@ -68,6 +71,7 @@ private:
 
 	float m_lastTagCount = 0.0f;
 	bool m_tagCountInitialized = false;
+	bool m_baselinesInitialized = false;
 	std::array<bool, 100> m_tagClaimed{};
 
 	PendingChecks<int> m_pendingPickUps;

@@ -11,46 +11,41 @@ static std::string extractFileName(const std::string& pathOrName)
 	return pos == std::string::npos ? pathOrName : pathOrName.substr(pos + 1);
 }
 
-bool SaveDataManager::poll()
+void SaveDataManager::poll()
 {
-	bool restoreNeeded = false;
-
-	std::string loadName = extractFileName(CGenericGameStorage::ms_LoadFileName);
 	std::string saveName = extractFileName(CGenericGameStorage::ms_SaveFileNameJustSaved);
 
 	if (!m_initialized)
 	{
-		m_lastSeenLoadFileName = loadName;
 		m_lastSeenSaveFileName = saveName;
 		m_initialized = true;
-		return false;
+		return;
 	}
 
-	bool loadChanged = !loadName.empty() && loadName != m_lastSeenLoadFileName;
-	bool saveChanged = !saveName.empty() && saveName != m_lastSeenSaveFileName;
-
-	bool saveMasqueradingAsLoad = loadChanged && saveChanged && loadName == saveName;
-
-	if (loadChanged)
-	{
-		m_lastSeenLoadFileName = loadName;
-		if (!saveMasqueradingAsLoad)
-		{
-			m_currentSaveKey = loadName;
-			m_lastSeenSaveFileName = loadName;
-			loadFromDisk();
-			restoreNeeded = true;
-		}
-	}
-
-	if (saveChanged)
+	if (!saveName.empty() && saveName != m_lastSeenSaveFileName)
 	{
 		m_lastSeenSaveFileName = saveName;
 		m_currentSaveKey = saveName;
 		writeToDisk();
 	}
+}
 
-	return restoreNeeded;
+bool SaveDataManager::restoreFromCurrentLoadName()
+{
+	std::string loadName = extractFileName(CGenericGameStorage::ms_LoadFileName);
+	if (loadName.empty()) return false;
+
+	// Re-baseline the save-name tracking too, so a later save to a different slot is still
+	// detected as a change and re-keys the companion file correctly.
+	m_lastSeenSaveFileName = loadName;
+	m_currentSaveKey = loadName;
+	loadFromDisk();
+	return true;
+}
+
+const std::string& SaveDataManager::getCurrentSaveKey() const
+{
+	return m_currentSaveKey;
 }
 
 void SaveDataManager::setValue(const std::string& key, const std::string& value)

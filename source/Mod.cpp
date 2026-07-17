@@ -1,5 +1,6 @@
 #include "Mod.h"
 #include "CStreaming.h"
+#include "CPools.h"
 #include <unordered_map>
 
 // std::stoi throws on malformed input, which would crash the whole game - socket messages and
@@ -25,7 +26,8 @@ void Mod::start()
 	{
 		m_apSocket.sendToServer("PLAYER_DIED\n");
 	}
- 	persistAndRestoreState();
+	bool worldWiped = m_tagBlipManager.update(m_checkListener.getClaimedTags());
+ 	persistAndRestoreState(worldWiped);
 	receiveCurrentCheckEvent();
     sendChecksToAP();
 
@@ -96,6 +98,11 @@ void Mod::spawnMissionBlockers()
 void Mod::removeMissionBlockers()
 {
     for (CObject* blocker : m_missionBlockers) {
+        // Backstop against pointers that dangle because a game load destroyed the objects
+        // without the load being detected. Note this can't catch a freed slot the new game
+        // state has already reused - the restore-time reset above is the primary protection.
+        if (!CPools::ms_pObjectPool->IsObjectValid(blocker)) continue;
+
         CWorld::Remove(blocker);
         delete blocker;
     }
@@ -152,6 +159,17 @@ void Mod::parseIncomingMessages()
         if (msg.rfind("STATUS:", 0) == 0)
         {
             m_notificationOverlay.show(msg.substr(7));
+            continue;
+        }
+
+        if (msg.rfind("LOCATE:TAG:", 0) == 0)
+        {
+            int tagIndex = parseIntOr(msg.substr(11), -1);
+            m_tagBlipManager.setLocatedTag(tagIndex);
+            if (tagIndex >= 0)
+            {
+                m_notificationOverlay.show("Locating LS Tag #" + std::to_string(tagIndex + 1));
+            }
             continue;
         }
 
@@ -246,6 +264,7 @@ void Mod::showReceivedItemMessage(const std::string& effectType, const std::stri
 void Mod::drawOverlay()
 {
     m_notificationOverlay.draw();
+    m_tagBlipManager.drawTagNumbers(m_checkListener.getClaimedTags());
 }
 
 void Mod::receiveCurrentCheckEvent()
@@ -253,11 +272,38 @@ void Mod::receiveCurrentCheckEvent()
 	m_currentEvent = m_checkListener.update();
 }
 
-void Mod::persistAndRestoreState()
+void Mod::persistAndRestoreState(bool t_worldWiped)
 {
-	bool restoreNeeded = m_saveDataManager.poll();
+	m_saveDataManager.poll();
+
+	// The first-in-game-tick trigger covers a session whose menu ticks never ran (no sentinel
+	// existed yet to observe the wipe); the wipe signal covers every load after that. Both are
+	// guarded by the fresh-New-Game check: a brand new game has no last-passed mission at its
+	// very first tick (any loadable save does; the intro's INITIAL mission passes long before
+	// saving is even possible), and restoring another slot's data into a fresh game is the
+	// failure mode that must stay impossible.
+	bool firstInGameTick = !m_firstInGameTickHandled && FindPlayerPed();
+	if (firstInGameTick)
+	{
+		m_firstInGameTickHandled = true;
+	}
+
+	bool restoreNeeded = false;
+	if ((t_worldWiped || firstInGameTick) && CStats::LastMissionPassedName[0] != '\0')
+	{
+		restoreNeeded = m_saveDataManager.restoreFromCurrentLoadName();
+	}
+
 	if (restoreNeeded)
 	{
+		m_notificationOverlay.show("Archipelago: Restored progress (" + m_saveDataManager.getCurrentSaveKey() + ")");
+
+		// The load that triggered this restore destroyed every world object, including any
+		// spawned blockers - those pointers are dangling now and must be dropped without
+		// CWorld::Remove/delete (calling either on them corrupts the world lists and crashes
+		// later). Resetting m_blockersSpawned lets them respawn if the counter calls for it.
+		m_missionBlockers.clear();
+		m_blockersSpawned = false;
 		m_checkListener.resyncBaselines();
 		m_checkGiver.setProgressiveMissionCounter(parseIntOr(m_saveDataManager.getValue("progressive_mission", "1"), 1));
 
@@ -268,6 +314,14 @@ void Mod::persistAndRestoreState()
 			bool completed = m_saveDataManager.getValue(prefix + "completed", "0") == "1";
 			tracker->restoreState(received, completed);
 		}
+
+		std::string tagBits = m_saveDataManager.getValue("tags_claimed", std::string(100, '0'));
+		std::array<bool, 100> claimed{};
+		for (size_t i = 0; i < claimed.size(); ++i)
+		{
+			claimed[i] = i < tagBits.size() && tagBits[i] == '1';
+		}
+		m_checkListener.restoreClaimedTags(claimed);
 	}
 
 	m_saveDataManager.setValue("progressive_mission", std::to_string(m_checkGiver.getProgressiveMissionCounter()));
@@ -278,4 +332,12 @@ void Mod::persistAndRestoreState()
 		m_saveDataManager.setValue(prefix + "received", tracker->getCheckReceived() ? "1" : "0");
 		m_saveDataManager.setValue(prefix + "completed", tracker->getSubmissionCompleted() ? "1" : "0");
 	}
+
+	const std::array<bool, 100>& claimed = m_checkListener.getClaimedTags();
+	std::string tagBits(claimed.size(), '0');
+	for (size_t i = 0; i < claimed.size(); ++i)
+	{
+		if (claimed[i]) tagBits[i] = '1';
+	}
+	m_saveDataManager.setValue("tags_claimed", tagBits);
 }

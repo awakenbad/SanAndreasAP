@@ -11,6 +11,7 @@
 #include "DeathLinkHandler.h"
 #include "SaveDataManager.h"
 #include "NotificationOverlay.h"
+#include "TagBlipManager.h"
 
 class Mod
 {
@@ -39,6 +40,9 @@ private:
 	DeathLinkHandler m_deathLinkHandler;
 	SaveDataManager m_saveDataManager;
 	NotificationOverlay m_notificationOverlay;
+	TagBlipManager m_tagBlipManager;
+
+	bool m_firstInGameTickHandled = false;
 
 	EdgeTriggeredKey m_sprayCanKey{ VK_TAB };
 	EdgeTriggeredKey m_debugDecrementKey{ VK_F9 };
@@ -50,6 +54,6 @@ private:
 	void removeMissionBlockers();
 	void sendChecksToAP();
 	void showReceivedItemMessage(const std::string& effectType, const std::string& value);
-	void persistAndRestoreState();
+	void persistAndRestoreState(bool t_worldWiped);
 };
 
