@@ -299,17 +299,6 @@ void Mod::drawOverlay()
     m_tagBlipManager.drawTagNumbers(m_checkListener.getClaimedTags());
     m_ammuNationShop.drawShopContents();
     m_trapHandler.drawTimers();
-
-    // TEMPORARY: raw LastMissionPassedName readout
-    CFont::SetFontStyle(FONT_SUBTITLES);
-    CFont::SetScale(0.5f, 1.0f);
-    CFont::SetColor(CRGBA(255, 255, 0, 255));
-    CFont::SetProportional(true);
-    CFont::SetOrientation(ALIGN_LEFT);
-    CFont::SetDropShadowPosition(1);
-    CFont::SetBackground(false, false);
-    CFont::SetWrapx(700.0f);
-    CFont::PrintString(20.0f, 20.0f, ("DEBUG LastMission: " + std::string(CStats::LastMissionPassedName)).c_str());
 }
 
 void Mod::drawMenuOverlay()
