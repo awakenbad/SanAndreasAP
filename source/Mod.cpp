@@ -165,6 +165,13 @@ void Mod::parseIncomingMessages()
             continue;
         }
 
+        // An item we found that belongs to another player's world.
+        if (msg.rfind("SENT:", 0) == 0)
+        {
+            m_notificationOverlay.show(msg.substr(5), NotificationIcon::ItemSent);
+            continue;
+        }
+
         if (msg.rfind("LOCATE:TAG:", 0) == 0)
         {
             int tagIndex = parseIntOr(msg.substr(11), -1);

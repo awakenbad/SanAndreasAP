@@ -21,6 +21,7 @@ enum class NotificationIcon
 	Boxing,
 	Weapon,
 	Trap,
+	ItemSent,
 };
 
 class NotificationOverlay

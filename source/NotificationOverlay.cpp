@@ -83,6 +83,8 @@ void NotificationOverlay::drawOne(const Notification& notification, int slot, st
 	case NotificationIcon::Boxing: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_GYM]; break;
 	case NotificationIcon::Weapon: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_AMMUGUN]; break;
 	case NotificationIcon::Trap: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_ENEMYATTACK]; break;
+	// The airyard (plane) icon reads as "shipped off somewhere else".
+	case NotificationIcon::ItemSent: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_AIRYARD]; break;
 	default: break;
 	}
 
