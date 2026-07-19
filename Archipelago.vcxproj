@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\AmmuNationShop.h" />
+    <ClInclude Include="header\AutoSaveManager.h" />
     <ClInclude Include="header\APSocket.h" />
     <ClInclude Include="header\BurglaryTracker.h" />
     <ClInclude Include="header\CheckGiver.h" />
@@ -26,6 +27,7 @@
     <ClInclude Include="header\PendingChecks.h" />
     <ClInclude Include="header\Position.h" />
     <ClInclude Include="header\SaveDataManager.h" />
+    <ClInclude Include="header\ScreenScale.h" />
     <ClInclude Include="header\SubmissionTracker.h" />
     <ClInclude Include="header\TagBlipManager.h" />
     <ClInclude Include="header\TrapHandler.h" />
@@ -37,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AmmuNationShop.cpp" />
+    <ClCompile Include="source\AutoSaveManager.cpp" />
     <ClCompile Include="source\APSocket.cpp" />
     <ClCompile Include="source\BurglaryTracker.cpp" />
     <ClCompile Include="source\CheckGiver.cpp" />

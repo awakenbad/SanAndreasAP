@@ -4,6 +4,7 @@
 #include "CClothes.h"
 #include "CWanted.h"
 #include "CAutomobile.h"
+#include "ScreenScale.h"
 #include <CFont.h>
 #include <CRGBA.h>
 #include <CSprite2d.h>
@@ -119,9 +120,9 @@ void TrapHandler::drawTimers() const
 	}
 	if (lines.empty()) return;
 
-	float scale = static_cast<float>(RsGlobal.maximumHeight) / 1080.0f;
-	float x = static_cast<float>(RsGlobal.maximumWidth) - 30.0f * scale;
-	float y = 250.0f * scale; // below the clock/money/health HUD block and the wanted-star row
+	float scale = ScreenScale::factor();
+	float x = static_cast<float>(RsGlobal.maximumWidth) - ScreenScale::of(30.0f);
+	float y = ScreenScale::of(250.0f); // below the clock/money/health HUD block and wanted stars
 
 	for (const std::string& line : lines)
 	{

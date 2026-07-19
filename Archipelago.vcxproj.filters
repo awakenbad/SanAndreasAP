@@ -18,6 +18,9 @@
     <ClInclude Include="header\AmmuNationShop.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="header\AutoSaveManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="header\APSocket.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -60,6 +63,9 @@
     <ClInclude Include="header\SaveDataManager.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="header\ScreenScale.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="header\WeaponData.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -87,6 +93,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AmmuNationShop.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AutoSaveManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="source\APSocket.cpp">

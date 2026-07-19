@@ -21,6 +21,10 @@ public:
 
 	const std::string& getCurrentSaveKey() const;
 
+	// True once a real save has completed this session (player-initiated or autosave), meaning
+	// getCurrentSaveKey() names a file the player is actively using.
+	bool hasSavedThisSession() const { return m_hasSavedThisSession; }
+
 	void setValue(const std::string& key, const std::string& value);
 	std::string getValue(const std::string& key, const std::string& defaultValue) const;
 
@@ -34,6 +38,7 @@ private:
 	std::string m_lastSeenSaveFileName;
 
 	bool m_initialized = false;
+	bool m_hasSavedThisSession = false;
 
 	std::string getFilePath() const;
 	void loadFromDisk();

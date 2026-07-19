@@ -1,4 +1,5 @@
 #include "AmmuNationShop.h"
+#include "ScreenScale.h"
 #include "common.h"
 #include "CTheScripts.h"
 #include "CMenuSystem.h"
@@ -160,7 +161,7 @@ int AmmuNationShop::slotForKey(const char* t_gxtKey) const
 
 void AmmuNationShop::drawContentsLine(float t_x, float t_y, const std::string& t_text) const
 {
-	float scale = static_cast<float>(RsGlobal.maximumHeight) / 1080.0f;
+	float scale = ScreenScale::factor();
 
 	CFont::SetFontStyle(FONT_SUBTITLES);
 	CFont::SetScale(0.5f * scale, 1.0f * scale);
@@ -182,7 +183,7 @@ void AmmuNationShop::drawShopContents()
 {
 	if (!isShopScriptActive()) return;
 
-	float scale = static_cast<float>(RsGlobal.maximumHeight) / 1080.0f;
+	float scale = ScreenScale::factor();
 
 	for (int panel = 0; panel < 2; ++panel)
 	{

@@ -1,6 +1,7 @@
 #include "Mod.h"
 #include "CStreaming.h"
 #include "CPools.h"
+#include <CRadar.h>
 #include <unordered_map>
 
 // std::stoi throws on malformed input, which would crash the whole game - socket messages and
@@ -27,12 +28,27 @@ void Mod::start()
 		m_apSocket.sendToServer("PLAYER_DIED\n");
 	}
 	m_tagBlipManager.setBlipsEnabled(m_showTagBlips);
-	bool worldWiped = m_tagBlipManager.update(m_checkListener.getClaimedTags());
+	// Both signals are polled every tick (no short-circuit): the object sentinel catches loads,
+	// while the blip pool still catches a New Game that clears the radar.
+	// Wipe detection must run BEFORE the blip manager touches anything: after a load its handles
+	// are stale, and acting on them would clear blips that now belong to the game.
+	bool objectWiped = detectWorldWipe();
+	if (objectWiped)
+	{
+		m_tagBlipManager.onWorldWiped();
+	}
+	bool blipWiped = m_tagBlipManager.update(m_checkListener.getClaimedTags());
+	bool worldWiped = blipWiped || objectWiped;
  	persistAndRestoreState(worldWiped);
 	receiveCurrentCheckEvent();
     sendChecksToAP();
     m_ammuNationShop.update();
     m_trapHandler.update();
+
+    if (m_autoSaveManager.update(m_saveDataManager))
+    {
+        m_notificationOverlay.showAboveRadar("Archipelago: Autosaved (" + m_autoSaveManager.getLastSavedSlotName() + ")");
+    }
     m_checkGiver.update();
 
     int purchasedSlot = m_ammuNationShop.pollPurchasedSlot();
@@ -40,6 +56,16 @@ void Mod::start()
     {
         m_pendingShopChecks.push(purchasedSlot);
         m_notificationOverlay.show("Archipelago: Checked Ammu-Nation (" + std::string(shopItems[purchasedSlot].displayName) + ")");
+    }
+
+    // Self-heal: if the objects behind our bookkeeping have been destroyed (a load we failed to
+    // detect), drop the stale list so the check below respawns them. This deliberately does not
+    // depend on the world-wipe signal - it verifies the objects themselves.
+    if (m_blockersSpawned && !m_missionBlockers.empty()
+        && !CPools::ms_pObjectPool->IsObjectValid(m_missionBlockers.front()))
+    {
+        m_missionBlockers.clear();
+        m_blockersSpawned = false;
     }
 
     if (m_checkGiver.getProgressiveMissionCounter() == 0 && !m_blockersSpawned)
@@ -52,6 +78,49 @@ void Mod::start()
         removeMissionBlockers();
     }
 	parseIncomingMessages();
+}
+
+bool Mod::detectWorldWipe()
+{
+	bool wiped = false;
+
+	if (m_worldSentinel)
+	{
+		// The pool slot can be recycled by an unrelated object after ours is destroyed, so
+		// confirm the model too - otherwise a reused slot would look like our sentinel.
+		bool stillOurs = CPools::ms_pObjectPool->IsObjectValid(m_worldSentinel)
+			&& m_worldSentinel->m_nModelIndex == BLOCKER_MODEL_ID;
+		if (!stillOurs)
+		{
+			wiped = true;
+			m_worldSentinel = nullptr;
+		}
+	}
+
+	if (!m_worldSentinel)
+	{
+		CPlayerPed* player = FindPlayerPed();
+		if (!player) return wiped;
+
+		CStreaming::RequestModel(BLOCKER_MODEL_ID, 0);
+		CStreaming::LoadAllRequestedModels(false);
+
+		m_worldSentinel = CObject::Create(BLOCKER_MODEL_ID);
+		if (m_worldSentinel)
+		{
+			// Parked far below the player so it can never be seen or collided with.
+			CVector pos = player->GetPosition();
+			m_worldSentinel->SetPosition(CVector(pos.x, pos.y, pos.z - 500.0f));
+			m_worldSentinel->SetIsStatic(true);
+			m_worldSentinel->bStreamingDontDelete = true;
+			m_worldSentinel->bIsVisible = false;
+			m_worldSentinel->bUsesCollision = false;
+			m_worldSentinel->m_nObjectType = OBJECT_MISSION;
+			CWorld::Add(m_worldSentinel);
+		}
+	}
+
+	return wiped;
 }
 
 void Mod::spawnMissionBlockers()
@@ -86,7 +155,10 @@ void Mod::spawnMissionBlockers()
             m_missionBlockers.push_back(barricade);
         }
     }
-    m_blockersSpawned = true;
+    // Only latch when objects actually appeared. Right after a game load the models may not be
+    // streamed in yet and CObject::Create can return null for every position - latching then
+    // would leave the player with no blockers and no retry, so try again next tick instead.
+    m_blockersSpawned = !m_missionBlockers.empty();
 }
 
 void Mod::removeMissionBlockers()
@@ -119,6 +191,9 @@ void Mod::sendChecksToAP()
                 m_checkGiver.removeProgressiveMission();
             }
             m_checkListener.confirmMissionSent();
+            // Arm an autosave now that the check is away and the counter has been spent, so
+            // the save reflects the completed mission. It fires once the game is safe to save.
+            m_autoSaveManager.requestSave();
         }
         break;
     }
@@ -139,6 +214,7 @@ void Mod::sendChecksToAP()
         if (m_apSocket.sendToServer("CHECK:MISSION:" + std::to_string(m_checkListener.getPendingSubmissionId()) + "\n"))
         {
             m_checkListener.confirmSubmissionSent();
+            m_autoSaveManager.requestSave();
         }
         break;
     case CheckEvent::None:
@@ -306,6 +382,7 @@ void Mod::drawOverlay()
     m_tagBlipManager.drawTagNumbers(m_checkListener.getClaimedTags());
     m_ammuNationShop.drawShopContents();
     m_trapHandler.drawTimers();
+
 }
 
 void Mod::drawMenuOverlay()
@@ -321,7 +398,7 @@ void Mod::drawMenuOverlay()
     float bottom = static_cast<float>(RsGlobal.maximumHeight);
 
     CFont::SetFontStyle(FONT_SUBTITLES);
-    CFont::SetScale(0.7f, 1.4f);
+    CFont::SetScale(ScreenScale::of(0.7f), ScreenScale::of(1.4f));
     CFont::SetColor(connected ? CRGBA(80, 220, 80, 255) : CRGBA(220, 80, 80, 255));
     CFont::SetProportional(true);
     CFont::SetOrientation(ALIGN_LEFT);
@@ -329,18 +406,18 @@ void Mod::drawMenuOverlay()
     CFont::SetBackground(false, false);
     CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
-    CFont::PrintString(20.0f, bottom - 100.0f,
+    CFont::PrintString(ScreenScale::of(20.0f), bottom - ScreenScale::of(100.0f),
         connected ? "Archipelago: Connected" : "Archipelago: Disconnected");
 
     CFont::SetFontStyle(FONT_SUBTITLES);
-    CFont::SetScale(0.55f, 1.1f);
+    CFont::SetScale(ScreenScale::of(0.55f), ScreenScale::of(1.1f));
     CFont::SetColor(CRGBA(255, 255, 255, 255));
     CFont::SetProportional(true);
     CFont::SetOrientation(ALIGN_LEFT);
     CFont::SetDropShadowPosition(1);
     CFont::SetBackground(false, false);
 
-    CFont::PrintString(20.0f, bottom - 55.0f,
+    CFont::PrintString(ScreenScale::of(20.0f), bottom - ScreenScale::of(55.0f),
         m_showTagBlips ? "F8 - Tag blips on map: ON" : "F8 - Tag blips on map: OFF");
 }
 
@@ -396,18 +473,22 @@ void Mod::persistAndRestoreState(bool t_worldWiped)
 	if (firstInGameTick || t_worldWiped)
 	{
 		spawnSprayCanPickup();
+
+		// A wiped world destroyed every object we cached, blockers included - drop the dangling
+		// pointers without CWorld::Remove/delete (the objects are already gone; touching them
+		// corrupts the world lists) and let the counter check respawn them.
+		//
+		// This must key off the wipe itself, NOT off restoreNeeded: a wipe that doesn't trigger
+		// an AP restore used to leave m_blockersSpawned stuck true with no objects behind it, so
+		// the spawn branch could never fire again and the player kept playing unblocked.
+		m_missionBlockers.clear();
+		m_blockersSpawned = false;
 	}
 
 	if (restoreNeeded)
 	{
 		m_notificationOverlay.show("Archipelago: Restored progress (" + m_saveDataManager.getCurrentSaveKey() + ")");
 
-		// The load that triggered this restore destroyed every world object, including any
-		// spawned blockers - those pointers are dangling now and must be dropped without
-		// CWorld::Remove/delete (calling either on them corrupts the world lists and crashes
-		// later). Resetting m_blockersSpawned lets them respawn if the counter calls for it.
-		m_missionBlockers.clear();
-		m_blockersSpawned = false;
 		m_checkListener.resyncBaselines();
 		m_checkGiver.setProgressiveMissionCounter(parseIntOr(m_saveDataManager.getValue("progressive_mission", "1"), 1));
 

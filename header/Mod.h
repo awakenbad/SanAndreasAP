@@ -10,7 +10,9 @@
 #include "CTheScripts.h"
 #include "DeathLinkHandler.h"
 #include "SaveDataManager.h"
+#include "AutoSaveManager.h"
 #include "NotificationOverlay.h"
+#include "ScreenScale.h"
 #include "TagBlipManager.h"
 #include "AmmuNationShop.h"
 #include "TrapHandler.h"
@@ -50,6 +52,7 @@ private:
 	bool m_blockersSpawned = false;
 	DeathLinkHandler m_deathLinkHandler;
 	SaveDataManager m_saveDataManager;
+	AutoSaveManager m_autoSaveManager;
 	NotificationOverlay m_notificationOverlay;
 	TagBlipManager m_tagBlipManager;
 	AmmuNationShop m_ammuNationShop;
@@ -57,6 +60,11 @@ private:
 	PendingChecks<int> m_pendingShopChecks;
 
 	bool m_firstInGameTickHandled = false;
+	// Invisible object used to detect that the world was rebuilt (load or new game). Blips are
+	// part of the save file and come back intact, so they cannot see a load - world objects are
+	// destroyed by one, which makes an object the only sentinel a save can't preserve.
+	CObject* m_worldSentinel = nullptr;
+	bool detectWorldWipe();
 	bool m_showTagBlips = true;
 
 	EdgeTriggeredKey m_tagBlipToggleKey{ VK_F8 };

@@ -29,6 +29,10 @@ class NotificationOverlay
 public:
 	void show(const std::string& text, NotificationIcon icon = NotificationIcon::None);
 
+	// One-off status lines (autosave and the like) draw above the radar instead of joining the
+	// bottom-right stack, so they don't push item notifications around. Only the latest is kept.
+	void showAboveRadar(const std::string& text);
+
 	// Call every frame from Events::drawHudEvent (after the native HUD draw, so this renders on
 	// top of anything vanilla drew that frame).
 	void draw();
@@ -55,5 +59,9 @@ private:
 	// of the stack; each older one still active is drawn one slot further up.
 	std::deque<Notification> m_notifications;
 
+	std::string m_radarMessage;
+	std::chrono::steady_clock::time_point m_radarMessageExpiresAt{};
+
 	void drawOne(const Notification& notification, int slot, std::chrono::steady_clock::time_point now) const;
+	void drawAboveRadar(std::chrono::steady_clock::time_point now) const;
 };
