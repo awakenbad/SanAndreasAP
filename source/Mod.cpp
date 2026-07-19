@@ -59,9 +59,9 @@ void Mod::start()
     m_ammuNationShop.update();
     m_trapHandler.update();
 
-    if (m_autoSaveManager.update(m_saveDataManager))
+    if (m_autoSaveManager.update())
     {
-        m_notificationOverlay.showAboveRadar("Archipelago: Autosaved (" + m_autoSaveManager.getLastSavedSlotName() + ")");
+        m_notificationOverlay.showAboveRadar("Archipelago: Autosaved (slot 8)");
     }
     m_checkGiver.update();
 

@@ -26,7 +26,6 @@ void SaveDataManager::poll()
 	{
 		m_lastSeenSaveFileName = saveName;
 		m_currentSaveKey = saveName;
-		m_hasSavedThisSession = true;
 		writeToDisk();
 	}
 }

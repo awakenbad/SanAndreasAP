@@ -1,15 +1,10 @@
 #pragma once
-#include <string>
-
-class SaveDataManager;
 
 // Autosaves the game after story progress, so a crash costs one mission instead of a whole
-// session. The AP companion file rides along automatically: SaveDataManager::poll() sees the
-// resulting save-name change on the next tick and writes <savename>_ap.dat to match.
-//
-// Target slot: if the player has saved manually this session we keep writing to that same save
-// file, so autosaves stay where they expect them. Otherwise we use a dedicated slot, so we
-// never clobber a save the player didn't choose.
+// session. Always writes to its own dedicated slot - the player's manual saves are never
+// touched - and retitles the save "Autosave: <mission>" so it is recognizable in the load menu.
+// The AP companion file rides along automatically: SaveDataManager::poll() sees the resulting
+// save-name change on the next tick and writes <savename>_ap.dat to match.
 class AutoSaveManager
 {
 public:
@@ -19,18 +14,20 @@ public:
 
 	// Call once per tick. Returns true on the tick a save was actually written, so the caller
 	// can notify the player.
-	bool update(const SaveDataManager& t_saveData);
-
-	// Human-readable description of the slot last written to, for the notification.
-	const std::string& getLastSavedSlotName() const { return m_lastSavedSlotName; }
+	bool update();
 
 private:
 	// 1-based, matching the slot numbering players see. Rainbomizer defaults to 8 as well.
-	static constexpr int DEFAULT_SLOT = 8;
+	static constexpr int AUTOSAVE_SLOT = 8;
+
+	// The save header's name field: 100 bytes of plain text at the start of the SimpleVars
+	// block, preceded in the file by the 5-byte "BLOCK" tag and the 4-byte version id.
+	static constexpr long TITLE_OFFSET = 9;
+	static constexpr int TITLE_SIZE = 100;
 
 	bool isMissionScriptActive() const;
-	bool performSave(const SaveDataManager& t_saveData);
+	bool performSave();
+	void patchSaveTitle() const;
 
 	bool m_savePending = false;
-	std::string m_lastSavedSlotName;
 };
