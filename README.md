@@ -13,8 +13,8 @@ checks to the multiworld.
 
 The randomizer logic (locations, items, rules) is developed in my
 [Archipelago fork](https://github.com/awakenbad/ArchipelagoSA) under
-`worlds/gta_sa` — that's where `gta_sa.apworld` comes from. This repo has
-the C++ mod and the client.
+`worlds/gta_sa` — that's where `gta_sa.apworld` comes from. This repo only has
+the C++ mod.
 
 ## Current scope (v0.1.1)
 
