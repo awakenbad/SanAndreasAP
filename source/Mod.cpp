@@ -41,6 +41,20 @@ void Mod::start()
 	bool worldWiped = blipWiped || objectWiped;
  	persistAndRestoreState(worldWiped);
 	receiveCurrentCheckEvent();
+
+    // The hospital/police respawn refill recomputes max health from the game's internal stat,
+    // ignoring the Paramedic tracker's override - so on the respawn edge, top current health up
+    // to our max. Runs after receiveCurrentCheckEvent() so the tracker has re-asserted
+    // m_fMaxHealth this tick; heals to whatever the current max is, so it's a no-op without the
+    // upgrade and also corrects the reverse case (respawn granting MORE than an unearned max).
+    if (m_deathLinkHandler.consumeRespawn())
+    {
+        if (CPlayerPed* player = FindPlayerPed())
+        {
+            player->m_fHealth = static_cast<float>(CWorld::Players[0].m_nMaxHealth);
+        }
+    }
+
     sendChecksToAP();
     m_ammuNationShop.update();
     m_trapHandler.update();

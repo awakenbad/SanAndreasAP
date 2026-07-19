@@ -18,8 +18,15 @@ public:
 	/// </summary>
 	void killPlayer();
 
+	// True exactly once after the player comes back from being wasted or busted. Used to top
+	// health back up to the (possibly upgraded) max, since the game's own respawn refill
+	// recomputes max health from its internal stat and ignores the tracker's override.
+	bool consumeRespawn();
+
 private:
 	bool m_enabled = false;
 	bool m_wasDead = false;
+	bool m_wasDeadOrArrested = false;
+	bool m_respawnPending = false;
 	bool m_suppressNextDeathBroadcast = false;
 };

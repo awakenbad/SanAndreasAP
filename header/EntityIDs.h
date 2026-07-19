@@ -19,6 +19,9 @@ inline std::vector<Position> missionStartPos = {
     { 700, -3328, 20, 180 },
     { 2459.55, -1687.75, 12.56, 0 },
     { 2515.07, -1673.98, 12.71, 0 },
+    // House Party's second part starts at its own Grove Street marker, not one of the shared
+    // ones (hand-captured in-game; z lowered ~1m from the ped-origin readout to ground level).
+    { 2486.59, -1649.52, 12.48, 0 },
     { 1365.251, -1280.12, 12.5469, 0 },
     { 1042.85, -1338.62, 12.55, 0 },
     { 2070.87, -1703.01, 12.55, 0 },
