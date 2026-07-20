@@ -41,7 +41,7 @@ the C++ mod.
   [Silent's ASI Loader](https://github.com/GTAmodding/ASI-Loader/releases/tag/v1.3.0)
 - [ThirteenAG's Widescreen Fix](https://gtaforums.com/topic/547841-gtanfsmpother-widescreen-fixes-pack/)
   (some text does not scale correctly without it)
-- [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases) 0.6.8+
+- [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases) 0.6.7+
 
 ### Install
 
