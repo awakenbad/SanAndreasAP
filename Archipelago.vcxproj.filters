@@ -1,171 +1,225 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Header">
       <UniqueIdentifier>{d2737ed6-fe44-4e14-bdfa-12de75c1febf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header\Protocol">
+      <UniqueIdentifier>{a1f0c3d2-4b5e-4a91-9c7d-0e1f2a3b4c50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Checks">
+      <UniqueIdentifier>{b2e1d4c3-5c6f-4b82-8d6e-1f2a3b4c5d61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Checks\Submissions">
+      <UniqueIdentifier>{d5fdb7e9-f68e-4b65-8334-c12418c56aeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Gameplay">
+      <UniqueIdentifier>{c3d2e5f4-6d70-4c73-7e5f-2a3b4c5d6e72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Tags">
+      <UniqueIdentifier>{d4c3f6a5-7e81-4d64-6f4a-3b4c5d6e7f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Persistence">
+      <UniqueIdentifier>{e5b4a7b6-8f92-4e55-5a3b-4c5d6e7f8a94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\HUD">
+      <UniqueIdentifier>{f6a5b8c7-9a03-4f46-4b2c-5d6e7f8a9b05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Common">
+      <UniqueIdentifier>{a7b6c9d8-ab14-4a37-3c1d-6e7f8a9b0c16}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source">
       <UniqueIdentifier>{80eca0db-1570-4c8e-a998-44b61c8db291}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header\Submissions">
-      <UniqueIdentifier>{d5fdb7e9-f68e-4b65-8334-c12418c56aeb}</UniqueIdentifier>
+    <Filter Include="Source\Protocol">
+      <UniqueIdentifier>{b8c7dae9-bc25-4b48-2d0e-7f8a9b0c1d27}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Submissions">
+    <Filter Include="Source\Checks">
+      <UniqueIdentifier>{c9d8ebfa-cd36-4c59-1e1f-8a9b0c1d2e38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Checks\Submissions">
       <UniqueIdentifier>{e8d1bb44-cdb3-4eb3-ac0f-b995cdfae0a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Gameplay">
+      <UniqueIdentifier>{dae9fc0b-de47-4d6a-0f20-9b0c1d2e3f49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Tags">
+      <UniqueIdentifier>{ebfa0d1c-ef58-4e7b-a031-0c1d2e3f4a5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Persistence">
+      <UniqueIdentifier>{fc0b1e2d-fa69-4f8c-b142-1d2e3f4a5b6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\HUD">
+      <UniqueIdentifier>{0d1c2f3e-ab7a-409d-c253-2e3f4a5b6c7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Common">
+      <UniqueIdentifier>{1e2d3a4f-bc8b-41ae-d364-3f4a5b6c7d8d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\AmmuNationShop.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\AutoSaveManager.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\APSocket.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\CheckGiver.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\CheckListener.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\EntityIDs.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\TagBlipManager.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\TrapHandler.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\TagPositions.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\DeathLinkHandler.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="header\Mod.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="header\NotificationOverlay.h">
-      <Filter>Header</Filter>
+    <ClInclude Include="header\APSocket.h">
+      <Filter>Header\Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="header\EdgeTriggeredKey.h">
-      <Filter>Header</Filter>
+    <ClInclude Include="header\APProtocol.h">
+      <Filter>Header\Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="header\ParseUtils.h">
-      <Filter>Header</Filter>
+    <ClInclude Include="header\ItemEffects.h">
+      <Filter>Header\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="header\CheckListener.h">
+      <Filter>Header\Checks</Filter>
+    </ClInclude>
+    <ClInclude Include="header\CheckGiver.h">
+      <Filter>Header\Checks</Filter>
     </ClInclude>
     <ClInclude Include="header\PendingChecks.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\Position.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\SaveDataManager.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\ScreenScale.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="header\WeaponData.h">
-      <Filter>Header</Filter>
+      <Filter>Header\Checks</Filter>
     </ClInclude>
     <ClInclude Include="header\SubmissionTracker.h">
-      <Filter>Header\Submissions</Filter>
-    </ClInclude>
-    <ClInclude Include="header\ParamedicTracker.h">
-      <Filter>Header\Submissions</Filter>
-    </ClInclude>
-    <ClInclude Include="header\VigilanteTracker.h">
-      <Filter>Header\Submissions</Filter>
-    </ClInclude>
-    <ClInclude Include="header\FirefighterTracker.h">
-      <Filter>Header\Submissions</Filter>
-    </ClInclude>
-    <ClInclude Include="header\BurglaryTracker.h">
-      <Filter>Header\Submissions</Filter>
-    </ClInclude>
-    <ClInclude Include="header\TaxiTracker.h">
-      <Filter>Header\Submissions</Filter>
-    </ClInclude>
-    <ClInclude Include="header\LosSantosGymTracker.h">
-      <Filter>Header\Submissions</Filter>
+      <Filter>Header\Checks\Submissions</Filter>
     </ClInclude>
     <ClInclude Include="header\TieredSubmissionTracker.h">
-      <Filter>Header\Submissions</Filter>
+      <Filter>Header\Checks\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\ParamedicTracker.h">
+      <Filter>Header\Checks\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\FirefighterTracker.h">
+      <Filter>Header\Checks\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\VigilanteTracker.h">
+      <Filter>Header\Checks\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\TaxiTracker.h">
+      <Filter>Header\Checks\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\BurglaryTracker.h">
+      <Filter>Header\Checks\Submissions</Filter>
     </ClInclude>
     <ClInclude Include="header\TruckingTracker.h">
-      <Filter>Header\Submissions</Filter>
+      <Filter>Header\Checks\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\LosSantosGymTracker.h">
+      <Filter>Header\Checks\Submissions</Filter>
+    </ClInclude>
+    <ClInclude Include="header\AmmuNationShop.h">
+      <Filter>Header\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="header\TrapHandler.h">
+      <Filter>Header\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="header\DeathLinkHandler.h">
+      <Filter>Header\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="header\TagBlipManager.h">
+      <Filter>Header\Tags</Filter>
+    </ClInclude>
+    <ClInclude Include="header\TagPositions.h">
+      <Filter>Header\Tags</Filter>
+    </ClInclude>
+    <ClInclude Include="header\SaveDataManager.h">
+      <Filter>Header\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="header\AutoSaveManager.h">
+      <Filter>Header\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="header\NotificationOverlay.h">
+      <Filter>Header\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="header\ScreenScale.h">
+      <Filter>Header\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="header\EntityIDs.h">
+      <Filter>Header\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="header\WeaponData.h">
+      <Filter>Header\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Position.h">
+      <Filter>Header\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="header\ParseUtils.h">
+      <Filter>Header\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="header\EdgeTriggeredKey.h">
+      <Filter>Header\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\AmmuNationShop.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\AutoSaveManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\APSocket.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\CheckGiver.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\CheckListener.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="source\Main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="source\Mod.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="source\NotificationOverlay.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="source\APSocket.cpp">
+      <Filter>Source\Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="source\DeathLinkHandler.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="source\APProtocol.cpp">
+      <Filter>Source\Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="source\Position.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="source\ItemEffects.cpp">
+      <Filter>Source\Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="source\SaveDataManager.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="source\CheckListener.cpp">
+      <Filter>Source\Checks</Filter>
     </ClCompile>
-    <ClCompile Include="source\TagBlipManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\TrapHandler.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="source\CheckGiver.cpp">
+      <Filter>Source\Checks</Filter>
     </ClCompile>
     <ClCompile Include="source\SubmissionTracker.cpp">
-      <Filter>Source\Submissions</Filter>
-    </ClCompile>
-    <ClCompile Include="source\ParamedicTracker.cpp">
-      <Filter>Source\Submissions</Filter>
-    </ClCompile>
-    <ClCompile Include="source\VigilanteTracker.cpp">
-      <Filter>Source\Submissions</Filter>
-    </ClCompile>
-    <ClCompile Include="source\FirefighterTracker.cpp">
-      <Filter>Source\Submissions</Filter>
-    </ClCompile>
-    <ClCompile Include="source\BurglaryTracker.cpp">
-      <Filter>Source\Submissions</Filter>
-    </ClCompile>
-    <ClCompile Include="source\TaxiTracker.cpp">
-      <Filter>Source\Submissions</Filter>
-    </ClCompile>
-    <ClCompile Include="source\LosSantosGymTracker.cpp">
-      <Filter>Source\Submissions</Filter>
+      <Filter>Source\Checks\Submissions</Filter>
     </ClCompile>
     <ClCompile Include="source\TieredSubmissionTracker.cpp">
-      <Filter>Source\Submissions</Filter>
+      <Filter>Source\Checks\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ParamedicTracker.cpp">
+      <Filter>Source\Checks\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\FirefighterTracker.cpp">
+      <Filter>Source\Checks\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\VigilanteTracker.cpp">
+      <Filter>Source\Checks\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\TaxiTracker.cpp">
+      <Filter>Source\Checks\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BurglaryTracker.cpp">
+      <Filter>Source\Checks\Submissions</Filter>
     </ClCompile>
     <ClCompile Include="source\TruckingTracker.cpp">
-      <Filter>Source\Submissions</Filter>
+      <Filter>Source\Checks\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\LosSantosGymTracker.cpp">
+      <Filter>Source\Checks\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AmmuNationShop.cpp">
+      <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="source\TrapHandler.cpp">
+      <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="source\DeathLinkHandler.cpp">
+      <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="source\TagBlipManager.cpp">
+      <Filter>Source\Tags</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SaveDataManager.cpp">
+      <Filter>Source\Persistence</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AutoSaveManager.cpp">
+      <Filter>Source\Persistence</Filter>
+    </ClCompile>
+    <ClCompile Include="source\NotificationOverlay.cpp">
+      <Filter>Source\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Position.cpp">
+      <Filter>Source\Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

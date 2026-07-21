@@ -1,8 +1,9 @@
 #include "Mod.h"
+#include "APProtocol.h"
+#include "ItemEffects.h"
 #include "CStreaming.h"
 #include "CPools.h"
 #include <CRadar.h>
-#include <unordered_map>
 
 Mod::Mod()
 {
@@ -36,7 +37,7 @@ void Mod::pollDeathLink()
 {
     if (m_deathLinkHandler.update())
     {
-        m_apSocket.sendToServer("PLAYER_DIED\n");
+        m_apSocket.sendToServer(APProtocol::playerDied());
     }
 }
 
@@ -239,7 +240,7 @@ void Mod::sendChecksToAP(CheckEvent t_event)
     case CheckEvent::Mission:
     {
         std::string missionIDStr = m_checkListener.getMissionID();
-        if (m_apSocket.sendToServer("CHECK:MISSION:" + missionIDStr + "\n"))
+        if (m_apSocket.sendToServer(APProtocol::missionCheck(missionIDStr)))
         {
             if (m_checkListener.isStoryMission(parseIntOr(missionIDStr, -1)))
             {
@@ -253,20 +254,20 @@ void Mod::sendChecksToAP(CheckEvent t_event)
         break;
     }
     case CheckEvent::PickUp:
-        if (m_apSocket.sendToServer("CHECK:PICKUP:0\n"))
+        if (m_apSocket.sendToServer(APProtocol::pickUpCheck()))
         {
             m_checkListener.confirmPickUpSent();
             m_notificationOverlay.show("Picked up an item");
         }
         break;
     case CheckEvent::Tag:
-        if (m_apSocket.sendToServer("CHECK:TAG:" + std::to_string(m_checkListener.getPendingTagIndex()) + "\n"))
+        if (m_apSocket.sendToServer(APProtocol::tagCheck(m_checkListener.getPendingTagIndex())))
         {
             m_checkListener.confirmTagSent();
         }
         break;
     case CheckEvent::Submission:
-        if (m_apSocket.sendToServer("CHECK:MISSION:" + std::to_string(m_checkListener.getPendingSubmissionId()) + "\n"))
+        if (m_apSocket.sendToServer(APProtocol::missionCheck(m_checkListener.getPendingSubmissionId())))
         {
             m_checkListener.confirmSubmissionSent();
             m_autoSaveManager.requestSave();
@@ -280,7 +281,7 @@ void Mod::sendChecksToAP(CheckEvent t_event)
     // CheckListener's event system - send independently.
     if (m_checkListener.hasPendingSubmissionLevel())
     {
-        if (m_apSocket.sendToServer("CHECK:SUBLEVEL:" + std::to_string(m_checkListener.getPendingSubmissionLevelSlot()) + "\n"))
+        if (m_apSocket.sendToServer(APProtocol::submissionLevelCheck(m_checkListener.getPendingSubmissionLevelSlot())))
         {
             m_checkListener.confirmSubmissionLevelSent();
         }
@@ -289,7 +290,7 @@ void Mod::sendChecksToAP(CheckEvent t_event)
     // Shop purchases live outside CheckListener's event system - send independently.
     if (m_pendingShopChecks.hasPending())
     {
-        if (m_apSocket.sendToServer("CHECK:SHOP:" + std::to_string(m_pendingShopChecks.front()) + "\n"))
+        if (m_apSocket.sendToServer(APProtocol::shopCheck(m_pendingShopChecks.front())))
         {
             m_pendingShopChecks.confirm();
         }
@@ -298,147 +299,68 @@ void Mod::sendChecksToAP(CheckEvent t_event)
 
 void Mod::parseIncomingMessages()
 {
-    std::string msg;
-    while (m_apSocket.tryGetMessage(msg)) {
-        if (msg.rfind("STATUS:", 0) == 0)
+    std::string rawLine;
+    while (m_apSocket.tryGetMessage(rawLine))
+    {
+        APProtocol::Message message = APProtocol::parse(rawLine);
+
+        switch (message.kind)
         {
-            m_notificationOverlay.show(msg.substr(7));
-            continue;
-        }
+        case APProtocol::MessageKind::Status:
+            m_notificationOverlay.show(message.text);
+            break;
 
         // An item we found that belongs to another player's world.
-        if (msg.rfind("SENT:", 0) == 0)
-        {
-            m_notificationOverlay.show(msg.substr(5), NotificationIcon::ItemSent);
-            continue;
-        }
+        case APProtocol::MessageKind::ItemSent:
+            m_notificationOverlay.show(message.text, NotificationIcon::ItemSent);
+            break;
 
-        if (msg.rfind("LOCATE:TAG:", 0) == 0)
-        {
-            int tagIndex = parseIntOr(msg.substr(11), -1);
-            m_tagBlipManager.setLocatedTag(tagIndex);
-            if (tagIndex >= 0)
+        case APProtocol::MessageKind::LocateTag:
+            m_tagBlipManager.setLocatedTag(message.index);
+            if (message.index >= 0)
             {
-                m_notificationOverlay.show("Locating LS Tag #" + std::to_string(tagIndex + 1));
+                m_notificationOverlay.show("Locating LS Tag #" + std::to_string(message.index + 1));
             }
-            continue;
-        }
+            break;
 
-        if (msg.rfind("SHOPITEM:", 0) == 0)
-        {
-            std::string rest = msg.substr(9);
-            size_t colon = rest.find(':');
-            if (colon != std::string::npos)
-            {
-                m_ammuNationShop.setSlotContents(parseIntOr(rest.substr(0, colon), -1), rest.substr(colon + 1));
-            }
-            continue;
-        }
+        case APProtocol::MessageKind::ShopItem:
+            m_ammuNationShop.setSlotContents(message.index, message.text);
+            break;
 
-        if (msg.rfind("GIVE:", 0) != 0) continue;
+        case APProtocol::MessageKind::Give:
+            applyReceivedItem(message.effect, message.text);
+            break;
 
-        std::string rest = msg.substr(5); // strip "GIVE:"
-        size_t colonPos = rest.find(':');
-
-        std::string effectType = (colonPos == std::string::npos) ? rest : rest.substr(0, colonPos);
-        std::string value = (colonPos == std::string::npos) ? "" : rest.substr(colonPos + 1);
-
-        if (effectType == "money") {
-            m_checkGiver.giveMoney(parseIntOr(value, 0));
+        case APProtocol::MessageKind::Unknown:
+            break;
         }
-        else if (effectType == "weapon") {
-            m_checkGiver.giveWeapon(value);
-        }
-        else if (effectType == "progressive_mission") {
-            m_checkGiver.giveProgressiveMission();
-        }
-        else if (effectType == "progressive_map") {
-            m_checkGiver.giveProgressiveMap();
-        }
-        else if (effectType == "health_upgrade")
-        {
-            m_checkListener.submissionCheckWasReceived(PARAMEDIC_ID);
-        }
-        else if (effectType == "armor_upgrade")
-        {
-            m_checkListener.submissionCheckWasReceived(VIGILANTE_ID);
-        }
-        else if (effectType == "fire_immunity")
-        {
-            m_checkListener.submissionCheckWasReceived(FIREFIGHTER_ID);
-        }
-        else if (effectType == "stamina_upgrade")
-        {
-            m_checkListener.submissionCheckWasReceived(BURGLARY_ID);
-        }
-        else if (effectType == "taxi_nitro")
-        {
-            m_checkListener.submissionCheckWasReceived(TAXI_ID);
-        }
-        else if (effectType == "boxing_style")
-        {
-            m_checkListener.submissionCheckWasReceived(LOS_SANTOS_GYM_ID);
-        }
-        else if (effectType == "armor_refill")
-        {
-            m_checkGiver.giveArmorRefill();
-        }
-        else if (effectType == "car_repair")
-        {
-            m_checkGiver.giveCarRepair();
-        }
-        else if (effectType.rfind("trap_", 0) == 0)
-        {
-            m_trapHandler.giveTrap(effectType.substr(5));
-        }
-        else if (effectType == "death_link")
-        {
-            m_deathLinkHandler.setEnabled(value == "1");
-        }
-        else if (effectType == "deathlink_kill")
-        {
-            m_deathLinkHandler.killPlayer();
-        }
-        else
-        {
-            continue;
-        }
-
-        showReceivedItemMessage(effectType, value);
     }
 }
 
-void Mod::showReceivedItemMessage(const std::string& effectType, const std::string& value)
+void Mod::applyReceivedItem(const std::string& t_effectName, const std::string& t_value)
 {
-    if (effectType == "money") {
-        m_notificationOverlay.show("Archipelago: Received $" + value, NotificationIcon::Money);
-        return;
-    }
-    if (effectType == "weapon") {
-        m_notificationOverlay.show("Archipelago: Received weapon (" + value + ")", NotificationIcon::Weapon);
-        return;
+    const ItemEffectSpec* spec = findItemEffect(t_effectName);
+    if (!spec) return;
+
+    switch (spec->effect)
+    {
+    case ItemEffect::Money:              m_checkGiver.giveMoney(parseIntOr(t_value, 0)); break;
+    case ItemEffect::Weapon:             m_checkGiver.giveWeapon(t_value); break;
+    case ItemEffect::ProgressiveMission: m_checkGiver.giveProgressiveMission(); break;
+    case ItemEffect::ProgressiveMap:     m_checkGiver.giveProgressiveMap(); break;
+    case ItemEffect::SubmissionCheck:    m_checkListener.submissionCheckWasReceived(spec->submissionId); break;
+    case ItemEffect::ArmorRefill:        m_checkGiver.giveArmorRefill(); break;
+    case ItemEffect::CarRepair:          m_checkGiver.giveCarRepair(); break;
+    case ItemEffect::Trap:               m_trapHandler.giveTrap(spec->trapName); break;
+    case ItemEffect::DeathLinkToggle:    m_deathLinkHandler.setEnabled(t_value == "1"); break;
+    case ItemEffect::DeathLinkKill:      m_deathLinkHandler.killPlayer(); break;
     }
 
-    static const std::unordered_map<std::string, std::pair<const char*, NotificationIcon>> messageByEffect = {
-        { "progressive_mission", { "Archipelago: Received a Progressive Mission", NotificationIcon::ProgressiveMission } },
-        { "progressive_map",     { "Archipelago: Received a Progressive Map",     NotificationIcon::None } },
-        { "health_upgrade",      { "Archipelago: Received Max Health Upgrade",    NotificationIcon::HealthUpgrade } },
-        { "armor_upgrade",       { "Archipelago: Received Max Armor Upgrade",     NotificationIcon::ArmorUpgrade } },
-        { "fire_immunity",       { "Archipelago: Received Fire Immunity",         NotificationIcon::FireImmunity } },
-        { "stamina_upgrade",     { "Archipelago: Received Infinite Sprint",       NotificationIcon::Stamina } },
-        { "taxi_nitro",          { "Archipelago: Received Taxi Nitro",            NotificationIcon::Taxi } },
-        { "boxing_style",        { "Archipelago: Received Boxing Style",          NotificationIcon::Boxing } },
-        { "armor_refill",        { "Archipelago: Received Full Armor",            NotificationIcon::ArmorUpgrade } },
-        { "car_repair",          { "Archipelago: Received Car Repair",            NotificationIcon::Taxi } },
-        { "trap_tires",          { "Archipelago: Flat Tires Trap!",               NotificationIcon::Trap } },
-        { "trap_fat",            { "Archipelago: Fat CJ Trap!",                   NotificationIcon::Trap } },
-        { "trap_wanted",         { "Archipelago: Wanted Level Trap!",             NotificationIcon::Trap } },
-        { "trap_carfire",        { "Archipelago: Car Fire Trap!",                 NotificationIcon::Trap } },
-    };
-
-    auto it = messageByEffect.find(effectType);
-    if (it == messageByEffect.end()) return;
-    m_notificationOverlay.show(it->second.first, it->second.second);
+    std::string message = formatItemMessage(*spec, t_value);
+    if (!message.empty())
+    {
+        m_notificationOverlay.show(message, spec->icon);
+    }
 }
 
 // TEMPORARY dev tool (F6): fires every Los Santos check directly at the client - bypassing the
@@ -456,31 +378,31 @@ void Mod::debugSendAllLosSantosChecks()
     for (int id = 11; id <= 38; ++id)
     {
         if (id == 35) continue;
-        m_apSocket.sendToServer("CHECK:MISSION:" + std::to_string(id) + "\n");
+        m_apSocket.sendToServer(APProtocol::missionCheck(id));
     }
 
     // Single-completion submissions (the tiered ones are sent below).
     for (int id : { LOS_SANTOS_GYM_ID })
     {
-        m_apSocket.sendToServer("CHECK:MISSION:" + std::to_string(id) + "\n");
+        m_apSocket.sendToServer(APProtocol::missionCheck(id));
     }
 
     // Every tier of every tiered submission.
     const int levelSlots = SUBMISSION_TIER_SLOT_COUNT;
     for (int slot = 0; slot < levelSlots; ++slot)
     {
-        m_apSocket.sendToServer("CHECK:SUBLEVEL:" + std::to_string(slot) + "\n");
+        m_apSocket.sendToServer(APProtocol::submissionLevelCheck(slot));
     }
 
     for (int i = 0; i < 100; ++i)
     {
-        m_apSocket.sendToServer("CHECK:TAG:" + std::to_string(i) + "\n");
+        m_apSocket.sendToServer(APProtocol::tagCheck(i));
     }
 
     // All 16 shop slots - the client/server simply ignore the ones that aren't locations.
     for (int i = 0; i < 16; ++i)
     {
-        m_apSocket.sendToServer("CHECK:SHOP:" + std::to_string(i) + "\n");
+        m_apSocket.sendToServer(APProtocol::shopCheck(i));
     }
 
     m_checkListener.debugCompleteLosSantos();

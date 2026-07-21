@@ -95,7 +95,8 @@ private:
 	void spawnMissionBlockers();
 	void removeMissionBlockers();
 	void sendChecksToAP(CheckEvent t_event);
-	void showReceivedItemMessage(const std::string& effectType, const std::string& value);
+	// Grants one GIVE: effect and announces it. Unknown effect names are ignored.
+	void applyReceivedItem(const std::string& t_effectName, const std::string& t_value);
 	void persistAndRestoreState(bool t_worldWiped);
 };
 

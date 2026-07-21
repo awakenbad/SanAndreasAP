@@ -26,6 +26,8 @@
     <ClInclude Include="header\Mod.h" />
     <ClInclude Include="header\NotificationOverlay.h" />
     <ClInclude Include="header\ParamedicTracker.h" />
+    <ClInclude Include="header\APProtocol.h" />
+    <ClInclude Include="header\ItemEffects.h" />
     <ClInclude Include="header\ParseUtils.h" />
     <ClInclude Include="header\PendingChecks.h" />
     <ClInclude Include="header\Position.h" />
@@ -56,6 +58,8 @@
     <ClCompile Include="source\Mod.cpp" />
     <ClCompile Include="source\NotificationOverlay.cpp" />
     <ClCompile Include="source\ParamedicTracker.cpp" />
+    <ClCompile Include="source\APProtocol.cpp" />
+    <ClCompile Include="source\ItemEffects.cpp" />
     <ClCompile Include="source\Position.cpp" />
     <ClCompile Include="source\SaveDataManager.cpp" />
     <ClCompile Include="source\SubmissionTracker.cpp" />
