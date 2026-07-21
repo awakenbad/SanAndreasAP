@@ -376,43 +376,19 @@ CheckEvent CheckListener::update()
 
 bool CheckListener::submissionLevelChecker()
 {
-	const std::vector<std::pair<int, unsigned short>> submissionIdToLevelStat = {
-		{ PARAMEDIC_ID, STAT_HIGHEST_PARAMEDIC_MISSION_LEVEL },
-		{ FIREFIGHTER_ID, STAT_HIGHEST_FIREFIGHTER_MISSION_LEVEL },
-		{ VIGILANTE_ID, STAT_HIGHEST_VIGILANTE_MISSION_LEVEL },
-	};
-
-	for (const auto& [submissionId, stat] : submissionIdToLevelStat)
+	// Tiered submissions report their own newly reached tiers; each tracker owns where its
+	// progress comes from and its tier layout, so nothing here needs to know which are tiered.
+	std::vector<int> newTierSlots;
+	for (const auto& tracker : submissionTrackers)
 	{
-		if (CStats::GetStatValue(stat) < 12.0f) continue;
-
-		SubmissionTracker* st = findTracker(submissionId);
-		if (st && !st->getSubmissionCompleted())
-		{
-			st->submissionWasCompleted();
-			m_pendingSubmissions.push(submissionId);
-		}
+		tracker->pollNewTierSlots(newTierSlots);
+	}
+	for (int slot : newTierSlots)
+	{
+		m_pendingSubmissionLevels.push(slot);
 	}
 
-	if (*reinterpret_cast<int32_t*>(TAXI_FARES_ADDR) >= TAXI_FARES_FOR_COMPLETION)
-	{
-		SubmissionTracker* st = findTracker(TAXI_ID);
-		if (st && !st->getSubmissionCompleted())
-		{
-			st->submissionWasCompleted();
-			m_pendingSubmissions.push(TAXI_ID);
-		}
-	}
 
-	if (CStats::GetStatValue(STAT_MONEY_MADE_FROM_BURGLARY) >= BURGLARY_LOOT_FOR_COMPLETION)
-	{
-		SubmissionTracker* st = findTracker(BURGLARY_ID);
-		if (st && !st->getSubmissionCompleted())
-		{
-			st->submissionWasCompleted();
-			m_pendingSubmissions.push(BURGLARY_ID);
-		}
-	}
 
 	if (SubmissionTracker* st = findTracker(LOS_SANTOS_GYM_ID))
 	{
@@ -436,6 +412,23 @@ void CheckListener::confirmSubmissionSent()
 {
 	m_pendingSubmissions.confirm();
 }
+
+bool CheckListener::hasPendingSubmissionLevel() const
+{
+	return m_pendingSubmissionLevels.hasPending();
+}
+
+int CheckListener::getPendingSubmissionLevelSlot() const
+{
+	if (!m_pendingSubmissionLevels.hasPending()) return -1;
+	return m_pendingSubmissionLevels.front();
+}
+
+void CheckListener::confirmSubmissionLevelSent()
+{
+	m_pendingSubmissionLevels.confirm();
+}
+
 
 std::string CheckListener::getMissionID()
 {

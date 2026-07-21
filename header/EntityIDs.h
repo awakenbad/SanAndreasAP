@@ -15,6 +15,27 @@ inline constexpr int BURGLARY_ID = 125;
 // Deliberately absent: the marker in front of CJ's house (2495.214, -1687.03) - only Big
 // Smoke starts there, which is the first story mission and needs zero Progressive Missions
 // per the AP rules, so blocking it is never correct and only gets in the way afterwards.
+// Submissions that pay out in tiers rather than once on completion. The check slot sent to the
+// client is baseSlot + (tier - 1), and a tier is reached at progressPerTier * tier of whatever
+// the tracker measures (levels, fares, dollars). Append new entries at the end - inserting in
+// the middle renumbers every slot after it.
+//
+// MUST match worlds/gta_sa/submission_tier_list.py exactly.
+struct SubmissionTierSpec
+{
+	int baseSlot;
+	int tierCount;
+	float progressPerTier;
+};
+
+inline constexpr SubmissionTierSpec PARAMEDIC_TIERS   { 0,  12, 1.0f };
+inline constexpr SubmissionTierSpec FIREFIGHTER_TIERS { 12, 12, 1.0f };
+inline constexpr SubmissionTierSpec VIGILANTE_TIERS   { 24, 12, 1.0f };
+inline constexpr SubmissionTierSpec TAXI_TIERS        { 36, 10, 5.0f };
+inline constexpr SubmissionTierSpec BURGLARY_TIERS    { 46, 10, 1000.0f };
+
+inline constexpr int SUBMISSION_TIER_SLOT_COUNT = 56;
+
 inline std::vector<Position> missionStartPos = {
     { 700, -3328, 20, 180 },
     { 2459.55, -1687.75, 12.56, 0 },

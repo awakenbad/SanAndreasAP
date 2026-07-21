@@ -21,6 +21,7 @@
     <ClInclude Include="header\EntityIDs.h" />
     <ClInclude Include="header\FirefighterTracker.h" />
     <ClInclude Include="header\LosSantosGymTracker.h" />
+    <ClInclude Include="header\TieredSubmissionTracker.h" />
     <ClInclude Include="header\Mod.h" />
     <ClInclude Include="header\NotificationOverlay.h" />
     <ClInclude Include="header\ParamedicTracker.h" />
@@ -47,6 +48,7 @@
     <ClCompile Include="source\DeathLinkHandler.cpp" />
     <ClCompile Include="source\FirefighterTracker.cpp" />
     <ClCompile Include="source\LosSantosGymTracker.cpp" />
+    <ClCompile Include="source\TieredSubmissionTracker.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Mod.cpp" />
     <ClCompile Include="source\NotificationOverlay.cpp" />

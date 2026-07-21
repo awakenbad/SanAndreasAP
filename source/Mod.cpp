@@ -256,6 +256,16 @@ void Mod::sendChecksToAP()
         break;
     }
 
+    // Per-level submission checks (Paramedic/Firefighter/Vigilante levels 1-12) live outside
+    // CheckListener's event system - send independently.
+    if (m_checkListener.hasPendingSubmissionLevel())
+    {
+        if (m_apSocket.sendToServer("CHECK:SUBLEVEL:" + std::to_string(m_checkListener.getPendingSubmissionLevelSlot()) + "\n"))
+        {
+            m_checkListener.confirmSubmissionLevelSent();
+        }
+    }
+
     // Shop purchases live outside CheckListener's event system - send independently.
     if (m_pendingShopChecks.hasPending())
     {
@@ -429,10 +439,17 @@ void Mod::debugSendAllLosSantosChecks()
         m_apSocket.sendToServer("CHECK:MISSION:" + std::to_string(id) + "\n");
     }
 
-    // Submissions (gym + the five side activities).
-    for (int id : { LOS_SANTOS_GYM_ID, TAXI_ID, PARAMEDIC_ID, FIREFIGHTER_ID, VIGILANTE_ID, BURGLARY_ID })
+    // Single-completion submissions (the tiered ones are sent below).
+    for (int id : { LOS_SANTOS_GYM_ID })
     {
         m_apSocket.sendToServer("CHECK:MISSION:" + std::to_string(id) + "\n");
+    }
+
+    // Every tier of every tiered submission.
+    const int levelSlots = SUBMISSION_TIER_SLOT_COUNT;
+    for (int slot = 0; slot < levelSlots; ++slot)
+    {
+        m_apSocket.sendToServer("CHECK:SUBLEVEL:" + std::to_string(slot) + "\n");
     }
 
     for (int i = 0; i < 100; ++i)
@@ -587,6 +604,7 @@ void Mod::persistAndRestoreState(bool t_worldWiped)
 			bool received = m_saveDataManager.getValue(prefix + "received", "0") == "1";
 			bool completed = m_saveDataManager.getValue(prefix + "completed", "0") == "1";
 			tracker->restoreState(received, completed);
+			tracker->restoreSentTier(parseIntOr(m_saveDataManager.getValue(prefix + "tier", "0"), 0));
 		}
 
 		std::string tagBits = m_saveDataManager.getValue("tags_claimed", std::string(100, '0'));
@@ -607,6 +625,7 @@ void Mod::persistAndRestoreState(bool t_worldWiped)
 		std::string prefix = "submission_" + std::to_string(tracker->getSubmissionID()) + "_";
 		m_saveDataManager.setValue(prefix + "received", tracker->getCheckReceived() ? "1" : "0");
 		m_saveDataManager.setValue(prefix + "completed", tracker->getSubmissionCompleted() ? "1" : "0");
+		m_saveDataManager.setValue(prefix + "tier", std::to_string(tracker->getSentTier()));
 	}
 
 	const std::array<bool, 100>& claimed = m_checkListener.getClaimedTags();

@@ -64,6 +64,12 @@ public:
 
 	int getPendingSubmissionId();
 	void confirmSubmissionSent();
+
+	// Levelled submissions (Paramedic/Firefighter/Vigilante) send a check per level reached
+	// rather than one on completion - see LevelledSubmissionTracker for the slot numbering.
+	bool hasPendingSubmissionLevel() const;
+	int getPendingSubmissionLevelSlot() const;
+	void confirmSubmissionLevelSent();
 private:
 	static constexpr uintptr_t TAXI_FARES_ADDR = 0xA49C30;
 	static constexpr int32_t TAXI_FARES_FOR_COMPLETION = 50;
@@ -90,6 +96,7 @@ private:
 	PendingChecks<std::string> m_pendingMissions;
 	PendingChecks<int> m_pendingTags;
 	PendingChecks<int> m_pendingSubmissions;
+	PendingChecks<int> m_pendingSubmissionLevels;
 
 	SubmissionTracker* findTracker(int t_submissionID);
 	bool tagChecker();
