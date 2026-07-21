@@ -4,16 +4,6 @@
 #include <CRadar.h>
 #include <unordered_map>
 
-// std::stoi throws on malformed input, which would crash the whole game - socket messages and
-// the companion save file are both external data that can't be trusted to be numeric.
-static int parseIntOr(const std::string& text, int fallback)
-{
-	char* end = nullptr;
-	long value = strtol(text.c_str(), &end, 10);
-	if (end == text.c_str()) return fallback;
-	return static_cast<int>(value);
-}
-
 Mod::Mod()
 {
 	m_apSocket.connectToServer("127.0.0.1", 12345);
@@ -22,48 +12,74 @@ Mod::Mod()
 
 void Mod::start()
 {
-	m_apSocket.update();
-	if (m_deathLinkHandler.update())
-	{
-		m_apSocket.sendToServer("PLAYER_DIED\n");
-	}
-	m_tagBlipManager.setBlipsEnabled(m_showTagBlips);
-	// Both signals are polled every tick (no short-circuit): the object sentinel catches loads,
-	// while the blip pool still catches a New Game that clears the radar.
-	// Wipe detection must run BEFORE the blip manager touches anything: after a load its handles
-	// are stale, and acting on them would clear blips that now belong to the game.
-	bool objectWiped = detectWorldWipe();
-	if (objectWiped)
-	{
-		m_tagBlipManager.onWorldWiped();
-	}
-	bool blipWiped = m_tagBlipManager.update(m_checkListener.getClaimedTags());
-	bool worldWiped = blipWiped || objectWiped;
- 	persistAndRestoreState(worldWiped);
-	receiveCurrentCheckEvent();
+    // The order of these phases is load-bearing; each one's comment says why.
+    m_apSocket.update();
+    pollDeathLink();
 
-    // The hospital/police respawn refill recomputes max health from the game's internal stat,
-    // ignoring the Paramedic tracker's override - so on the respawn edge, top current health up
-    // to our max. Runs after receiveCurrentCheckEvent() so the tracker has re-asserted
-    // m_fMaxHealth this tick; heals to whatever the current max is, so it's a no-op without the
-    // upgrade and also corrects the reverse case (respawn granting MORE than an unearned max).
-    if (m_deathLinkHandler.consumeRespawn())
+    bool worldWiped = updateWorldState();
+    persistAndRestoreState(worldWiped);
+
+    // Detection has to run before the respawn top-up: it re-asserts the trackers' max-health
+    // override for this tick, which the top-up then heals to.
+    CheckEvent event = m_checkListener.update();
+    applyRespawnHealthTopUp();
+
+    sendChecksToAP(event);
+    updateGameplaySystems();
+    updateMissionBlockers();
+    updateDebugHotkeys();
+
+    parseIncomingMessages();
+}
+
+void Mod::pollDeathLink()
+{
+    if (m_deathLinkHandler.update())
     {
-        if (CPlayerPed* player = FindPlayerPed())
-        {
-            player->m_fHealth = static_cast<float>(CWorld::Players[0].m_nMaxHealth);
-        }
+        m_apSocket.sendToServer("PLAYER_DIED\n");
     }
+}
 
-    sendChecksToAP();
+// Returns true when the world was rebuilt this tick (a load or a new game).
+bool Mod::updateWorldState()
+{
+    // Both signals are polled every tick (no short-circuit): the object sentinel catches loads,
+    // while the blip pool still catches a New Game that clears the radar.
+    // Wipe detection must run BEFORE the blip manager touches anything: after a load its handles
+    // are stale, and acting on them would clear blips that now belong to the game.
+    bool objectWiped = detectWorldWipe();
+    if (objectWiped)
+    {
+        m_tagBlipManager.onWorldWiped();
+    }
+    bool blipWiped = m_tagBlipManager.update(m_checkListener.getClaimedTags());
+    return blipWiped || objectWiped;
+}
+
+// The hospital/police respawn refill recomputes max health from the game's internal stat,
+// ignoring the Paramedic tracker's override - so on the respawn edge, top current health up to
+// our max. Heals to whatever the current max is, so it's a no-op without the upgrade and also
+// corrects the reverse case (respawn granting MORE than an unearned max).
+void Mod::applyRespawnHealthTopUp()
+{
+    if (!m_deathLinkHandler.consumeRespawn()) return;
+
+    if (CPlayerPed* player = FindPlayerPed())
+    {
+        player->m_fHealth = static_cast<float>(CWorld::Players[0].m_nMaxHealth);
+    }
+}
+
+void Mod::updateGameplaySystems()
+{
     m_ammuNationShop.update();
     m_trapHandler.update();
+    m_checkGiver.update();
 
     if (m_autoSaveManager.update())
     {
         m_notificationOverlay.showAboveRadar("Archipelago: Autosaved (slot 8)");
     }
-    m_checkGiver.update();
 
     int purchasedSlot = m_ammuNationShop.pollPurchasedSlot();
     if (purchasedSlot >= 0)
@@ -71,7 +87,10 @@ void Mod::start()
         m_pendingShopChecks.push(purchasedSlot);
         m_notificationOverlay.show("Archipelago: Checked Ammu-Nation (" + std::string(shopItems[purchasedSlot].displayName) + ")");
     }
+}
 
+void Mod::updateMissionBlockers()
+{
     // Self-heal: if the objects behind our bookkeeping have been destroyed (a load we failed to
     // detect), drop the stale list so the check below respawns them. This deliberately does not
     // depend on the world-wipe signal - it verifies the objects themselves.
@@ -91,12 +110,15 @@ void Mod::start()
     {
         removeMissionBlockers();
     }
+}
+
+// TEMPORARY dev tools - see Mod.h. Deleting this method and its call site removes them all.
+void Mod::updateDebugHotkeys()
+{
     if (m_tagDebugToggleKey.justPressed())
     {
         m_showTagDebug = !m_showTagDebug;
     }
-
-    // TEMPORARY dev tools - see Mod.h.
     if (m_debugDecrementKey.justPressed())
     {
         m_checkGiver.removeProgressiveMission();
@@ -111,8 +133,6 @@ void Mod::start()
     {
         debugSendAllLosSantosChecks();
     }
-
-	parseIncomingMessages();
 }
 
 bool Mod::detectWorldWipe()
@@ -212,9 +232,9 @@ void Mod::removeMissionBlockers()
     m_blockersSpawned = false;
 }
 
-void Mod::sendChecksToAP()
+void Mod::sendChecksToAP(CheckEvent t_event)
 {
-    switch (m_currentEvent)
+    switch (t_event)
     {
     case CheckEvent::Mission:
     {
@@ -497,7 +517,7 @@ void Mod::drawMenuOverlay()
     // since this only runs while a menu is open.
     if (m_tagBlipToggleKey.justPressed())
     {
-        m_showTagBlips = !m_showTagBlips;
+        m_tagBlipManager.toggleBlips();
     }
 
     bool connected = m_apSocket.isConnected();
@@ -524,12 +544,7 @@ void Mod::drawMenuOverlay()
     CFont::SetBackground(false, false);
 
     CFont::PrintString(ScreenScale::of(20.0f), bottom - ScreenScale::of(55.0f),
-        m_showTagBlips ? "F8 - Tag blips on map: ON" : "F8 - Tag blips on map: OFF");
-}
-
-void Mod::receiveCurrentCheckEvent()
-{
-	m_currentEvent = m_checkListener.update();
+        m_tagBlipManager.areBlipsEnabled() ? "F8 - Tag blips on map: ON" : "F8 - Tag blips on map: OFF");
 }
 
 void Mod::spawnSprayCanPickup()
@@ -615,7 +630,7 @@ void Mod::persistAndRestoreState(bool t_worldWiped)
 		}
 		m_checkListener.restoreClaimedTags(claimed);
 
-		m_showTagBlips = m_saveDataManager.getValue("show_tag_blips", "1") == "1";
+		m_tagBlipManager.setBlipsEnabled(m_saveDataManager.getValue("show_tag_blips", "1") == "1");
 	}
 
 	m_saveDataManager.setValue("progressive_mission", std::to_string(m_checkGiver.getProgressiveMissionCounter()));
@@ -635,5 +650,5 @@ void Mod::persistAndRestoreState(bool t_worldWiped)
 		if (claimed[i]) tagBits[i] = '1';
 	}
 	m_saveDataManager.setValue("tags_claimed", tagBits);
-	m_saveDataManager.setValue("show_tag_blips", m_showTagBlips ? "1" : "0");
+	m_saveDataManager.setValue("show_tag_blips", m_tagBlipManager.areBlipsEnabled() ? "1" : "0");
 }

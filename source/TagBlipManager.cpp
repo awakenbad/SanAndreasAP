@@ -228,6 +228,16 @@ void TagBlipManager::setBlipsEnabled(bool t_enabled)
 	m_blipsEnabled = t_enabled;
 }
 
+void TagBlipManager::toggleBlips()
+{
+	m_blipsEnabled = !m_blipsEnabled;
+}
+
+bool TagBlipManager::areBlipsEnabled() const
+{
+	return m_blipsEnabled;
+}
+
 void TagBlipManager::drawTagNumbers(const std::array<bool, 100>& t_claimed)
 {
 	if (!m_blipsEnabled) return;

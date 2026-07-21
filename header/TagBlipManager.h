@@ -34,6 +34,8 @@ public:
 	// Player preference (pause-menu toggle): disabling clears all tag blips and stops drawing
 	// numbers. The wipe-detection sentinel stays alive regardless.
 	void setBlipsEnabled(bool t_enabled);
+	void toggleBlips();
+	bool areBlipsEnabled() const;
 
 private:
 	// Identifies blips as ours by world position, since RADAR_SPRITE_SPRAY is also vanilla's

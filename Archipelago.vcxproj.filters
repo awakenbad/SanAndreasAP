@@ -54,6 +54,9 @@
     <ClInclude Include="header\EdgeTriggeredKey.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="header\ParseUtils.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="header\PendingChecks.h">
       <Filter>Header</Filter>
     </ClInclude>

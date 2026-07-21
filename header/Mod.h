@@ -2,6 +2,7 @@
 #include <vector>
 #include <APSocket.h>
 #include "EdgeTriggeredKey.h"
+#include "ParseUtils.h"
 #include "CheckListener.h"
 #include "CheckGiver.h"
 #include "CStats.h"
@@ -47,7 +48,6 @@ private:
 	CheckListener m_checkListener;
 	CheckGiver m_checkGiver;
 	APSocket m_apSocket;
-	CheckEvent m_currentEvent;
 	std::vector<CObject*> m_missionBlockers;
 	bool m_blockersSpawned = false;
 	DeathLinkHandler m_deathLinkHandler;
@@ -65,7 +65,6 @@ private:
 	// destroyed by one, which makes an object the only sentinel a save can't preserve.
 	CObject* m_worldSentinel = nullptr;
 	bool detectWorldWipe();
-	bool m_showTagBlips = true;
 
 	EdgeTriggeredKey m_tagBlipToggleKey{ VK_F8 };
 
@@ -84,11 +83,18 @@ private:
 	void debugSendAllLosSantosChecks();
 
 	void parseIncomingMessages();
-	void receiveCurrentCheckEvent();
+
+	// One tick, in order - see start() for why the sequence matters.
+	void pollDeathLink();
+	bool updateWorldState();
+	void applyRespawnHealthTopUp();
+	void updateGameplaySystems();
+	void updateMissionBlockers();
+	void updateDebugHotkeys();
 	void spawnSprayCanPickup();
 	void spawnMissionBlockers();
 	void removeMissionBlockers();
-	void sendChecksToAP();
+	void sendChecksToAP(CheckEvent t_event);
 	void showReceivedItemMessage(const std::string& effectType, const std::string& value);
 	void persistAndRestoreState(bool t_worldWiped);
 };
