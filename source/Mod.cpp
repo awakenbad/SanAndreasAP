@@ -91,6 +91,27 @@ void Mod::start()
     {
         removeMissionBlockers();
     }
+    if (m_tagDebugToggleKey.justPressed())
+    {
+        m_showTagDebug = !m_showTagDebug;
+    }
+
+    // TEMPORARY dev tools - see Mod.h.
+    if (m_debugDecrementKey.justPressed())
+    {
+        m_checkGiver.removeProgressiveMission();
+        m_notificationOverlay.show("DEBUG: Progressive Mission -> " + std::to_string(m_checkGiver.getProgressiveMissionCounter()));
+    }
+    if (m_debugIncrementKey.justPressed())
+    {
+        m_checkGiver.giveProgressiveMission();
+        m_notificationOverlay.show("DEBUG: Progressive Mission -> " + std::to_string(m_checkGiver.getProgressiveMissionCounter()));
+    }
+    if (m_debugSendAllLsKey.justPressed())
+    {
+        debugSendAllLosSantosChecks();
+    }
+
 	parseIncomingMessages();
 }
 
@@ -390,6 +411,45 @@ void Mod::showReceivedItemMessage(const std::string& effectType, const std::stri
     m_notificationOverlay.show(it->second.first, it->second.second);
 }
 
+// TEMPORARY dev tool (F6): fires every Los Santos check directly at the client - bypassing the
+// pending queues on purpose, so the 27 story sends don't each decrement the progressive
+// mission counter. Only works while connected (no retry); duplicates are harmless server-side.
+void Mod::debugSendAllLosSantosChecks()
+{
+    if (!m_apSocket.isConnected())
+    {
+        m_notificationOverlay.show("DEBUG: not connected - no checks sent");
+        return;
+    }
+
+    // LS story missions (35 is the race minigame, not a location).
+    for (int id = 11; id <= 38; ++id)
+    {
+        if (id == 35) continue;
+        m_apSocket.sendToServer("CHECK:MISSION:" + std::to_string(id) + "\n");
+    }
+
+    // Submissions (gym + the five side activities).
+    for (int id : { LOS_SANTOS_GYM_ID, TAXI_ID, PARAMEDIC_ID, FIREFIGHTER_ID, VIGILANTE_ID, BURGLARY_ID })
+    {
+        m_apSocket.sendToServer("CHECK:MISSION:" + std::to_string(id) + "\n");
+    }
+
+    for (int i = 0; i < 100; ++i)
+    {
+        m_apSocket.sendToServer("CHECK:TAG:" + std::to_string(i) + "\n");
+    }
+
+    // All 16 shop slots - the client/server simply ignore the ones that aren't locations.
+    for (int i = 0; i < 16; ++i)
+    {
+        m_apSocket.sendToServer("CHECK:SHOP:" + std::to_string(i) + "\n");
+    }
+
+    m_checkListener.debugCompleteLosSantos();
+    m_notificationOverlay.show("DEBUG: sent every Los Santos check");
+}
+
 void Mod::drawOverlay()
 {
     m_notificationOverlay.draw();
@@ -397,6 +457,21 @@ void Mod::drawOverlay()
     m_ammuNationShop.drawShopContents();
     m_trapHandler.drawTimers();
 
+    // Hidden field diagnostic (F7) for the intermittent tag-detection report - see Mod.h.
+    if (m_showTagDebug)
+    {
+        CFont::SetFontStyle(FONT_SUBTITLES);
+        CFont::SetScale(ScreenScale::of(0.45f), ScreenScale::of(0.9f));
+        CFont::SetColor(CRGBA(255, 255, 0, 255));
+        CFont::SetProportional(true);
+        CFont::SetOrientation(ALIGN_LEFT);
+        CFont::SetDropShadowPosition(1);
+        CFont::SetBackground(false, false);
+        CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
+        // Single PrintString with ~n~ - two calls in one frame don't stack (known CFont gotcha).
+        std::string debugText = m_checkListener.tagDebugLine() + "~n~" + m_checkListener.missionDebugLine();
+        CFont::PrintString(ScreenScale::of(20.0f), ScreenScale::of(20.0f), debugText.c_str());
+    }
 }
 
 void Mod::drawMenuOverlay()

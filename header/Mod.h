@@ -69,6 +69,20 @@ private:
 
 	EdgeTriggeredKey m_tagBlipToggleKey{ VK_F8 };
 
+	EdgeTriggeredKey m_tagDebugToggleKey{ VK_F7 };
+	bool m_showTagDebug = false;
+
+	// TEMPORARY dev tools for the Badlands verification pass - counter down/up to spawn and
+	// despawn mission blockers on demand. Remove before release.
+	EdgeTriggeredKey m_debugDecrementKey{ VK_F9 };
+	EdgeTriggeredKey m_debugIncrementKey{ VK_F10 };
+
+	// TEMPORARY: F6 sends every Los Santos check in one burst, for testing Badlands from a
+	// post-Green-Sabre save without replaying LS. Remove before release.
+	EdgeTriggeredKey m_debugSendAllLsKey{ VK_F6 };
+
+	void debugSendAllLosSantosChecks();
+
 	void parseIncomingMessages();
 	void receiveCurrentCheckEvent();
 	void spawnSprayCanPickup();

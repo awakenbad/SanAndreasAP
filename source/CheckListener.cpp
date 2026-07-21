@@ -62,9 +62,50 @@ const std::array<bool, 100>& CheckListener::getClaimedTags() const
 	return m_tagClaimed;
 }
 
+std::string CheckListener::tagDebugLine() const
+{
+	int claimedCount = 0;
+	for (bool claimed : m_tagClaimed)
+	{
+		if (claimed) claimedCount++;
+	}
+
+	return "DBG tagCtr=" + std::to_string(*reinterpret_cast<int32_t*>(TAGS_SPRAYED_ADDR))
+		+ " base=" + std::to_string(static_cast<int>(m_lastTagCount))
+		+ " claimed=" + std::to_string(claimedCount)
+		+ " pendingTags=" + std::to_string(m_pendingTags.hasPending() ? 1 : 0)
+		+ " init=" + std::to_string(m_baselinesInitialized ? 1 : 0);
+}
+
+std::string CheckListener::missionDebugLine() const
+{
+	std::string key(CStats::LastMissionPassedName);
+
+	int id = -1;
+	for (int i = 0; i < static_cast<int>(missions.size()); ++i)
+	{
+		if (missions[i] == key)
+		{
+			id = i;
+			break;
+		}
+	}
+
+	return "DBG LastMission: [" + key + "] id=" + std::to_string(id);
+}
+
 void CheckListener::restoreClaimedTags(const std::array<bool, 100>& t_claimed)
 {
 	m_tagClaimed = t_claimed;
+}
+
+void CheckListener::debugCompleteLosSantos()
+{
+	m_tagClaimed.fill(true);
+	for (const auto& tracker : submissionTrackers)
+	{
+		tracker->submissionWasCompleted();
+	}
 }
 
 bool CheckListener::pickUpChecker()
@@ -162,16 +203,18 @@ void CheckListener::initializeMissionList()
 		"CESAR_1",   // 36  Lowrider (High Stakes)
 		"LA1FIN1",   // 37  Reuniting The Families
 		"LA1FIN2",   // 38  The Green Sabre
-		"BCRASH1",   // 39  Badlands
-		"CATALIN",   // 40  First Date
-		"CAT_1",     // 41  Local Liquor Store
-		"CAT_2",     // 42  Small Town Bank
-		"CAT_3",     // 43  Tanker Commander
-		"CAT_4",     // 44  Against All Odds
-		"CATCUT",    // 45  King in Exile
-		"TRUTH_1",   // 46  Body Harvest
-		"TRUTH_2",   // 47  Are you going to San Fierro?
-		"BCESAR4",   // 48  Wu Zi Mu / Farewell, My Love...
+		"BCRASH1",   // 39  Badlands (verified in-game)
+		"CATALIN",   // 40  First Date - NEVER FIRES: cutscene-style mission, the game does not
+		             //     update LastMissionPassedName for it (verified in-game). Placeholder
+		             //     key kept so the ID numbering stays intact.
+		"CAT_1",     // 41  Local Liquor Store (verified in-game)
+		"CAT_2",     // 42  Small Town Bank (verified in-game)
+		"CAT_3",     // 43  Tanker Commander (verified in-game)
+		"CAT_4",     // 44  Against All Odds (verified in-game)
+		"CATCUT",    // 45  King in Exile - NEVER FIRES, same as First Date (verified in-game)
+		"TRUTH_1",   // 46  Body Harvest (verified in-game)
+		"TRUTH_2",   // 47  Are you going to San Fierro? (verified in-game)
+		"BCESAR4",   // 48  Wu Zi Mu (verified in-game; Farewell My Love is separate - see 135)
 		"GARAG_1",   // 49  Wear Flowers In Your Hair
 		"DECON",     // 50  Deconstruction
 		"SCRASH3",   // 51  555 WE TIP
@@ -258,6 +301,10 @@ void CheckListener::initializeMissionList()
 		"MTBIKER",   // 132 The Chiliad Challenge
 		"STUNT",     // 133 BMX / NRG-500 STUNT Mission
 		"BUYPRO1",   // 134 Buy Properties Mission
+		// Appended past the original range: missions the source table
+		// merged into one row but which the game reports as separate completions. Appending
+		// keeps every existing index (= AP location ID) stable.
+		"BCES4_2",   // 135 Farewell, My Love... (verified in-game; row 48 covers only Wu Zi Mu)
 	};
 }
 
@@ -426,6 +473,7 @@ SubmissionTracker* CheckListener::findTracker(int t_submissionID)
 bool CheckListener::isStoryMission(int missionId)
 {
 	if (missionId == 35) return false;
+	if (missionId == 135) return true; // Farewell, My Love... - appended past the original range
 	return missionId >= 11 && missionId <= 112;
 }
 
