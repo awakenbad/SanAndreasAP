@@ -8,7 +8,8 @@
 Mod::Mod()
 {
 	m_apSocket.connectToServer("127.0.0.1", 12345);
-	
+
+	m_persistentSubsystems = { &m_checkListener, &m_checkGiver, &m_tagBlipManager };
 }
 
 void Mod::start()
@@ -532,45 +533,16 @@ void Mod::persistAndRestoreState(bool t_worldWiped)
 	{
 		m_notificationOverlay.show("Archipelago: Restored progress (" + m_saveDataManager.getCurrentSaveKey() + ")");
 
-		m_checkListener.resyncBaselines();
-		m_checkGiver.setProgressiveMissionCounter(parseIntOr(m_saveDataManager.getValue("progressive_mission", "1"), 1));
-
-		for (const auto& tracker : m_checkListener.getSubmissionTrackers())
+		for (PersistentState* subsystem : m_persistentSubsystems)
 		{
-			std::string prefix = "submission_" + std::to_string(tracker->getSubmissionID()) + "_";
-			bool received = m_saveDataManager.getValue(prefix + "received", "0") == "1";
-			bool completed = m_saveDataManager.getValue(prefix + "completed", "0") == "1";
-			tracker->restoreState(received, completed);
-			tracker->restoreSentTier(parseIntOr(m_saveDataManager.getValue(prefix + "tier", "0"), 0));
+			subsystem->load(m_saveDataManager);
 		}
-
-		std::string tagBits = m_saveDataManager.getValue("tags_claimed", std::string(100, '0'));
-		std::array<bool, 100> claimed{};
-		for (size_t i = 0; i < claimed.size(); ++i)
-		{
-			claimed[i] = i < tagBits.size() && tagBits[i] == '1';
-		}
-		m_checkListener.restoreClaimedTags(claimed);
-
-		m_tagBlipManager.setBlipsEnabled(m_saveDataManager.getValue("show_tag_blips", "1") == "1");
 	}
 
-	m_saveDataManager.setValue("progressive_mission", std::to_string(m_checkGiver.getProgressiveMissionCounter()));
-
-	for (const auto& tracker : m_checkListener.getSubmissionTrackers())
+	// Staged every tick rather than only on change, so a save triggered by anything - the player,
+	// an autosave, a mission end - always writes current values with no separate dirty tracking.
+	for (PersistentState* subsystem : m_persistentSubsystems)
 	{
-		std::string prefix = "submission_" + std::to_string(tracker->getSubmissionID()) + "_";
-		m_saveDataManager.setValue(prefix + "received", tracker->getCheckReceived() ? "1" : "0");
-		m_saveDataManager.setValue(prefix + "completed", tracker->getSubmissionCompleted() ? "1" : "0");
-		m_saveDataManager.setValue(prefix + "tier", std::to_string(tracker->getSentTier()));
+		subsystem->save(m_saveDataManager);
 	}
-
-	const std::array<bool, 100>& claimed = m_checkListener.getClaimedTags();
-	std::string tagBits(claimed.size(), '0');
-	for (size_t i = 0; i < claimed.size(); ++i)
-	{
-		if (claimed[i]) tagBits[i] = '1';
-	}
-	m_saveDataManager.setValue("tags_claimed", tagBits);
-	m_saveDataManager.setValue("show_tag_blips", m_tagBlipManager.areBlipsEnabled() ? "1" : "0");
 }

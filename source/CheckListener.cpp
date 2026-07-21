@@ -1,8 +1,14 @@
 #include "CheckListener.h"
 #include "TagPositions.h"
 #include "EntityIDs.h"
+#include "SaveDataManager.h"
 #include "common.h"
 #include <algorithm>
+
+namespace
+{
+	constexpr char TAGS_CLAIMED_KEY[] = "tags_claimed";
+}
 
 CheckListener::CheckListener() : m_pickUpCounter(CPickups::aPickUpsCollected)
 {
@@ -95,9 +101,40 @@ std::string CheckListener::missionDebugLine() const
 	return "DBG LastMission: [" + key + "] id=" + std::to_string(id);
 }
 
-void CheckListener::restoreClaimedTags(const std::array<bool, 100>& t_claimed)
+void CheckListener::save(SaveDataManager& t_saveData)
 {
-	m_tagClaimed = t_claimed;
+	std::string tagBits(m_tagClaimed.size(), '0');
+	for (size_t i = 0; i < m_tagClaimed.size(); ++i)
+	{
+		if (m_tagClaimed[i]) tagBits[i] = '1';
+	}
+	t_saveData.setValue(TAGS_CLAIMED_KEY, tagBits);
+
+	for (const auto& tracker : submissionTrackers)
+	{
+		tracker->save(t_saveData);
+	}
+}
+
+void CheckListener::load(const SaveDataManager& t_saveData)
+{
+	// Baselines first: everything below restores what has already been checked, and detection
+	// diffs live counters against these. Re-taking them after a load is what stops the jump from
+	// the old session's values to the loaded save's being read as fresh progress.
+	resyncBaselines();
+
+	// A save written before this key existed (or a shorter string from an older build) leaves the
+	// remaining tags unclaimed rather than reading past the end.
+	std::string tagBits = t_saveData.getValue(TAGS_CLAIMED_KEY, std::string(100, '0'));
+	for (size_t i = 0; i < m_tagClaimed.size(); ++i)
+	{
+		m_tagClaimed[i] = i < tagBits.size() && tagBits[i] == '1';
+	}
+
+	for (const auto& tracker : submissionTrackers)
+	{
+		tracker->load(t_saveData);
+	}
 }
 
 void CheckListener::debugCompleteLosSantos()
@@ -469,11 +506,6 @@ bool CheckListener::isStoryMission(int missionId)
 	if (missionId == 35) return false;
 	if (missionId == 135) return true; // Farewell, My Love... - appended past the original range
 	return missionId >= 11 && missionId <= 112;
-}
-
-const std::vector<std::unique_ptr<SubmissionTracker>>& CheckListener::getSubmissionTrackers() const
-{
-	return submissionTrackers;
 }
 
 void CheckListener::resyncBaselines()

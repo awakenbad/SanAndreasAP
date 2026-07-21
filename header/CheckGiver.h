@@ -1,19 +1,22 @@
 #pragma once
-#include <plugin.h> 
+#include <plugin.h>
 #include "CWorld.h"
+#include "PersistentState.h"
 
-class CheckGiver
+class CheckGiver : public PersistentState
 {
 public:
 	CheckGiver() = default;
-	
+
+	void save(SaveDataManager& t_saveData) override;
+	void load(const SaveDataManager& t_saveData) override;
+
 	void giveMoney(int t_amount);
 	void giveWeapon(const std::string& t_weaponType, bool t_equip = false);
 	void giveProgressiveMission();
 	void removeProgressiveMission();
 	void giveProgressiveMap();
 	int getProgressiveMissionCounter();
-	void setProgressiveMissionCounter(int t_value);
 
 	// Refills armor to the player's current maximum (respects the Max Armor Upgrade).
 	void giveArmorRefill();

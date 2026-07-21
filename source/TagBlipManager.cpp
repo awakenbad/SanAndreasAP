@@ -1,5 +1,6 @@
 #include "TagBlipManager.h"
 #include "ScreenScale.h"
+#include "SaveDataManager.h"
 #include "common.h"
 #include <algorithm>
 #include <climits>
@@ -9,9 +10,26 @@
 #include <CRGBA.h>
 #include <string>
 
+namespace
+{
+	constexpr char SHOW_TAG_BLIPS_KEY[] = "show_tag_blips";
+}
+
 TagBlipManager::TagBlipManager()
 {
 	m_blipHandles.fill(-1);
+}
+
+void TagBlipManager::save(SaveDataManager& t_saveData)
+{
+	t_saveData.setValue(SHOW_TAG_BLIPS_KEY, m_blipsEnabled ? "1" : "0");
+}
+
+void TagBlipManager::load(const SaveDataManager& t_saveData)
+{
+	// Defaults to on: a save from before the toggle existed should show blips, since that was
+	// the only behaviour available when it was written.
+	m_blipsEnabled = t_saveData.getValue(SHOW_TAG_BLIPS_KEY, "1") == "1";
 }
 
 int TagBlipManager::tagIndexAt(const CVector& t_pos) const
@@ -221,11 +239,6 @@ bool TagBlipManager::update(const std::array<bool, 100>& t_claimed)
 void TagBlipManager::setLocatedTag(int t_tagIndex)
 {
 	m_locatedTagIndex = (t_tagIndex >= 0 && t_tagIndex < static_cast<int>(tagPositions.size())) ? t_tagIndex : -1;
-}
-
-void TagBlipManager::setBlipsEnabled(bool t_enabled)
-{
-	m_blipsEnabled = t_enabled;
 }
 
 void TagBlipManager::toggleBlips()

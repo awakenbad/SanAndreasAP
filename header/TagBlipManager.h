@@ -1,15 +1,20 @@
 #pragma once
 #include <array>
 #include "TagPositions.h"
+#include "PersistentState.h"
 
 // Keeps one radar/map blip (spray can icon) alive per unsprayed tag so the player can find
 // them without external maps, and draws each tag's number (1-based, matching the AP "LS Tag:
 // #N" location names) over the minimap. Blips can't natively display text, so numbers only
 // appear on the minimap - the pause map shows just the icons.
-class TagBlipManager
+class TagBlipManager : public PersistentState
 {
 public:
 	TagBlipManager();
+
+	// Persists the blip toggle, so the player's preference survives a restart per save slot.
+	void save(SaveDataManager& t_saveData) override;
+	void load(const SaveDataManager& t_saveData) override;
 
 	// Call once per tick: creates blips for unclaimed tags, clears them once claimed, and
 	// recreates any blips the game wiped (a load/new game resets the whole blip pool).
@@ -33,7 +38,6 @@ public:
 
 	// Player preference (pause-menu toggle): disabling clears all tag blips and stops drawing
 	// numbers. The wipe-detection sentinel stays alive regardless.
-	void setBlipsEnabled(bool t_enabled);
 	void toggleBlips();
 	bool areBlipsEnabled() const;
 

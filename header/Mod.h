@@ -10,6 +10,7 @@
 #include "CRunningScript.h"
 #include "CTheScripts.h"
 #include "DeathLinkHandler.h"
+#include "PersistentState.h"
 #include "SaveDataManager.h"
 #include "AutoSaveManager.h"
 #include "NotificationOverlay.h"
@@ -58,6 +59,13 @@ private:
 	AmmuNationShop m_ammuNationShop;
 	TrapHandler m_trapHandler;
 	PendingChecks<int> m_pendingShopChecks;
+
+	// Everything with state the vanilla save can't hold. Both the save and the restore path walk
+	// this one list, so a subsystem can't be persisted in one direction only. Order matters just
+	// once: CheckListener re-takes its detection baselines in load(), and nothing else depends on
+	// that, so it goes first out of habit rather than necessity.
+	// Declared after the subsystems it points at - members are constructed in declaration order.
+	std::vector<PersistentState*> m_persistentSubsystems;
 
 	bool m_firstInGameTickHandled = false;
 	// Invisible object used to detect that the world was rebuilt (load or new game). Blips are

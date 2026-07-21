@@ -9,6 +9,7 @@
 #include <CStats.h>
 #include <CWorld.h>
 
+#include "PersistentState.h"
 #include "SubmissionTracker.h"
 #include "ParamedicTracker.h"
 #include "FirefighterTracker.h"
@@ -27,10 +28,14 @@ enum class CheckEvent
 	Submission
 };
 
-class CheckListener
+class CheckListener : public PersistentState
 {
 public:
 	CheckListener();
+
+	// Persists the claimed-tag bitmap, plus every submission tracker it owns.
+	void save(SaveDataManager& t_saveData) override;
+	void load(const SaveDataManager& t_saveData) override;
 
 	CheckEvent update();
 	std::string getMissionID();
@@ -57,11 +62,6 @@ public:
 	// TEMPORARY: raw LastMissionPassedName plus the mission ID our table resolves it to
 	// (-1 = not in the table), for verifying the Badlands mission IDs in-game.
 	std::string missionDebugLine() const;
-	void restoreClaimedTags(const std::array<bool, 100>& t_claimed);
-
-	const std::vector<std::unique_ptr<SubmissionTracker>>& getSubmissionTrackers() const;
-
-	void resyncBaselines();
 
 	int getPendingSubmissionId();
 	void confirmSubmissionSent();
@@ -98,6 +98,11 @@ private:
 	PendingChecks<int> m_pendingTags;
 	PendingChecks<int> m_pendingSubmissions;
 	PendingChecks<int> m_pendingSubmissionLevels;
+
+	// Re-takes every "what did this counter read last tick" baseline. Detection works by diffing
+	// against them, and a freshly loaded save has different stats than the session that was
+	// running - without this, the difference reads as progress and fires phantom checks.
+	void resyncBaselines();
 
 	SubmissionTracker* findTracker(int t_submissionID);
 	bool tagChecker();

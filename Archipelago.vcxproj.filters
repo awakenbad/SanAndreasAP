@@ -120,6 +120,9 @@
     <ClInclude Include="header\TagPositions.h">
       <Filter>Header\Tags</Filter>
     </ClInclude>
+    <ClInclude Include="header\PersistentState.h">
+      <Filter>Header\Persistence</Filter>
+    </ClInclude>
     <ClInclude Include="header\SaveDataManager.h">
       <Filter>Header\Persistence</Filter>
     </ClInclude>

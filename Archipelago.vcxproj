@@ -29,6 +29,7 @@
     <ClInclude Include="header\APProtocol.h" />
     <ClInclude Include="header\ItemEffects.h" />
     <ClInclude Include="header\ParseUtils.h" />
+    <ClInclude Include="header\PersistentState.h" />
     <ClInclude Include="header\PendingChecks.h" />
     <ClInclude Include="header\Position.h" />
     <ClInclude Include="header\SaveDataManager.h" />

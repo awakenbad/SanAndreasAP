@@ -2,6 +2,13 @@
 #include "common.h"
 #include "CStreaming.h"
 #include "WeaponData.h"
+#include "SaveDataManager.h"
+#include "ParseUtils.h"
+
+namespace
+{
+	constexpr char PROGRESSIVE_MISSION_KEY[] = "progressive_mission";
+}
 
 void CheckGiver::giveMoney(int t_amount)
 {
@@ -75,7 +82,14 @@ int CheckGiver::getProgressiveMissionCounter()
 	return progressiveMissionCounter;
 }
 
-void CheckGiver::setProgressiveMissionCounter(int t_value)
+void CheckGiver::save(SaveDataManager& t_saveData)
 {
-	progressiveMissionCounter = t_value;
+	t_saveData.setValue(PROGRESSIVE_MISSION_KEY, std::to_string(progressiveMissionCounter));
+}
+
+void CheckGiver::load(const SaveDataManager& t_saveData)
+{
+	// Defaults to 1, not 0: that is the single mission the player starts the game able to do, so
+	// a save written before this key existed stays playable rather than instantly blocked.
+	progressiveMissionCounter = parseIntOr(t_saveData.getValue(PROGRESSIVE_MISSION_KEY, "1"), 1);
 }
