@@ -16,6 +16,7 @@
 #include "BurglaryTracker.h"
 #include "TaxiTracker.h"
 #include "LosSantosGymTracker.h"
+#include "TruckingTracker.h"
 
 enum class CheckEvent
 {

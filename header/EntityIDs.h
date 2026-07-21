@@ -11,6 +11,7 @@ inline constexpr int PARAMEDIC_ID = 122;
 inline constexpr int FIREFIGHTER_ID = 123;
 inline constexpr int VIGILANTE_ID = 124;
 inline constexpr int BURGLARY_ID = 125;
+inline constexpr int TRUCKING_ID = 117;
 
 // Deliberately absent: the marker in front of CJ's house (2495.214, -1687.03) - only Big
 // Smoke starts there, which is the first story mission and needs zero Progressive Missions
@@ -33,8 +34,9 @@ inline constexpr SubmissionTierSpec FIREFIGHTER_TIERS { 12, 12, 1.0f };
 inline constexpr SubmissionTierSpec VIGILANTE_TIERS   { 24, 12, 1.0f };
 inline constexpr SubmissionTierSpec TAXI_TIERS        { 36, 10, 5.0f };
 inline constexpr SubmissionTierSpec BURGLARY_TIERS    { 46, 10, 1000.0f };
+inline constexpr SubmissionTierSpec TRUCKING_TIERS    { 56,  8, 1.0f };
 
-inline constexpr int SUBMISSION_TIER_SLOT_COUNT = 56;
+inline constexpr int SUBMISSION_TIER_SLOT_COUNT = 64;
 
 inline std::vector<Position> missionStartPos = {
     { 700, -3328, 20, 180 },

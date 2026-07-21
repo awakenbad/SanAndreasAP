@@ -93,6 +93,9 @@
     <ClInclude Include="header\TieredSubmissionTracker.h">
       <Filter>Header\Submissions</Filter>
     </ClInclude>
+    <ClInclude Include="header\TruckingTracker.h">
+      <Filter>Header\Submissions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AmmuNationShop.cpp">
@@ -156,6 +159,9 @@
       <Filter>Source\Submissions</Filter>
     </ClCompile>
     <ClCompile Include="source\TieredSubmissionTracker.cpp">
+      <Filter>Source\Submissions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\TruckingTracker.cpp">
       <Filter>Source\Submissions</Filter>
     </ClCompile>
   </ItemGroup>
