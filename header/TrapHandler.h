@@ -4,6 +4,8 @@
 #include <vector>
 #include "PersistentState.h"
 
+class CVehicle;
+
 // Trap items received from AP. Two timed effects (flat tires, fat CJ) and two instant ones
 // (wanted level, car fire).
 class TrapHandler : public PersistentState
@@ -52,4 +54,8 @@ private:
 
 	// Applies a trap with no control check.
 	void applyTrap(const std::string& t_trapType);
+
+	// Bursts every tire, whichever kind of vehicle this is. Silently does nothing for the ones
+	// with no tires to burst (boats, planes, trains).
+	void burstTires(CVehicle* t_vehicle);
 };

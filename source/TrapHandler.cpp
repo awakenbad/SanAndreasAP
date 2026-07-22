@@ -7,6 +7,7 @@
 #include "CClothes.h"
 #include "CWanted.h"
 #include "CAutomobile.h"
+#include "CBike.h"
 #include "ScreenScale.h"
 #include <CFont.h>
 #include <CRGBA.h>
@@ -160,15 +161,9 @@ void TrapHandler::update()
 	CVehicle* vehicle = player->bInVehicle ? player->m_pVehicle : nullptr;
 	if (!vehicle) return;
 
-	if (now < m_tireTrapEnd && vehicle->m_nVehicleSubClass == VEHICLE_AUTOMOBILE)
+	if (now < m_tireTrapEnd)
 	{
-		CAutomobile* car = reinterpret_cast<CAutomobile*>(vehicle);
-		for (int wheel = 0; wheel < 4; ++wheel)
-		{
-			// Status 1 = burst (eCarWheelStatus, not in plugin-sdk's headers - needs live
-			// confirmation that tires visibly pop).
-			car->m_damageManager.SetWheelStatus(wheel, 1);
-		}
+		burstTires(vehicle);
 	}
 
 	if (m_carFirePending)
@@ -178,6 +173,36 @@ void TrapHandler::update()
 		if (vehicle->m_fHealth > 240.0f)
 		{
 			vehicle->m_fHealth = 240.0f;
+		}
+	}
+}
+
+// Where a vehicle keeps its wheel status depends on which C++ class it actually is, so this
+// branches on m_nVehicleClass - the base type - rather than the subtype. Getting that wrong is not
+// a missed effect but memory corruption: a CBike has no CDamageManager, so reaching for one
+// through a CAutomobile pointer writes into whatever happens to sit at that offset.
+void TrapHandler::burstTires(CVehicle* t_vehicle)
+{
+	// Status 1 = burst (eCarWheelStatus, absent from plugin-sdk's headers). Confirmed live on
+	// cars; bikes use the same values in their own array.
+	const int WHEEL_STATUS_BURST = 1;
+
+	if (t_vehicle->m_nVehicleClass == VEHICLE_AUTOMOBILE)
+	{
+		CAutomobile* car = reinterpret_cast<CAutomobile*>(t_vehicle);
+		for (int wheel = 0; wheel < 4; ++wheel)
+		{
+			car->m_damageManager.SetWheelStatus(wheel, WHEEL_STATUS_BURST);
+		}
+	}
+	else if (t_vehicle->m_nVehicleClass == VEHICLE_BIKE)
+	{
+		// Bikes carry wheel status on the vehicle itself and have no damage manager at all, which
+		// is why the old CAutomobile-only check could never have reached them.
+		CBike* bike = reinterpret_cast<CBike*>(t_vehicle);
+		for (int wheel = 0; wheel < CBike::NUM_WHEELS; ++wheel)
+		{
+			bike->m_nWheelStatus[wheel] = static_cast<uint8_t>(WHEEL_STATUS_BURST);
 		}
 	}
 }
