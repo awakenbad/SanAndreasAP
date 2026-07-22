@@ -32,6 +32,9 @@ private:
 
 	int randomDurationSeconds() const;
 
+	static constexpr int WANTED_TRAP_MIN_STARS = 2;
+	int randomWantedStars() const;
+
 	// Flat tires: while the timer runs, every automobile CJ occupies gets all tires burst.
 	Clock::time_point m_tireTrapEnd{};
 

@@ -36,6 +36,14 @@ int TrapHandler::randomDurationSeconds() const
 	return 30 + std::rand() % 91; // 30-120s
 }
 
+int TrapHandler::randomWantedStars() const
+{
+	int maxStars = static_cast<int>(CWanted::MaximumWantedLevel);
+	if (maxStars <= WANTED_TRAP_MIN_STARS) return maxStars;
+
+	return WANTED_TRAP_MIN_STARS + std::rand() % (maxStars - WANTED_TRAP_MIN_STARS + 1);
+}
+
 void TrapHandler::save(SaveDataManager& t_saveData)
 {
 	// Seconds left rather than an end time: steady_clock's epoch is arbitrary per process, so an
@@ -118,8 +126,9 @@ void TrapHandler::applyTrap(const std::string& t_trapType)
 		CWanted* wanted = player ? player->GetWanted() : nullptr;
 		if (wanted)
 		{
-			unsigned int newLevel = wanted->m_nWantedLevel + 1;
-			if (newLevel > 6) newLevel = 6;
+			unsigned int maxLevel = CWanted::MaximumWantedLevel;
+			unsigned int newLevel = wanted->m_nWantedLevel + randomWantedStars();
+			if (newLevel > maxLevel) newLevel = maxLevel;
 			wanted->SetWantedLevelNoDrop(static_cast<int>(newLevel));
 		}
 	}
