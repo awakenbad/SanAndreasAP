@@ -6,8 +6,8 @@ Mission items; spray tags, Ammu-Nation purchases, and side activities send
 checks to the multiworld.
 
 > [!NOTE]
-> Only Los Santos is randomized so far (Big Smoke → The Green Sabre).
-> The rest of the game will come in future updates. Feel free to bug report either through `Issues` or using [GTA SA Thread](https://discord.com/channels/1085716850370957462/1098055987648282717) in Archipelago After Dark
+> Los Santos and Badlands are randomized so far (Big Smoke → Are You Going
+> to San Fierro?). The rest of the game will come in future updates. Feel free to bug report either through `Issues` or using [GTA SA Thread](https://discord.com/channels/1085716850370957462/1098055987648282717) in Archipelago After Dark
 
 ## Related repositories
 
@@ -16,13 +16,17 @@ The randomizer logic (locations, items, rules) is developed in my
 `worlds/gta_sa` — that's where `gta_sa.apworld` comes from. This repo only has
 the C++ mod.
 
-## Current scope (v0.1.1)
+## Current scope (v0.2.0)
 
-- **Goal:** complete The Green Sabre
-- 27 Los Santos story missions, gated by Progressive Mission items
+- **Goal:** **The Green Sabre** (Los Santos only) or
+  **Are You Going to San Fierro?** (Los Santos + Badlands).
+- 27 Los Santos story missions, plus 9 Badlands missions,
+  gated by Progressive Mission items
 - 100 spray tags as individual locations (toggleable)
-- 6 side activities: Paramedic, Firefighter, Vigilante, Taxi Driver,
-  Burglary, LS Gym Boxing
+- Side activities, paying out **per level** rather than once at the end:
+  Paramedic, Firefighter and Vigilante (12 levels each), Taxi Driver (one per
+  5 fares), Burglary (one per $1000 stolen), Trucking (8 levels, Badlands),
+  and LS Gym Boxing
 - 8 Ammu-Nation shop slots that sell checks (the menu shows what each
   purchase contains)
 - Traps (wanted level, fat CJ, flat tires, car fire) and filler items
@@ -56,7 +60,8 @@ the C++ mod.
    - Find **Grand Theft Auto: San Andreas**
    - Tweak the settings, enter your slot name at the top, and press
      **Export Options**
-5. Run `GTASAClient.exe` and connect it to your Archipelago server.
+5. Run `GTASAClient.exe`, then type `/connect <address>` to connect it to your
+   Archipelago server.
 6. Launch the game.
 
 **To verify:** the bottom-left of the main menu shows
@@ -66,7 +71,7 @@ the C++ mod.
 
 - Story missions require Progressive Mission items. When you run out, every
   mission start marker is physically blocked until you unlock more.
-- Spray tags, Ammu-Nation purchases, and side-activity completions all send
+- Spray tags, Ammu-Nation purchases, and side-activity levels all send
   checks. The Ammu-Nation menu shows what each slot contains; already-checked
   slots revert to selling their normal weapons.
 - Tag locations appear on the radar and map (nearest ones only, to keep the
@@ -83,9 +88,6 @@ the C++ mod.
 
 - Some text may not scale correctly without Widescreen Fix installed.
 - Autosave titles longer than ~22 characters are truncated.
-- During Flat Tires Trap, Bike's tires don't get popped.
-- Spraying Tags 1-4 before Tagging Up Turf will permanently leave their blips on the map
-- Receiving/Sending more than 5 checks at the same time will only show the first 5 on screen.
 
 ## Troubleshooting
 
@@ -97,17 +99,19 @@ the C++ mod.
 - Archipelago progress is stored next to your GTA save files as
   `<savename>_ap.dat`. If you move or back up saves, keep those files
   together.
+- Because that progress lives with the save, loading an older save correctly
+  re-grants the items it never received, and restarting the client does not
+  hand you everything a second time.
 - The client must be running before checks can be sent; anything you complete
   while it is disconnected is sent automatically once it reconnects.
 
 ## Roadmap
 
-- Badlands, San Fierro, and Las Venturas regions with their missions and
-  side activities
+- San Fierro and Las Venturas regions with their missions and side activities
 - All checks in every region
     - Collectibles
     - Schools
-    - Submissions (Train, Trucking, Quarry)
+    - Submissions (Train, Quarry)
     - Sidemissions (Zero, Heist)
 - More options for customizing seeds
 - Native support with Rainbomizer
