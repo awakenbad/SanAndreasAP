@@ -56,9 +56,27 @@ APProtocol::Message APProtocol::parse(const std::string& t_line)
 
 	if (stripPrefix(t_line, "GIVE:", rest))
 	{
-		// The value is optional: control messages like "GIVE:deathlink_kill" carry no colon.
-		size_t colon = rest.find(':');
+		// GIVE:<index>:<effect>[:<value>] - the index is mandatory, since without it the item
+		// cannot be deduplicated and would be re-granted on every reconnect.
+		size_t afterIndex = rest.find(':');
+		if (afterIndex == std::string::npos) return message; // malformed - stays Unknown
+
+		message.index = parseIntOr(rest.substr(0, afterIndex), -1);
+		if (message.index < 0) return message;
+
+		std::string body = rest.substr(afterIndex + 1);
+		size_t colon = body.find(':');
 		message.kind = MessageKind::Give;
+		message.effect = (colon == std::string::npos) ? body : body.substr(0, colon);
+		message.text = (colon == std::string::npos) ? "" : body.substr(colon + 1);
+		return message;
+	}
+
+	if (stripPrefix(t_line, "CTRL:", rest))
+	{
+		// The value is optional: "CTRL:deathlink_kill" carries no colon.
+		size_t colon = rest.find(':');
+		message.kind = MessageKind::Control;
 		message.effect = (colon == std::string::npos) ? rest : rest.substr(0, colon);
 		message.text = (colon == std::string::npos) ? "" : rest.substr(colon + 1);
 		return message;

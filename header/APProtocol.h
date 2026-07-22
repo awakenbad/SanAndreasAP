@@ -12,24 +12,31 @@ namespace APProtocol
 	enum class MessageKind
 	{
 		Unknown,   // unrecognised or malformed - callers ignore it rather than guess
-		Status,    // STATUS:<text>            plain client status line
-		ItemSent,  // SENT:<text>              an item we found for some other player's world
-		LocateTag, // LOCATE:TAG:<index>       highlight one spray tag on the map
-		ShopItem,  // SHOPITEM:<slot>:<text>   what an Ammu-Nation slot now contains
-		Give,      // GIVE:<effect>[:<value>]  an item granted to us
+		Status,    // STATUS:<text>                  plain client status line
+		ItemSent,  // SENT:<text>                    an item we found for some other player's world
+		LocateTag, // LOCATE:TAG:<index>             highlight one spray tag on the map
+		ShopItem,  // SHOPITEM:<slot>:<text>         what an Ammu-Nation slot now contains
+		Give,      // GIVE:<index>:<effect>[:<value>]  an item granted to us, at its list position
+		Control,   // CTRL:<name>[:<value>]          not an item - see below
 	};
 
-	// A parsed inbound line. Which fields carry meaning depends on kind(); the rest stay empty,
+	// Control messages are kept separate from items on purpose. The server replays every item on
+	// every connect, so items must be deduplicated by index; a control message is an event with
+	// no position in that list, and deduplicating one would silently drop it.
+	//
+	// A parsed inbound line. Which fields carry meaning depends on kind; the rest stay empty,
 	// so reading the wrong one is harmless rather than undefined.
 	class Message
 	{
 	public:
 		MessageKind kind = MessageKind::Unknown;
-		// Status/ItemSent: the text to display. ShopItem: the slot's contents. Give: the value.
+		// Status/ItemSent: the text to display. ShopItem: the slot's contents.
+		// Give/Control: the value.
 		std::string text;
-		// Give only: the effect name ("money", "trap_fat", ...).
+		// Give: the effect name ("money", "trap_fat", ...). Control: the control name.
 		std::string effect;
-		// LocateTag/ShopItem: the index, or -1 when it wasn't a number.
+		// LocateTag/ShopItem: the index. Give: position in the client's items_received list.
+		// -1 when absent or not a number.
 		int index = -1;
 	};
 

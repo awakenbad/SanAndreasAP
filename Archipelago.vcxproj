@@ -30,6 +30,8 @@
     <ClInclude Include="header\ItemEffects.h" />
     <ClInclude Include="header\ParseUtils.h" />
     <ClInclude Include="header\PersistentState.h" />
+    <ClInclude Include="header\PlayerControl.h" />
+    <ClInclude Include="header\ReceivedItemLog.h" />
     <ClInclude Include="header\PendingChecks.h" />
     <ClInclude Include="header\Position.h" />
     <ClInclude Include="header\SaveDataManager.h" />
@@ -61,7 +63,9 @@
     <ClCompile Include="source\ParamedicTracker.cpp" />
     <ClCompile Include="source\APProtocol.cpp" />
     <ClCompile Include="source\ItemEffects.cpp" />
+    <ClCompile Include="source\PlayerControl.cpp" />
     <ClCompile Include="source\Position.cpp" />
+    <ClCompile Include="source\ReceivedItemLog.cpp" />
     <ClCompile Include="source\SaveDataManager.cpp" />
     <ClCompile Include="source\SubmissionTracker.cpp" />
     <ClCompile Include="source\TagBlipManager.cpp" />

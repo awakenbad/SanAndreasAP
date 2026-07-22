@@ -11,6 +11,7 @@
 #include "CTheScripts.h"
 #include "DeathLinkHandler.h"
 #include "PersistentState.h"
+#include "ReceivedItemLog.h"
 #include "SaveDataManager.h"
 #include "AutoSaveManager.h"
 #include "NotificationOverlay.h"
@@ -58,6 +59,7 @@ private:
 	TagBlipManager m_tagBlipManager;
 	AmmuNationShop m_ammuNationShop;
 	TrapHandler m_trapHandler;
+	ReceivedItemLog m_receivedItemLog;
 	PendingChecks<int> m_pendingShopChecks;
 
 	// Everything with state the vanilla save can't hold. Both the save and the restore path walk
@@ -88,6 +90,10 @@ private:
 	// post-Green-Sabre save without replaying LS. Remove before release.
 	EdgeTriggeredKey m_debugSendAllLsKey{ VK_F6 };
 
+	// TEMPORARY: F5 fakes an incoming DeathLink kill, for testing what happens when one lands at
+	// an awkward moment (mid-cutscene, in a vehicle, during a mission). Remove before release.
+	EdgeTriggeredKey m_debugDeathLinkKey{ VK_F5 };
+
 	void debugSendAllLosSantosChecks();
 
 	void parseIncomingMessages();
@@ -103,8 +109,13 @@ private:
 	void spawnMissionBlockers();
 	void removeMissionBlockers();
 	void sendChecksToAP(CheckEvent t_event);
-	// Grants one GIVE: effect and announces it. Unknown effect names are ignored.
-	void applyReceivedItem(const std::string& t_effectName, const std::string& t_value);
+
+	// Grants everything the log says this save is still owed. Re-grants after a save rollback are
+	// summarised in one line instead of one notification each, and skip one-shot effects.
+	void applyPendingItems();
+	// Grants one item's effect. Returns false when the effect name isn't one this build knows.
+	bool applyItemEffect(const std::string& t_effectName, const std::string& t_value, bool t_isNew);
+	void applyControlMessage(const std::string& t_name, const std::string& t_value);
 	void persistAndRestoreState(bool t_worldWiped);
 };
 

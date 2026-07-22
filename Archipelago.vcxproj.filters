@@ -126,6 +126,9 @@
     <ClInclude Include="header\SaveDataManager.h">
       <Filter>Header\Persistence</Filter>
     </ClInclude>
+    <ClInclude Include="header\ReceivedItemLog.h">
+      <Filter>Header\Protocol</Filter>
+    </ClInclude>
     <ClInclude Include="header\AutoSaveManager.h">
       <Filter>Header\Persistence</Filter>
     </ClInclude>
@@ -147,6 +150,9 @@
     <ClInclude Include="header\ParseUtils.h">
       <Filter>Header\Common</Filter>
     </ClInclude>
+    <ClInclude Include="header\PlayerControl.h">
+      <Filter>Header\Common</Filter>
+    </ClInclude>
     <ClInclude Include="header\EdgeTriggeredKey.h">
       <Filter>Header\Common</Filter>
     </ClInclude>
@@ -165,6 +171,9 @@
       <Filter>Source\Protocol</Filter>
     </ClCompile>
     <ClCompile Include="source\ItemEffects.cpp">
+      <Filter>Source\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ReceivedItemLog.cpp">
       <Filter>Source\Protocol</Filter>
     </ClCompile>
     <ClCompile Include="source\CheckListener.cpp">
@@ -222,6 +231,9 @@
       <Filter>Source\HUD</Filter>
     </ClCompile>
     <ClCompile Include="source\Position.cpp">
+      <Filter>Source\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="source\PlayerControl.cpp">
       <Filter>Source\Common</Filter>
     </ClCompile>
   </ItemGroup>

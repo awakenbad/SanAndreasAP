@@ -24,10 +24,6 @@ namespace
 		{ "trap_fat",            ItemEffect::Trap,               -1,                  "fat",       "Archipelago: Fat CJ Trap!",                 NotificationIcon::Trap },
 		{ "trap_wanted",         ItemEffect::Trap,               -1,                  "wanted",    "Archipelago: Wanted Level Trap!",           NotificationIcon::Trap },
 		{ "trap_carfire",        ItemEffect::Trap,               -1,                  "carfire",   "Archipelago: Car Fire Trap!",               NotificationIcon::Trap },
-
-		// Control messages, not items - silent on purpose (see ItemEffectSpec::message).
-		{ "death_link",          ItemEffect::DeathLinkToggle,    -1,                  nullptr,     nullptr,                                     NotificationIcon::None },
-		{ "deathlink_kill",      ItemEffect::DeathLinkKill,      -1,                  nullptr,     nullptr,                                     NotificationIcon::None },
 	};
 
 	constexpr char VALUE_PLACEHOLDER[] = "{}";

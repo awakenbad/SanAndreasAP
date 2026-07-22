@@ -14,9 +14,14 @@ public:
 	bool update();
 
 	/// <summary>
-	/// Kills the player in response to a Deathlink event from the server
+	/// Kills the player in response to a Deathlink event from the server. Held until the player
+	/// is actually in control - see PlayerControl - so a kill arriving mid-cutscene can't strand
+	/// a scripted sequence. Returns true if the kill landed immediately.
 	/// </summary>
-	void killPlayer();
+	bool killPlayer();
+
+	// True while a kill is waiting for the player to regain control.
+	bool hasDeferredKill() const;
 
 	// True exactly once after the player comes back from being wasted or busted. Used to top
 	// health back up to the (possibly upgraded) max, since the game's own respawn refill
@@ -29,4 +34,11 @@ private:
 	bool m_wasDeadOrArrested = false;
 	bool m_respawnPending = false;
 	bool m_suppressNextDeathBroadcast = false;
+
+	// A kill that arrived while the player wasn't in control. Only ever one: several DeathLinks
+	// landing during one cutscene still only need CJ to die once.
+	bool m_killDeferred = false;
+
+	// Does the actual killing, with no control check.
+	void applyKill();
 };

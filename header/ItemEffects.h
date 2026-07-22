@@ -15,8 +15,6 @@ enum class ItemEffect
 	ArmorRefill,
 	CarRepair,
 	Trap,
-	DeathLinkToggle,
-	DeathLinkKill,
 };
 
 // One row of the effect table: the wire name, what it does, and how it is announced. Keeping all
@@ -34,8 +32,6 @@ public:
 	// ItemEffect::Trap only - the type TrapHandler expects; nullptr otherwise.
 	const char* trapName;
 	// On-screen text, where "{}" is replaced with the value that arrived alongside the item.
-	// nullptr for control messages, which are deliberately silent: the player should never see
-	// "Received death_link".
 	const char* message;
 	NotificationIcon icon;
 };

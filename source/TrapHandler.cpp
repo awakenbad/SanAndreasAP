@@ -1,4 +1,7 @@
 #include "TrapHandler.h"
+#include "PlayerControl.h"
+#include "SaveDataManager.h"
+#include "ParseUtils.h"
 #include "common.h"
 #include "CStats.h"
 #include "CClothes.h"
@@ -19,12 +22,74 @@ static std::string formatRemaining(std::chrono::steady_clock::duration t_remaini
 	return std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
 }
 
+namespace
+{
+	constexpr char FAT_ACTIVE_KEY[] = "trap_fat_active";
+	constexpr char FAT_SAVED_FAT_KEY[] = "trap_fat_saved_fat";
+	constexpr char FAT_SAVED_MUSCLE_KEY[] = "trap_fat_saved_muscle";
+	constexpr char FAT_REMAINING_KEY[] = "trap_fat_remaining_seconds";
+}
+
 int TrapHandler::randomDurationSeconds() const
 {
 	return 30 + std::rand() % 91; // 30-120s
 }
 
+void TrapHandler::save(SaveDataManager& t_saveData)
+{
+	// Seconds left rather than an end time: steady_clock's epoch is arbitrary per process, so an
+	// absolute time point means nothing once the game restarts.
+	int remainingSeconds = 0;
+	if (m_fatTrapActive)
+	{
+		Clock::duration remaining = m_fatTrapEnd - Clock::now();
+		if (remaining > Clock::duration::zero())
+		{
+			remainingSeconds = static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(remaining).count());
+		}
+	}
+
+	t_saveData.setValue(FAT_ACTIVE_KEY, m_fatTrapActive ? "1" : "0");
+	t_saveData.setValue(FAT_SAVED_FAT_KEY, std::to_string(m_savedFat));
+	t_saveData.setValue(FAT_SAVED_MUSCLE_KEY, std::to_string(m_savedMuscle));
+	t_saveData.setValue(FAT_REMAINING_KEY, std::to_string(remainingSeconds));
+}
+
+void TrapHandler::load(const SaveDataManager& t_saveData)
+{
+	m_fatTrapActive = t_saveData.getValue(FAT_ACTIVE_KEY, "0") == "1";
+
+	if (!m_fatTrapActive)
+	{
+		// Any trap still running belonged to whichever save we came from. Abandon it WITHOUT
+		// restoring: this save's stats are its own, and writing another save's pre-trap values
+		// over them would quietly rewrite CJ's build.
+		m_fatTrapEnd = Clock::time_point{};
+		return;
+	}
+
+	m_savedFat = parseFloatOr(t_saveData.getValue(FAT_SAVED_FAT_KEY, "0"), 0.0f);
+	m_savedMuscle = parseFloatOr(t_saveData.getValue(FAT_SAVED_MUSCLE_KEY, "0"), 0.0f);
+
+	// Resume with what was left, so quitting and reloading isn't a way to shrug the trap off.
+	// update() restores the stats the moment this expires, which is also what makes "fat forever"
+	// impossible now - even a zero or malformed value just restores on the next tick.
+	int remainingSeconds = parseIntOr(t_saveData.getValue(FAT_REMAINING_KEY, "0"), 0);
+	m_fatTrapEnd = Clock::now() + std::chrono::seconds(remainingSeconds);
+}
+
 void TrapHandler::giveTrap(const std::string& t_trapType)
+{
+	if (!PlayerControl::isInControl())
+	{
+		m_deferredTraps.push_back(t_trapType);
+		return;
+	}
+
+	applyTrap(t_trapType);
+}
+
+void TrapHandler::applyTrap(const std::string& t_trapType)
 {
 	if (t_trapType == "tires")
 	{
@@ -65,6 +130,18 @@ void TrapHandler::giveTrap(const std::string& t_trapType)
 
 void TrapHandler::update()
 {
+	// Release anything that arrived mid-cutscene, in the order it arrived. Their timers start now
+	// rather than when they were received, which is what the player will perceive as fair.
+	if (!m_deferredTraps.empty() && PlayerControl::isInControl())
+	{
+		std::vector<std::string> toApply;
+		toApply.swap(m_deferredTraps);
+		for (const std::string& trapType : toApply)
+		{
+			applyTrap(trapType);
+		}
+	}
+
 	CPlayerPed* player = FindPlayerPed();
 	Clock::time_point now = Clock::now();
 

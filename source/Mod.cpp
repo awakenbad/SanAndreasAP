@@ -9,7 +9,7 @@ Mod::Mod()
 {
 	m_apSocket.connectToServer("127.0.0.1", 12345);
 
-	m_persistentSubsystems = { &m_checkListener, &m_checkGiver, &m_tagBlipManager };
+	m_persistentSubsystems = { &m_checkListener, &m_checkGiver, &m_tagBlipManager, &m_receivedItemLog, &m_trapHandler };
 }
 
 void Mod::start()
@@ -134,6 +134,15 @@ void Mod::updateDebugHotkeys()
     if (m_debugSendAllLsKey.justPressed())
     {
         debugSendAllLosSantosChecks();
+    }
+    if (m_debugDeathLinkKey.justPressed())
+    {
+        // Deliberately the same entry point the client's CTRL:deathlink_kill takes, rather than
+        // calling the handler directly - so what this tests is the real path, not a lookalike.
+        applyControlMessage("deathlink_kill", "");
+        m_notificationOverlay.show(m_deathLinkHandler.hasDeferredKill()
+            ? "DEBUG: DeathLink held - player not in control"
+            : "DEBUG: DeathLink applied now");
     }
 }
 
@@ -328,20 +337,71 @@ void Mod::parseIncomingMessages()
             m_ammuNationShop.setSlotContents(message.index, message.text);
             break;
 
+        // Buffered rather than applied here: the log decides what this save is actually owed,
+        // and batching the whole tick's delivery lets a re-grant be summarised in one line.
         case APProtocol::MessageKind::Give:
-            applyReceivedItem(message.effect, message.text);
+            m_receivedItemLog.recordDelivered(message.index, message.effect, message.text);
+            break;
+
+        case APProtocol::MessageKind::Control:
+            applyControlMessage(message.effect, message.text);
             break;
 
         case APProtocol::MessageKind::Unknown:
             break;
         }
     }
+
+    applyPendingItems();
 }
 
-void Mod::applyReceivedItem(const std::string& t_effectName, const std::string& t_value)
+void Mod::applyControlMessage(const std::string& t_name, const std::string& t_value)
+{
+    // Never deduplicated and never announced - these are events, not items the player owns.
+    if (t_name == "death_link")
+    {
+        m_deathLinkHandler.setEnabled(t_value == "1");
+    }
+    else if (t_name == "deathlink_kill")
+    {
+        m_deathLinkHandler.killPlayer();
+    }
+}
+
+void Mod::applyPendingItems()
+{
+    // Nothing is applied until the save's mark has had its chance to load, which happens on the
+    // first in-game tick. Applying while still in the menus would grant against a default mark
+    // and then immediately roll back once the real save arrived.
+    if (!m_firstInGameTickHandled) return;
+
+    std::vector<ReceivedItem> pending = m_receivedItemLog.takePendingItems();
+    if (pending.empty()) return;
+
+    int restoredCount = 0;
+    for (const ReceivedItem& item : pending)
+    {
+        if (applyItemEffect(item.effect, item.value, item.isNew) && !item.isNew)
+        {
+            restoredCount++;
+        }
+    }
+
+    // A rollback can owe a save dozens of items at once; one line beats burying the screen.
+    if (restoredCount > 0)
+    {
+        m_notificationOverlay.show("Archipelago: Restored " + std::to_string(restoredCount) + " items");
+    }
+}
+
+bool Mod::applyItemEffect(const std::string& t_effectName, const std::string& t_value, bool t_isNew)
 {
     const ItemEffectSpec* spec = findItemEffect(t_effectName);
-    if (!spec) return;
+    if (!spec) return false;
+
+    // Traps are one-shot events, not possessions. Re-granting one to a rolled-back save would
+    // punish the player a second time for an item they already suffered through.
+    if (spec->effect == ItemEffect::Trap && !t_isNew) return true;
 
     switch (spec->effect)
     {
@@ -353,15 +413,18 @@ void Mod::applyReceivedItem(const std::string& t_effectName, const std::string& 
     case ItemEffect::ArmorRefill:        m_checkGiver.giveArmorRefill(); break;
     case ItemEffect::CarRepair:          m_checkGiver.giveCarRepair(); break;
     case ItemEffect::Trap:               m_trapHandler.giveTrap(spec->trapName); break;
-    case ItemEffect::DeathLinkToggle:    m_deathLinkHandler.setEnabled(t_value == "1"); break;
-    case ItemEffect::DeathLinkKill:      m_deathLinkHandler.killPlayer(); break;
     }
 
-    std::string message = formatItemMessage(*spec, t_value);
-    if (!message.empty())
+    // Re-grants are counted and summarised by the caller instead.
+    if (t_isNew)
     {
-        m_notificationOverlay.show(message, spec->icon);
+        std::string message = formatItemMessage(*spec, t_value);
+        if (!message.empty())
+        {
+            m_notificationOverlay.show(message, spec->icon);
+        }
     }
+    return true;
 }
 
 // TEMPORARY dev tool (F6): fires every Los Santos check directly at the client - bypassing the

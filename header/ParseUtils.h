@@ -12,3 +12,11 @@ inline int parseIntOr(const std::string& t_text, int t_fallback)
 	if (end == t_text.c_str()) return t_fallback;
 	return static_cast<int>(value);
 }
+
+inline float parseFloatOr(const std::string& t_text, float t_fallback)
+{
+	char* end = nullptr;
+	float value = strtof(t_text.c_str(), &end);
+	if (end == t_text.c_str()) return t_fallback;
+	return value;
+}
