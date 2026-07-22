@@ -29,7 +29,6 @@ void Mod::start()
     sendChecksToAP(event);
     updateGameplaySystems();
     updateMissionBlockers();
-    updateDebugHotkeys();
 
     parseIncomingMessages();
 }
@@ -114,37 +113,6 @@ void Mod::updateMissionBlockers()
     }
 }
 
-// TEMPORARY dev tools - see Mod.h. Deleting this method and its call site removes them all.
-void Mod::updateDebugHotkeys()
-{
-    if (m_tagDebugToggleKey.justPressed())
-    {
-        m_showTagDebug = !m_showTagDebug;
-    }
-    if (m_debugDecrementKey.justPressed())
-    {
-        m_checkGiver.removeProgressiveMission();
-        m_notificationOverlay.show("DEBUG: Progressive Mission -> " + std::to_string(m_checkGiver.getProgressiveMissionCounter()));
-    }
-    if (m_debugIncrementKey.justPressed())
-    {
-        m_checkGiver.giveProgressiveMission();
-        m_notificationOverlay.show("DEBUG: Progressive Mission -> " + std::to_string(m_checkGiver.getProgressiveMissionCounter()));
-    }
-    if (m_debugSendAllLsKey.justPressed())
-    {
-        debugSendAllLosSantosChecks();
-    }
-    if (m_debugDeathLinkKey.justPressed())
-    {
-        // Deliberately the same entry point the client's CTRL:deathlink_kill takes, rather than
-        // calling the handler directly - so what this tests is the real path, not a lookalike.
-        applyControlMessage("deathlink_kill", "");
-        m_notificationOverlay.show(m_deathLinkHandler.hasDeferredKill()
-            ? "DEBUG: DeathLink held - player not in control"
-            : "DEBUG: DeathLink applied now");
-    }
-}
 
 bool Mod::detectWorldWipe()
 {
@@ -427,51 +395,6 @@ bool Mod::applyItemEffect(const std::string& t_effectName, const std::string& t_
     return true;
 }
 
-// TEMPORARY dev tool (F6): fires every Los Santos check directly at the client - bypassing the
-// pending queues on purpose, so the 27 story sends don't each decrement the progressive
-// mission counter. Only works while connected (no retry); duplicates are harmless server-side.
-void Mod::debugSendAllLosSantosChecks()
-{
-    if (!m_apSocket.isConnected())
-    {
-        m_notificationOverlay.show("DEBUG: not connected - no checks sent");
-        return;
-    }
-
-    // LS story missions (35 is the race minigame, not a location).
-    for (int id = 11; id <= 38; ++id)
-    {
-        if (id == 35) continue;
-        m_apSocket.sendToServer(APProtocol::missionCheck(id));
-    }
-
-    // Single-completion submissions (the tiered ones are sent below).
-    for (int id : { LOS_SANTOS_GYM_ID })
-    {
-        m_apSocket.sendToServer(APProtocol::missionCheck(id));
-    }
-
-    // Every tier of every tiered submission.
-    const int levelSlots = SUBMISSION_TIER_SLOT_COUNT;
-    for (int slot = 0; slot < levelSlots; ++slot)
-    {
-        m_apSocket.sendToServer(APProtocol::submissionLevelCheck(slot));
-    }
-
-    for (int i = 0; i < 100; ++i)
-    {
-        m_apSocket.sendToServer(APProtocol::tagCheck(i));
-    }
-
-    // All 16 shop slots - the client/server simply ignore the ones that aren't locations.
-    for (int i = 0; i < 16; ++i)
-    {
-        m_apSocket.sendToServer(APProtocol::shopCheck(i));
-    }
-
-    m_checkListener.debugCompleteLosSantos();
-    m_notificationOverlay.show("DEBUG: sent every Los Santos check");
-}
 
 void Mod::drawOverlay()
 {
@@ -480,21 +403,6 @@ void Mod::drawOverlay()
     m_ammuNationShop.drawShopContents();
     m_trapHandler.drawTimers();
 
-    // Hidden field diagnostic (F7) for the intermittent tag-detection report - see Mod.h.
-    if (m_showTagDebug)
-    {
-        CFont::SetFontStyle(FONT_SUBTITLES);
-        CFont::SetScale(ScreenScale::of(0.45f), ScreenScale::of(0.9f));
-        CFont::SetColor(CRGBA(255, 255, 0, 255));
-        CFont::SetProportional(true);
-        CFont::SetOrientation(ALIGN_LEFT);
-        CFont::SetDropShadowPosition(1);
-        CFont::SetBackground(false, false);
-        CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
-        // Single PrintString with ~n~ - two calls in one frame don't stack (known CFont gotcha).
-        std::string debugText = m_checkListener.tagDebugLine() + "~n~" + m_checkListener.missionDebugLine();
-        CFont::PrintString(ScreenScale::of(20.0f), ScreenScale::of(20.0f), debugText.c_str());
-    }
 }
 
 void Mod::drawMenuOverlay()

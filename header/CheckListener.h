@@ -51,18 +51,6 @@ public:
 
 	const std::array<bool, 100>& getClaimedTags() const;
 
-	// TEMPORARY: live tag-detection internals for the roof-spraycan investigation.
-	std::string tagDebugLine() const;
-
-	// TEMPORARY: puts local state where a finished Los Santos would have it - all tags claimed
-	// (clears their blips, persists) and all submissions completed (stat latches won't refire,
-	// vanilla rewards suppressed until items arrive). Part of the send-all-LS-checks dev tool.
-	void debugCompleteLosSantos();
-
-	// TEMPORARY: raw LastMissionPassedName plus the mission ID our table resolves it to
-	// (-1 = not in the table), for verifying the Badlands mission IDs in-game.
-	std::string missionDebugLine() const;
-
 	int getPendingSubmissionId();
 	void confirmSubmissionSent();
 

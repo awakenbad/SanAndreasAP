@@ -69,38 +69,6 @@ const std::array<bool, 100>& CheckListener::getClaimedTags() const
 	return m_tagClaimed;
 }
 
-std::string CheckListener::tagDebugLine() const
-{
-	int claimedCount = 0;
-	for (bool claimed : m_tagClaimed)
-	{
-		if (claimed) claimedCount++;
-	}
-
-	return "DBG tagCtr=" + std::to_string(*reinterpret_cast<int32_t*>(TAGS_SPRAYED_ADDR))
-		+ " base=" + std::to_string(static_cast<int>(m_lastTagCount))
-		+ " claimed=" + std::to_string(claimedCount)
-		+ " pendingTags=" + std::to_string(m_pendingTags.hasPending() ? 1 : 0)
-		+ " init=" + std::to_string(m_baselinesInitialized ? 1 : 0);
-}
-
-std::string CheckListener::missionDebugLine() const
-{
-	std::string key(CStats::LastMissionPassedName);
-
-	int id = -1;
-	for (int i = 0; i < static_cast<int>(missions.size()); ++i)
-	{
-		if (missions[i] == key)
-		{
-			id = i;
-			break;
-		}
-	}
-
-	return "DBG LastMission: [" + key + "] id=" + std::to_string(id);
-}
-
 void CheckListener::save(SaveDataManager& t_saveData)
 {
 	std::string tagBits(m_tagClaimed.size(), '0');
@@ -134,15 +102,6 @@ void CheckListener::load(const SaveDataManager& t_saveData)
 	for (const auto& tracker : submissionTrackers)
 	{
 		tracker->load(t_saveData);
-	}
-}
-
-void CheckListener::debugCompleteLosSantos()
-{
-	m_tagClaimed.fill(true);
-	for (const auto& tracker : submissionTrackers)
-	{
-		tracker->submissionWasCompleted();
 	}
 }
 
