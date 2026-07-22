@@ -1,5 +1,6 @@
 #include "NotificationOverlay.h"
 #include "ScreenScale.h"
+#include <algorithm>
 #include <CFont.h>
 #include <CRGBA.h>
 #include <CAudioEngine.h>
@@ -27,9 +28,7 @@ namespace
 
 void NotificationOverlay::show(const std::string& text, NotificationIcon icon)
 {
-	m_notifications.push_back({ text, icon, std::chrono::steady_clock::now() + DISPLAY_DURATION });
-
-	AudioEngine.ReportFrontendAudioEvent(AE_FRONTEND_PICKUP_INFO, 1.0f, 1.0f);
+	m_notifications.push_back({ text, icon, {}, false });
 }
 
 void NotificationOverlay::showAboveRadar(const std::string& text)
@@ -79,29 +78,72 @@ void NotificationOverlay::draw()
 	auto now = std::chrono::steady_clock::now();
 	drawAboveRadar(now);
 
-	while (!m_notifications.empty() && now >= m_notifications.front().expiresAt)
+	while (!m_notifications.empty() && m_notifications.front().started && now >= m_notifications.front().expiresAt)
 	{
 		m_notifications.pop_front();
 	}
 
 	if (m_notifications.empty()) return;
 
-	int slot = 0;
-	for (auto it = m_notifications.rbegin(); it != m_notifications.rend() && slot < static_cast<int>(MAX_VISIBLE); ++it, ++slot)
+	size_t visibleCount = 0;
+	while (visibleCount < m_notifications.size() && m_notifications[visibleCount].started)
 	{
-		drawOne(*it, slot, now);
+		visibleCount++;
+	}
+
+	bool backlogged = m_notifications.size() > MAX_VISIBLE;
+
+	if (backlogged)
+	{
+		for (size_t i = 0; i < visibleCount; ++i)
+		{
+			Notification& notification = m_notifications[i];
+			if (!notification.fades) continue; // already on the fast schedule
+
+			notification.fades = false;
+			auto conveyorExpiry = now + BACKLOG_ADMIT_INTERVAL * static_cast<long long>(i + 1);
+			if (conveyorExpiry < notification.expiresAt)
+			{
+				notification.expiresAt = conveyorExpiry;
+			}
+		}
+	}
+
+	if (visibleCount < MAX_VISIBLE && visibleCount < m_notifications.size()
+		&& (!backlogged || now >= m_nextAdmitAt))
+	{
+		Notification& admitted = m_notifications[visibleCount];
+		admitted.started = true;
+		admitted.fades = !backlogged;
+		admitted.expiresAt = now + (backlogged
+			? BACKLOG_DISPLAY_DURATION
+			: std::chrono::duration_cast<std::chrono::milliseconds>(DISPLAY_DURATION));
+
+		AudioEngine.ReportFrontendAudioEvent(AE_FRONTEND_PICKUP_INFO, 1.0f, 1.0f);
+
+		m_nextAdmitAt = now + BACKLOG_ADMIT_INTERVAL;
+		visibleCount++;
+	}
+
+	// Newest of the visible batch takes the bottom slot, older ones stack upward.
+	for (size_t i = 0; i < visibleCount; ++i)
+	{
+		drawOne(m_notifications[visibleCount - 1 - i], static_cast<int>(i), now);
 	}
 }
 
 void NotificationOverlay::drawOne(const Notification& notification, int slot, std::chrono::steady_clock::time_point now) const
 {
 	unsigned char alpha = 255;
-	auto remaining = notification.expiresAt - now;
-	if (remaining < FADE_DURATION)
+	if (notification.fades)
 	{
-		float t = std::chrono::duration<float>(remaining).count() / std::chrono::duration<float>(FADE_DURATION).count();
-		if (t < 0.0f) t = 0.0f;
-		alpha = static_cast<unsigned char>(255.0f * t);
+		auto remaining = notification.expiresAt - now;
+		if (remaining < FADE_DURATION)
+		{
+			float t = std::chrono::duration<float>(remaining).count() / std::chrono::duration<float>(FADE_DURATION).count();
+			if (t < 0.0f) t = 0.0f;
+			alpha = static_cast<unsigned char>(255.0f * t);
+		}
 	}
 	if (alpha == 0) return;
 
