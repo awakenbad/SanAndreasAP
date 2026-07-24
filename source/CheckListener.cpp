@@ -69,6 +69,24 @@ const std::array<bool, 100>& CheckListener::getClaimedTags() const
 	return m_tagClaimed;
 }
 
+// TEMPORARY
+std::string CheckListener::missionDebugLine() const
+{
+	std::string key(CStats::LastMissionPassedName);
+
+	int id = -1;
+	for (int i = 0; i < static_cast<int>(missions.size()); ++i)
+	{
+		if (missions[i] == key)
+		{
+			id = i;
+			break;
+		}
+	}
+
+	return "DBG LastMission: [" + key + "] id=" + std::to_string(id);
+}
+
 void CheckListener::save(SaveDataManager& t_saveData)
 {
 	std::string tagBits(m_tagClaimed.size(), '0');
@@ -212,29 +230,29 @@ void CheckListener::initializeMissionList()
 		"TRUTH_1",   // 46  Body Harvest (verified in-game)
 		"TRUTH_2",   // 47  Are you going to San Fierro? (verified in-game)
 		"BCESAR4",   // 48  Wu Zi Mu (verified in-game; Farewell My Love is separate - see 135)
-		"GARAG_1",   // 49  Wear Flowers In Your Hair
-		"DECON",     // 50  Deconstruction
-		"SCRASH3",   // 51  555 WE TIP
-		"SCRASH2",   // 52  Snail Trail
+		"GAR_1",   // 49  Wear Flowers In Your Hair
+		"GAR_2",     // 50  Deconstruction
+		"SCRA_1",   // 51  555 WE TIP
+		"SCRA_2",   // 52  Snail Trail
 		"WUZI_1",    // 53  Mountain Cloud Boys
-		"FARLIE4",   // 54  Ran Fa Li
-		"DRIV_6",    // 55  Lure
+		"FAR_4",   // 54  Ran Fa Li
+		"FAR_5",    // 55  Lure
 		"WUZI_2",    // 56  Amphibious Assault
-		"WUZI_5",    // 57  The Da Nang Thang
-		"SYN_1",     // 58  Photo Opportunity
-		"SYN_2",     // 59  Jizzy
-		"SYN_3",     // 60  Outrider
+		"WUZI_4",    // 57  The Da Nang Thang
+		"SYND_1",     // 58  Photo Opportunity
+		"SYND_2",     // 59  Jizzy
+		"SYND_3",     // 60  Outrider
 		"SYND_4",    // 61  Ice Cold Killa
-		"SYN_6",     // 62  Toreno's Last Flight
-		"SYN_7",     // 63  Yay Ka-Boom-Boom
-		"SYN_5",     // 64  Pier 69
-		"DRIV_2",    // 65  T-Bone Mendez
-		"DRIV_3",    // 66  Mike Toreno
+		"SYND_6",     // 62  Toreno's Last Flight
+		"SYND_7",     // 63  Yay Ka-Boom-Boom
+		"SYND_5",     // 64  Pier 69
+		"FAR_2",    // 65  T-Bone Mendez
+		"FAR_3",     // 66  Mike Toreno
 		"STEAL_1",   // 67  Zeroing In
 		"STEAL_2",   // 68  Test Drive
 		"STEAL_4",   // 69  Customs Fast Track
 		"STEAL_5",   // 70  Puncture Wounds
-		"DSKOOL",    // 71  Back to School
+		"FAR_1",    // 71  Back to School
 		"ZERO_1",    // 72  Air Raid
 		"ZERO_2",    // 73  Supply Lines...
 		"ZERO_4",    // 74  New Model Army

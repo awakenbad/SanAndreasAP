@@ -78,6 +78,11 @@ private:
 
 	EdgeTriggeredKey m_tagBlipToggleKey{ VK_F8 };
 
+	// TEMPORARY 
+	EdgeTriggeredKey m_missionDebugToggleKey{ VK_F7 };
+	bool m_showMissionDebug = false;
+	void updateDebugHotkeys();
+
 	void parseIncomingMessages();
 
 	// One tick, in order - see start() for why the sequence matters.

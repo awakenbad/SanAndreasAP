@@ -51,6 +51,9 @@ public:
 
 	const std::array<bool, 100>& getClaimedTags() const;
 
+	// TEMPORARY
+	std::string missionDebugLine() const;
+
 	int getPendingSubmissionId();
 	void confirmSubmissionSent();
 
