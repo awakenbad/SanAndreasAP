@@ -478,9 +478,18 @@ SubmissionTracker* CheckListener::findTracker(int t_submissionID)
 	return nullptr;
 }
 
+// Only story missions spend a Progressive Mission. Optional side missions still send their check
+// like anything else - they just cost nothing to play, so running out of Progressive Missions
+// never locks the player out of them.
 bool CheckListener::isStoryMission(int missionId)
 {
 	if (missionId == 35) return false;
+
+	for (int optionalId : OPTIONAL_MISSION_IDS)
+	{
+		if (missionId == optionalId) return false;
+	}
+
 	if (missionId == 135) return true; // Farewell, My Love... - appended past the original range
 	return missionId >= 11 && missionId <= 112;
 }

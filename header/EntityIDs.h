@@ -13,6 +13,17 @@ inline constexpr int VIGILANTE_ID = 124;
 inline constexpr int BURGLARY_ID = 125;
 inline constexpr int TRUCKING_ID = 117;
 
+// Missions that sit inside the story ID range but are optional side content: they send their
+// check like anything else, but spend no Progressive Mission, so running out never locks the
+// player out of them. A flat list rather than a range because the branches aren't contiguous.
+//
+// MUST match OPTIONAL_MISSION_BRANCHES in the Python world's mission_list.py - an ID here but not
+// there would be gated as story content it doesn't cost, and the reverse would silently charge
+// the player for a mission the logic thinks is free.
+inline constexpr int OPTIONAL_MISSION_IDS[] = {
+	72, 73, 74,   // Zero: Air Raid, Supply Lines, New Model Army
+};
+
 // Deliberately absent: the marker in front of CJ's house (2495.214, -1687.03) - only Big
 // Smoke starts there, which is the first story mission and needs zero Progressive Missions
 // per the AP rules, so blocking it is never correct and only gets in the way afterwards.
