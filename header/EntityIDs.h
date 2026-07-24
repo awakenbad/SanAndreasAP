@@ -17,16 +17,14 @@ inline constexpr int TRUCKING_ID = 117;
 // check like anything else, but spend no Progressive Mission, so running out never locks the
 // player out of them. A flat list rather than a range because the branches aren't contiguous.
 //
-// MUST match OPTIONAL_MISSION_BRANCHES in the Python world's mission_list.py - an ID here but not
-// there would be gated as story content it doesn't cost, and the reverse would silently charge
-// the player for a mission the logic thinks is free.
 inline constexpr int OPTIONAL_MISSION_IDS[] = {
-	72, 73, 74,   // Zero: Air Raid, Supply Lines, New Model Army
+	// Not AP location yet: Wang Cars needs Back to School AND Yay Ka-Boom-Boom
+	67, 68, 69, 70,   // Wang Cars: Zeroing In, Test Drive, Customs Fast Track, Puncture Wounds
+
+	71,               // Driving School: Back to School
+	72, 73, 74,       // Zero: Air Raid, Supply Lines, New Model Army
 };
 
-// Deliberately absent: the marker in front of CJ's house (2495.214, -1687.03) - only Big
-// Smoke starts there, which is the first story mission and needs zero Progressive Missions
-// per the AP rules, so blocking it is never correct and only gets in the way afterwards.
 // Submissions that pay out in tiers rather than once on completion. The check slot sent to the
 // client is baseSlot + (tier - 1), and a tier is reached at progressPerTier * tier of whatever
 // the tracker measures (levels, fares, dollars). Append new entries at the end - inserting in
