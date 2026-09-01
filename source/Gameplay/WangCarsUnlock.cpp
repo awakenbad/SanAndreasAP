@@ -1,10 +1,9 @@
 #include "WangCarsUnlock.h"
-#include "EntityIDs.h"
-#include "ScriptGlobals.h"
+
 #include "ScriptCommandHook.h"
+#include "ScriptGlobals.h"
 #include <CRunningScript.h>
 #include <eScriptCommands.h>
-#include <cstring>
 
 namespace
 {
@@ -24,17 +23,15 @@ namespace
 		}
 	}
 
-	constexpr short COMPARE_PARAM_COUNT = 2;
-
 	bool g_blockVanillaUnlock = false;
 
-	bool blockDesertMissionGate(CRunningScript* t_script)
+	bool blockWangCarsUnlockGate(CRunningScript* t_script)
 	{
 		if (!g_blockVanillaUnlock) return false;
 		if (_strnicmp(t_script->m_szName, "MOB_SF", 8) != 0) return false;
 
-		t_script->CollectParameters(COMPARE_PARAM_COUNT);
-		return ScriptParams[0] == WANG_CARS_AVAILABLE_ID;
+		tScriptParam* variable = t_script->GetPointerToScriptVariable(2);
+		return (int) variable == (int) ScriptGlobals::address(WANG_CARS_AVAILABLE_ID);
 	}
 }
 
@@ -42,7 +39,7 @@ void WangCarsUnlock::blockVanillaUnlock()
 {
 	g_blockVanillaUnlock = true;
 
-	ScriptCommandHook::blockCommand(COMMAND_IS_INT_VAR_GREATER_THAN_NUMBER, &blockDesertMissionGate);
+	ScriptCommandHook::blockCommand(COMMAND_IS_INT_VAR_EQUAL_TO_NUMBER, &blockWangCarsUnlockGate);
 }
 
 void WangCarsUnlock::update(bool t_itemReceived)
