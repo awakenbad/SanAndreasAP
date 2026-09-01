@@ -16,6 +16,7 @@ enum class ItemEffect
 	ArmorRefill,
 	CarRepair,
 	StreetRaces,
+	WangCars,
 	Trap,
 };
 

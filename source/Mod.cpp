@@ -45,6 +45,7 @@ void Mod::start()
     TagSprayBlocker::install();
     StreetRaceUnlock::update(m_streetRacesUnlocked);
     StreetRaceUnlock::updateDrivingSchoolBlip();
+    WangCarsUnlock::update(m_wangCarsUnlocked);
 
     m_apSocket.update();
     pollDeathLink();
@@ -328,6 +329,10 @@ void Mod::applyControlMessage(const std::string& t_name, const std::string& t_va
     {
         StreetRaceUnlock::blockVanillaUnlock();
     }
+    else if (t_name == "wang_cars" && t_value == "1")
+    {
+        WangCarsUnlock::blockVanillaUnlock();
+    }
 }
 
 void Mod::applyPendingItems()
@@ -391,6 +396,7 @@ bool Mod::applyItemEffect(const std::string& t_effectName, const std::string& t_
     case ItemEffect::ArmorRefill:        m_checkGiver.giveArmorRefill(); break;
     case ItemEffect::CarRepair:          m_checkGiver.giveCarRepair(); break;
     case ItemEffect::StreetRaces:        m_streetRacesUnlocked = true; break;
+    case ItemEffect::WangCars:           m_wangCarsUnlocked = true; break;
     case ItemEffect::Trap:               m_trapHandler.giveTrap(spec->trapName); break;
     }
 

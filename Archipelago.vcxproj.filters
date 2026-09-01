@@ -318,6 +318,9 @@
     <ClInclude Include="header\Tags\TagSprayBlocker.h">
       <Filter>Header\Tags</Filter>
     </ClInclude>
+    <ClInclude Include="header\Gameplay\WangCarsUnlock.h">
+      <Filter>Header\Gameplay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Main.cpp">
@@ -526,6 +529,9 @@
     </ClCompile>
     <ClCompile Include="source\Tags\TagSprayBlocker.cpp">
       <Filter>Source\Tags</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Gameplay\WangCarsUnlock.cpp">
+      <Filter>Source\Gameplay</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

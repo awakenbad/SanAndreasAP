@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Gameplay\AmmuNationShop.h" />
+    <ClInclude Include="header\Gameplay\WangCarsUnlock.h" />
     <ClInclude Include="header\Persistence\AutoSaveManager.h" />
     <ClInclude Include="header\Protocol\APSocket.h" />
     <ClInclude Include="header\Checks\Submissions\BurglaryTracker.h" />
@@ -100,6 +101,7 @@
   <ItemGroup>
     <ClCompile Include="source\Checks\Submissions\TrainTracker.cpp" />
     <ClCompile Include="source\Gameplay\AmmuNationShop.cpp" />
+    <ClCompile Include="source\Gameplay\WangCarsUnlock.cpp" />
     <ClCompile Include="source\Persistence\AutoSaveManager.cpp" />
     <ClCompile Include="source\Protocol\APSocket.cpp" />
     <ClCompile Include="source\Checks\Submissions\BurglaryTracker.cpp" />

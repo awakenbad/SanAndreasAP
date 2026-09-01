@@ -25,6 +25,7 @@
 #include "AmmuNationShop.h"
 #include "ShopMenuText.h"
 #include "StreetRaceUnlock.h"
+#include "WangCarsUnlock.h"
 #include "SubmissionResumeLevel.h"
 #include "CityUnlock.h"
 #include "FastTravel.h"
@@ -77,6 +78,7 @@ private:
 	bool m_firstInGameTickHandled = false;
 
 	bool m_streetRacesUnlocked = false;
+	bool m_wangCarsUnlocked = false;
 	bool m_newGameRegrantPending = false;
 	bool m_newGameRegrantClockStarted = false;
 	unsigned int m_newGameRegrantControlStartMs = 0;
