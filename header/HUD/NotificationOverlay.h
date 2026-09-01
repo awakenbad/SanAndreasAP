@@ -22,7 +22,8 @@ enum class NotificationIcon
 	Weapon,
 	Trap,
 	ItemSent,
-	StreetRaces
+	StreetRaces,
+	WangCars
 };
 
 class NotificationOverlay
