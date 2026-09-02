@@ -191,6 +191,7 @@ void NotificationOverlay::drawOne(const Notification& notification, int slot, st
 	case NotificationIcon::ItemSent: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_AIRYARD]; break;
 	case NotificationIcon::StreetRaces: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_FLAG]; break;
 	case NotificationIcon::WangCars: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_CESARVIAPANDO]; break;
+	case NotificationIcon::StuntJumps: iconSprite = &CRadar::RadarBlipSprites[RADAR_SPRITE_RUNWAY]; break;
 	default: break;
 	}
 

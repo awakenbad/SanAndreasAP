@@ -82,6 +82,8 @@
     <ClInclude Include="header\Tags\CollectibleBlipsManager.h" />
     <ClInclude Include="header\Tags\BlipTarget.h" />
     <ClInclude Include="header\Gameplay\TrapHandler.h" />
+    <ClInclude Include="header\Tags\StuntJumpPositions.h" />
+    <ClInclude Include="header\Tags\StuntJumpTracker.h" />
     <ClInclude Include="header\Tags\TagPositions.h" />
     <ClInclude Include="header\Tags\Collectible.h" />
     <ClInclude Include="header\Tags\PickupLock.h" />
@@ -160,6 +162,7 @@
     <ClCompile Include="source\Checks\Submissions\SubmissionTracker.cpp" />
     <ClCompile Include="source\Tags\CollectibleBlipsManager.cpp" />
     <ClCompile Include="source\Tags\BlipTarget.cpp" />
+    <ClCompile Include="source\Tags\StuntJumpTracker.cpp" />
     <ClCompile Include="source\Tags\TagSprayBlocker.cpp" />
     <ClCompile Include="source\Tags\TagTracker.cpp" />
     <ClCompile Include="source\Tags\PickupLock.cpp" />

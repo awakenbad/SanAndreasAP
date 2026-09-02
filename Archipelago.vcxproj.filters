@@ -321,6 +321,12 @@
     <ClInclude Include="header\Gameplay\WangCarsUnlock.h">
       <Filter>Header\Gameplay</Filter>
     </ClInclude>
+    <ClInclude Include="header\Tags\StuntJumpTracker.h">
+      <Filter>Header\Tags</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Tags\StuntJumpPositions.h">
+      <Filter>Header\Tags</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Main.cpp">
@@ -532,6 +538,9 @@
     </ClCompile>
     <ClCompile Include="source\Gameplay\WangCarsUnlock.cpp">
       <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Tags\StuntJumpTracker.cpp">
+      <Filter>Source\Tags</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

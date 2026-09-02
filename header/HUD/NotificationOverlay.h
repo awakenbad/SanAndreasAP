@@ -23,7 +23,8 @@ enum class NotificationIcon
 	Trap,
 	ItemSent,
 	StreetRaces,
-	WangCars
+	WangCars,
+	StuntJumps
 };
 
 class NotificationOverlay

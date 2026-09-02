@@ -10,6 +10,7 @@
 
 #include "PersistentState.h"
 #include "TagTracker.h"
+#include "StuntJumpTracker.h"
 #include "SnapshotTracker.h"
 #include "HorseshoeTracker.h"
 #include "SubmissionTracker.h"
@@ -63,7 +64,7 @@ public:
 
 	static bool isStoryMission(int missionId);
 
-	const std::array<CollectibleTracker*, 5>& getCollectibles() const { return m_collectibles; }
+	const std::array<CollectibleTracker*, 6>& getCollectibles() const { return m_collectibles; }
 
 	void locateCollectible(const std::string& t_type, int t_index);
 
@@ -91,12 +92,13 @@ private:
 	bool m_baselinesInitialized = false;
 
 	TagTracker m_tagTracker;
+	StuntJumpTracker m_stuntJumpTracker;
 	SnapshotTracker m_snapshotTracker;
 	HorseshoeTracker m_horseshoeTracker;
 	ExportListTracker m_exportTracker;
 	OysterTracker m_oysterTracker;
-	std::array<CollectibleTracker*, 5> m_collectibles{
-		&m_tagTracker, &m_snapshotTracker, &m_horseshoeTracker, &m_exportTracker,
+	std::array<CollectibleTracker*, 6> m_collectibles{
+		&m_tagTracker,& m_stuntJumpTracker,&m_snapshotTracker, &m_horseshoeTracker, &m_exportTracker,
 		&m_oysterTracker };
 
 	PendingChecks<std::string> m_pendingMissions;
