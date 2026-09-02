@@ -2,6 +2,7 @@
 #include "EntityIDs.h"
 #include "ScriptGlobals.h"
 #include "ScriptCommandHook.h"
+#include "RunningScripts.h"
 #include <CRunningScript.h>
 #include <eScriptCommands.h>
 #include <cstring>
@@ -17,15 +18,6 @@ namespace
 
 	constexpr int RACE_BODY_OFFSET = 988;
 	constexpr int RACE_BODY_END = 1079;
-
-	void runScript(CRunningScript& t_script, unsigned char* t_from, unsigned char* t_to)
-	{
-		t_script.m_pCurrentIP = t_from;
-		while (t_script.m_pCurrentIP < t_to)
-		{
-			t_script.ProcessOneCommand();
-		}
-	}
 
 	constexpr short COMPARE_PARAM_COUNT = 2;
 	constexpr int DESERT_MISSIONS_REQUIRED = 3;
@@ -66,10 +58,10 @@ void StreetRaceUnlock::update(bool t_itemReceived)
 
 	if (ScriptGlobals::read(DRIVING_SCHOOL_UNLOCKED_GLOBAL) == 0)
 	{
-		runScript(script, scriptBase + SCHOOL_BODY_OFFSET, scriptBase + DSCHOOL_BLIP_OFFSET);
-		runScript(script, scriptBase + DSCHOOL_BLIP_END, scriptBase + SCHOOL_BODY_END);
+		RunningScripts::runScript(script, scriptBase + SCHOOL_BODY_OFFSET, scriptBase + DSCHOOL_BLIP_OFFSET);
+		RunningScripts::runScript(script, scriptBase + DSCHOOL_BLIP_END, scriptBase + SCHOOL_BODY_END);
 	}
-	runScript(script, scriptBase + RACE_BODY_OFFSET, scriptBase + RACE_BODY_END);
+	RunningScripts::runScript(script, scriptBase + RACE_BODY_OFFSET, scriptBase + RACE_BODY_END);
 
 	memcpy(ScriptParams, savedParams, sizeof(savedParams));
 }
@@ -88,7 +80,7 @@ void StreetRaceUnlock::updateDrivingSchoolBlip()
 	CRunningScript script;
 	script.Init();
 	script.m_pBaseIP = scriptSpace;
-	runScript(script, scriptSpace + SCRIPT_BASE_OFFSET + DSCHOOL_BLIP_OFFSET,
+	RunningScripts::runScript(script, scriptSpace + SCRIPT_BASE_OFFSET + DSCHOOL_BLIP_OFFSET,
 		scriptSpace + SCRIPT_BASE_OFFSET + DSCHOOL_BLIP_END);
 
 	memcpy(ScriptParams, savedParams, sizeof(savedParams));

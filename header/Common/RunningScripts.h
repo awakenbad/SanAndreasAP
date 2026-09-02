@@ -22,4 +22,13 @@ namespace RunningScripts
 
 		return t_script->m_pCurrentIP == instruction;
 	}
+
+	inline void runScript(CRunningScript& t_script, unsigned char* t_from, unsigned char* t_to)
+	{
+		t_script.m_pCurrentIP = t_from;
+		while (t_script.m_pCurrentIP < t_to)
+		{
+			t_script.ProcessOneCommand();
+		}
+	}
 }
