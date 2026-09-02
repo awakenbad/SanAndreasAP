@@ -27,7 +27,7 @@ int StuntJumpTracker::identifyCollected() const
 	float bestDistance = 0.0f;
 	for (int i = 0; i < static_cast<int>(stuntJumpEndPositions.size()); ++i)
 	{
-		// start or end position?
+		// Compare the collection against the end position
 		float distance = CVector::Distance(playerPos, stuntJumpEndPositions[i]);
 		if (best == -1 || distance < bestDistance)
 		{
