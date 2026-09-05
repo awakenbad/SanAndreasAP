@@ -4,6 +4,10 @@
 #include <IplDef.h>
 #include <eScriptCommands.h>
 #include <extensions/ScriptCommands.h>
+#include "ScriptCommandHook.h"
+#include <CRunningScript.h>
+#include "RunningScripts.h"
+#include "ScriptGlobals.h"
 
 // Taken from ChaosModComplementaries. Thanks to Lordmau5 for letting me use this!
 
@@ -12,6 +16,7 @@ using namespace plugin;
 namespace
 {
 	constexpr int STAT_CITIES_PASSED = 181;
+	constexpr int RETURN_CITIES_PASSED_ID = 25;
 	constexpr int ALL_CITIES_PASSED = 3;
 
 	class RoadArea
@@ -98,13 +103,41 @@ namespace
 
 		restoreRoads();
 	}
+
+	bool blockUnlockedCityGate(CRunningScript* t_script)
+	{
+		if (_strnicmp(t_script->m_szName, "MOB_LA1", 8) != 0) return false;
+
+		tScriptParam* destination = t_script->GetPointerToScriptVariable(2);
+		if (destination == ScriptGlobals::address(RETURN_CITIES_PASSED_ID))
+		{
+			t_script->UpdateCompareFlag(false);
+			return true;
+		}
+
+		return false;
+	}
+
+	bool blockMissionCallsTermination(CRunningScript* t_script)
+	{
+		return _strnicmp(t_script->m_szName, "MOB_LA1", 8) == 0;
+	}
 }
 
 void CityUnlock::update()
 {
+	ScriptCommandHook::blockCommand(COMMAND_IS_INT_VAR_GREATER_THAN_NUMBER, &blockUnlockedCityGate);
+	ScriptCommandHook::blockCommand(COMMAND_TERMINATE_THIS_SCRIPT, &blockMissionCallsTermination);
+
 	if (static_cast<int>(CStats::GetStatValue(STAT_CITIES_PASSED)) < ALL_CITIES_PASSED)
 	{
 		CStats::SetStatValue(STAT_CITIES_PASSED, static_cast<float>(ALL_CITIES_PASSED));
+	}
+
+	if (!RunningScripts::isActive("MOB_LA1"))
+	{
+		unsigned char* scriptBase = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace);
+		CTheScripts::StartNewScript(scriptBase + 180158);
 	}
 
 	removeBarriers();
