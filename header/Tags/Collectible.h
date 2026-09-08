@@ -7,6 +7,7 @@
 #include "SaveDataManager.h"
 #include "APProtocol.h"
 #include "BlipTarget.h"
+#include <CRGBA.h>
 
 class CollectibleTracker
 {
@@ -91,7 +92,7 @@ public:
 		for (int i = 0; i < N; ++i)
 		{
 			bool claimed = m_claimed[i] || !isIncluded(i) || !isUnlocked();
-			t_out.push_back({ m_positions[i], m_sprite, i + 1, claimed, i == locatedIndex(), INT_MAX });
+			t_out.push_back({ m_positions[i], getHeightIndicatorColor(), m_sprite, i + 1, claimed, i == locatedIndex(), INT_MAX });
 		}
 	}
 
@@ -151,6 +152,8 @@ protected:
 	int locatedIndex() const { return m_located; }
 
 	bool isClaimed(int t_index) const { return m_claimed[t_index]; }
+
+	virtual CRGBA getHeightIndicatorColor() const { return CRGBA(240, 170, 20, 255); }
 
 private:
 	std::span<const CVector> m_positions;

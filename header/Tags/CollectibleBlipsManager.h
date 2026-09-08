@@ -3,6 +3,9 @@
 #include "BlipTarget.h"
 #include "PersistentState.h"
 
+#include <CRadar.h>
+#include <CSprite2d.h>
+
 class SaveDataManager;
 
 class CollectibleBlipsManager : public PersistentState
@@ -25,6 +28,9 @@ private:
 	int ownedTargetIndexAt(const CVector& t_pos, int t_sprite) const;
 	bool ownsBlip(int t_handle) const;
 	int findExistingBlipAt(const CVector& t_pos, int t_sprite) const;
+
+	eRadarTraceHeight getRadarTraceHeight(BlipTarget target, CVector playerPos) const;
+	void drawBlipHeightOverlay(BlipTarget target, CVector2D spritePos, CVector playerPos, bool onBlip) const;
 
 	void reconcileWithPool();
 	void clearStaleSentinels();

@@ -11,4 +11,5 @@ public:
 protected:
 	float readCount() const override;
 	int identifyCollected() const override;
+	CRGBA getHeightIndicatorColor() const override;
 };

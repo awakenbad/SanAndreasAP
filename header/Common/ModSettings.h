@@ -12,6 +12,13 @@ namespace ModSettings
 		Count,
 	};
 
+	enum class CollectibleHeightIndicator
+	{
+		Off,
+		OnBlip,
+		Alternating
+	};
+
 	void load();
 	float notificationSeconds();
 	float collectibleNumberScale();
@@ -19,4 +26,5 @@ namespace ModSettings
 	const CRGBA& itemColour(ItemColour t_which);
 	int unselectedDimPercent();
 	bool fastTravelEnabled();
+	ModSettings::CollectibleHeightIndicator collectibleHeightIndicatorMode();
 }

@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <string>
+#include <plugin.h>
 
 namespace
 {
@@ -16,16 +17,18 @@ namespace
 	constexpr char COUNTER_SCALE_KEY[] = "MissionCounterScale";
 	constexpr char DIM_KEY[] = "UnselectedDim";
 	constexpr char FAST_TRAVEL_KEY[] = "FastTravel";
+	constexpr char COLLECTIBLE_HEIGHT_INDICATOR_KEY[] = "CollectibleHeightIndicator";
 
 	constexpr float NOTIFICATION_DEFAULT = 8.0f;
 	constexpr float NOTIFICATION_MIN = 1.0f;
 	constexpr float NOTIFICATION_MAX = 60.0f;
 
-	constexpr float SCALE_DEFAULT = 0.3f;
+	constexpr float SCALE_DEFAULT = 0.5f;
 	constexpr float SCALE_MIN = 0.1f;
 	constexpr float SCALE_MAX = 2.0f;
 
 	constexpr int FAST_TRAVEL_DEFAULT = 1;
+	constexpr int COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT = (int) ModSettings::CollectibleHeightIndicator::Off;
 
 	constexpr int DIM_DEFAULT = 60;
 	constexpr int DIM_MIN = 10;
@@ -45,13 +48,11 @@ namespace
 		"; Note: if over 5 items are received at the same time, this setting is ignored and only applied to the last 5 notifications.\r\n"
 		"NotificationSeconds=8\r\n"
 		"\r\n"
-		"; Size of the numbers beside collectible blips on the radar (0.1 - 2).\r\n"
-		"; Recommended values: 0.3 at 16:9; 0.5 at 4:3\r\n"
-		"CollectibleNumberScale=0.3\r\n"
+		"; Size of the numbers beside collectible blips on the radar (0.1 - 2, default 0.5).\r\n"
+		"CollectibleNumberScale=0.5\r\n"
 		"\r\n"
-		"; Size of the Progressive Mission counter drawn on radar mission blips (0.1 - 2).\r\n"
-		"; Recommended values: 0.3 at 16:9; 0.5 at 4:3\r\n"
-		"MissionCounterScale=0.3\r\n"
+		"; Size of the Progressive Mission counter drawn on radar mission blips (0.1 - 2, default 0.5).\r\n"
+		"MissionCounterScale=0.5\r\n"
 		"\r\n"
 		"[Colors]\r\n"
 		"; Ammu-Nation row colours by item importance, as RRGGBB hex.\r\n"
@@ -68,13 +69,18 @@ namespace
 		"[Gameplay]\r\n"
 		"; Fast travel markers at Johnson's House, Badlands trailer, Doherty\r\n"
 		"; garage and Four Dragons casino (1 = on, 0 = off, default = 1).\r\n"
-		"FastTravel=1\r\n";
+		"FastTravel=1\r\n"
+		"\r\n"
+		"; Shows a height indicator (Above △, Below ▽, Same Height □) for collectibles when you're\r\n"
+		"; close enough to them (0 = off, 1 = on top of blip, 2 = alternating with number, default = 1).\r\n"
+		"CollectibleHeightIndicator=1\r\n";
 
 	float g_notificationSeconds = NOTIFICATION_DEFAULT;
 	float g_collectibleNumberScale = SCALE_DEFAULT;
 	float g_missionCounterScale = SCALE_DEFAULT;
 	int g_unselectedDimPercent = DIM_DEFAULT;
 	bool g_fastTravelEnabled = FAST_TRAVEL_DEFAULT != 0;
+	int g_collectibleHeightIndicatorMode = COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT;
 	CRGBA g_itemColours[COLOUR_COUNT];
 
 	std::string settingsPath()
@@ -179,6 +185,7 @@ void ModSettings::load()
 	g_unselectedDimPercent = readInt(path, COLOURS_SECTION, DIM_KEY, DIM_DEFAULT, DIM_MIN, DIM_MAX);
 
 	g_fastTravelEnabled = readInt(path, GAMEPLAY_SECTION, FAST_TRAVEL_KEY, FAST_TRAVEL_DEFAULT, 0, 1) != 0;
+	g_collectibleHeightIndicatorMode = readInt(path, GAMEPLAY_SECTION, COLLECTIBLE_HEIGHT_INDICATOR_KEY, COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT, 0, 2);
 }
 
 float ModSettings::notificationSeconds()
@@ -188,12 +195,12 @@ float ModSettings::notificationSeconds()
 
 float ModSettings::collectibleNumberScale()
 {
-	return g_collectibleNumberScale;
+	return SCREEN_MULTIPLIER(g_collectibleNumberScale);
 }
 
 float ModSettings::missionCounterScale()
 {
-	return g_missionCounterScale;
+	return SCREEN_MULTIPLIER(g_missionCounterScale);
 }
 
 const CRGBA& ModSettings::itemColour(ItemColour t_which)
@@ -209,4 +216,9 @@ int ModSettings::unselectedDimPercent()
 bool ModSettings::fastTravelEnabled()
 {
 	return g_fastTravelEnabled;
+}
+
+ModSettings::CollectibleHeightIndicator ModSettings::collectibleHeightIndicatorMode()
+{
+	return (ModSettings::CollectibleHeightIndicator) g_collectibleHeightIndicatorMode;
 }

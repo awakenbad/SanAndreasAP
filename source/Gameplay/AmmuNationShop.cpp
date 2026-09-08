@@ -1,5 +1,4 @@
 ﻿#include "AmmuNationShop.h"
-#include "ScreenScale.h"
 #include "common.h"
 #include "RunningScripts.h"
 #include "CMenuSystem.h"

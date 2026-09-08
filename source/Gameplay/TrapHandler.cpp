@@ -9,12 +9,12 @@
 #include "CAutomobile.h"
 #include "CBike.h"
 #include "CWeather.h"
-#include "ScreenScale.h"
 #include <CFont.h>
 #include <CRGBA.h>
 #include <CSprite2d.h>
 #include <random>
 #include <vector>
+#include <plugin.h>
 
 static std::string formatRemaining(std::chrono::steady_clock::duration t_remaining)
 {
@@ -282,9 +282,9 @@ void TrapHandler::drawTimers() const
 	}
 	if (lines.empty()) return;
 
-	float scale = ScreenScale::factor();
-	float x = static_cast<float>(RsGlobal.maximumWidth) - ScreenScale::of(30.0f);
-	float y = ScreenScale::of(250.0f);
+	float scale = SCREEN_MULTIPLIER(1.0f);
+	float x = static_cast<float>(RsGlobal.maximumWidth) - SCREEN_MULTIPLIER(30.0f);
+	float y = SCREEN_MULTIPLIER(250.0f);
 
 	for (const std::string& line : lines)
 	{

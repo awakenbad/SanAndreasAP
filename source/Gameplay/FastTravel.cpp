@@ -2,7 +2,6 @@
 #include "Teleport.h"
 #include "PlayerControl.h"
 #include "EdgeTriggeredKey.h"
-#include "ScreenScale.h"
 #include "common.h"
 #include <C3dMarkers.h>
 #include <CTheScripts.h>
@@ -312,11 +311,11 @@ void FastTravel::draw()
 	CFont::SetBackground(false, false);
 	CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
-	float width = ScreenScale::of(MENU_WIDTH);
-	float rowHeight = ScreenScale::of(MENU_ROW_HEIGHT);
-	float padding = ScreenScale::of(MENU_PADDING);
-	float titleHeight = ScreenScale::of(MENU_TITLE_HEIGHT);
-	float footerHeight = ScreenScale::of(MENU_FOOTER_HEIGHT);
+	float width = SCREEN_MULTIPLIER(MENU_WIDTH);
+	float rowHeight = SCREEN_MULTIPLIER(MENU_ROW_HEIGHT);
+	float padding = SCREEN_MULTIPLIER(MENU_PADDING);
+	float titleHeight = SCREEN_MULTIPLIER(MENU_TITLE_HEIGHT);
+	float footerHeight = SCREEN_MULTIPLIER(MENU_FOOTER_HEIGHT);
 	float height = titleHeight + rowHeight * static_cast<float>(list.size()) + footerHeight
 		+ padding * 2.0f;
 
@@ -325,11 +324,11 @@ void FastTravel::draw()
 
 	CSprite2d::DrawRect(CRect(left, top, left + width, top + height), CRGBA(0, 0, 0, 190));
 
-	CFont::SetScale(ScreenScale::of(0.8f), ScreenScale::of(1.6f));
+	CFont::SetScale(SCREEN_MULTIPLIER(0.8f), SCREEN_MULTIPLIER(1.6f));
 	CFont::SetColor(CRGBA(255, 255, 255, 255));
 	CFont::PrintString(left + padding, top + padding, "FAST TRAVEL");
 
-	CFont::SetScale(ScreenScale::of(0.65f), ScreenScale::of(1.3f));
+	CFont::SetScale(SCREEN_MULTIPLIER(0.65f), SCREEN_MULTIPLIER(1.3f));
 	float rowY = top + padding + titleHeight;
 	for (int i = 0; i < static_cast<int>(list.size()); ++i)
 	{
@@ -341,12 +340,12 @@ void FastTravel::draw()
 				CRGBA(MARKER_COLOUR.r, MARKER_COLOUR.g, MARKER_COLOUR.b, 90));
 		}
 		CFont::SetColor(selected ? CRGBA(255, 255, 255, 255) : CRGBA(190, 190, 190, 255));
-		CFont::PrintString(left + padding, rowY + ScreenScale::of(4.0f), TRAVEL_POINTS[list[i]].name);
+		CFont::PrintString(left + padding, rowY + SCREEN_MULTIPLIER(4.0f), TRAVEL_POINTS[list[i]].name);
 		rowY += rowHeight;
 	}
 
-	CFont::SetScale(ScreenScale::of(0.5f), ScreenScale::of(1.0f));
+	CFont::SetScale(SCREEN_MULTIPLIER(0.5f), SCREEN_MULTIPLIER(1.0f));
 	CFont::SetColor(CRGBA(170, 170, 170, 255));
-	CFont::PrintString(left + padding, rowY + ScreenScale::of(8.0f),
+	CFont::PrintString(left + padding, rowY + SCREEN_MULTIPLIER(8.0f),
 		"W/S select    SPACE travel    ENTER or F leave");
 }

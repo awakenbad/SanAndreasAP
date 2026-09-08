@@ -1,5 +1,4 @@
 #include "NotificationOverlay.h"
-#include "ScreenScale.h"
 #include "ModSettings.h"
 #include <algorithm>
 #include <CFont.h>
@@ -8,6 +7,7 @@
 #include <enums/eAudioEvents.h>
 #include <CRadar.h>
 #include <CSprite2d.h>
+#include <plugin.h>
 
 namespace
 {
@@ -60,7 +60,7 @@ void NotificationOverlay::drawAboveRadar(std::chrono::steady_clock::time_point n
 	if (alpha == 0) return;
 
 	CFont::SetFontStyle(FONT_SUBTITLES);
-	CFont::SetScale(ScreenScale::of(0.7f), ScreenScale::of(1.4f));
+	CFont::SetScale(SCREEN_MULTIPLIER(0.7f), SCREEN_MULTIPLIER(1.4f));
 	CFont::SetColor(CRGBA(255, 255, 255, alpha));
 	CFont::SetProportional(true);
 	CFont::SetOrientation(ALIGN_LEFT);
@@ -68,12 +68,12 @@ void NotificationOverlay::drawAboveRadar(std::chrono::steady_clock::time_point n
 	CFont::SetBackground(false, false);
 	CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
-	float x = ScreenScale::of(RADAR_MESSAGE_LEFT);
-	float y = static_cast<float>(RsGlobal.maximumHeight) - ScreenScale::of(RADAR_MESSAGE_FROM_BOTTOM);
+	float x = SCREEN_MULTIPLIER(RADAR_MESSAGE_LEFT);
+	float y = static_cast<float>(RsGlobal.maximumHeight) - SCREEN_MULTIPLIER(RADAR_MESSAGE_FROM_BOTTOM);
 
 	float textWidth = CFont::GetStringWidth(m_radarMessage.c_str(), true);
-	CRect box(x - ScreenScale::of(6.0f), y,
-		x + textWidth + ScreenScale::of(6.0f), y + ScreenScale::of(30.0f));
+	CRect box(x - SCREEN_MULTIPLIER(6.0f), y,
+		x + textWidth + SCREEN_MULTIPLIER(6.0f), y + SCREEN_MULTIPLIER(30.0f));
 	CSprite2d::DrawRect(box, CRGBA(0, 0, 0, static_cast<unsigned char>(150.0f * alpha / 255.0f)));
 
 	CFont::PrintString(x, y, m_radarMessage.c_str());
@@ -151,16 +151,16 @@ void NotificationOverlay::drawOne(const Notification& notification, int slot, st
 	if (alpha == 0) return;
 
 	CFont::SetFontStyle(FONT_SUBTITLES);
-	CFont::SetScale(ScreenScale::of(0.9f), ScreenScale::of(1.8f));
+	CFont::SetScale(SCREEN_MULTIPLIER(0.9f), SCREEN_MULTIPLIER(1.8f));
 	CFont::SetColor(CRGBA(255, 255, 255, alpha));
 	CFont::SetProportional(true);
 	CFont::SetOrientation(ALIGN_RIGHT);
 	CFont::SetDropShadowPosition(1);
 	CFont::SetBackground(false, false);
 
-	float x = static_cast<float>(RsGlobal.maximumWidth) - ScreenScale::of(RIGHT_MARGIN);
-	float y = static_cast<float>(RsGlobal.maximumHeight) - ScreenScale::of(BOTTOM_MARGIN)
-		- static_cast<float>(slot) * ScreenScale::of(SLOT_HEIGHT);
+	float x = static_cast<float>(RsGlobal.maximumWidth) - SCREEN_MULTIPLIER(RIGHT_MARGIN);
+	float y = static_cast<float>(RsGlobal.maximumHeight) - SCREEN_MULTIPLIER(BOTTOM_MARGIN)
+		- static_cast<float>(slot) * SCREEN_MULTIPLIER(SLOT_HEIGHT);
 
 	CFont::SetRightJustifyWrap(0.0f);
 
@@ -195,21 +195,21 @@ void NotificationOverlay::drawOne(const Notification& notification, int slot, st
 	default: break;
 	}
 
-	float boxLeft = x - textWidth - ScreenScale::of(BOX_PADDING_H);
+	float boxLeft = x - textWidth - SCREEN_MULTIPLIER(BOX_PADDING_H);
 	if (iconSprite)
 	{
-		boxLeft -= ScreenScale::of(ICON_SIZE + ICON_TEXT_GAP);
+		boxLeft -= SCREEN_MULTIPLIER(ICON_SIZE + ICON_TEXT_GAP);
 	}
 
-	CRect box(boxLeft, y - ScreenScale::of(BOX_PADDING_V),
-		x + ScreenScale::of(BOX_PADDING_H), y + ScreenScale::of(TEXT_HEIGHT + BOX_PADDING_V));
+	CRect box(boxLeft, y - SCREEN_MULTIPLIER(BOX_PADDING_V),
+		x + SCREEN_MULTIPLIER(BOX_PADDING_H), y + SCREEN_MULTIPLIER(TEXT_HEIGHT + BOX_PADDING_V));
 	CSprite2d::DrawRect(box, CRGBA(0, 0, 0, static_cast<unsigned char>(150.0f * alpha / 255.0f)));
 
 	if (iconSprite)
 	{
-		float iconY = y + ScreenScale::of((TEXT_HEIGHT - ICON_SIZE) / 2.0f);
-		iconSprite->Draw(boxLeft + ScreenScale::of(BOX_PADDING_H), iconY,
-			ScreenScale::of(ICON_SIZE), ScreenScale::of(ICON_SIZE), CRGBA(255, 255, 255, alpha));
+		float iconY = y + SCREEN_MULTIPLIER((TEXT_HEIGHT - ICON_SIZE) / 2.0f);
+		iconSprite->Draw(boxLeft + SCREEN_MULTIPLIER(BOX_PADDING_H), iconY,
+			SCREEN_MULTIPLIER(ICON_SIZE), SCREEN_MULTIPLIER(ICON_SIZE), CRGBA(255, 255, 255, alpha));
 	}
 
 	CFont::PrintString(x, y, notification.text.c_str());

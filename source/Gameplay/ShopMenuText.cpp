@@ -1,12 +1,12 @@
 ﻿#include "ShopMenuText.h"
 #include "AmmuNationShop.h"
 #include "CMenuSystem.h"
-#include "ScreenScale.h"
 #include "ModSettings.h"
 #include <CText.h>
 #include <CFont.h>
 #include <CRGBA.h>
 #include <Patch.h>
+#include <plugin.h>
 
 namespace
 {
@@ -72,8 +72,8 @@ namespace
 				if (menu && menu->m_nNumColumns == 2)
 				{
 					float width = CFont::GetStringWidth(replacement, true, false)
-						+ ScreenScale::of(NAME_COLUMN_PADDING);
-					float floorWidth = ScreenScale::of(MIN_NAME_COLUMN_WIDTH);
+						+ SCREEN_MULTIPLIER(NAME_COLUMN_PADDING);
+					float floorWidth = SCREEN_MULTIPLIER(MIN_NAME_COLUMN_WIDTH);
 					menu->m_afColumnWidth[0] = width > floorWidth ? width : floorWidth;
 				}
 

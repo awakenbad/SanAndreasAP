@@ -1,4 +1,4 @@
-﻿#include "Mod.h"
+#include "Mod.h"
 #include "ModSettings.h"
 #include "PlayerControl.h"
 #include "APProtocol.h"
@@ -17,6 +17,7 @@
 #include <CRGBA.h>
 #include <CMenuManager.h>
 #include "TagSprayBlocker.h"
+#include <plugin.h>
 
 Mod::Mod()
 {
@@ -455,7 +456,7 @@ void Mod::drawMissionCountsOnMap()
 
 void Mod::drawMissionCountsImpl(bool t_menuMap)
 {
-    float scaleX = t_menuMap ? ScreenScale::of(0.5f) : ModSettings::missionCounterScale();
+    float scaleX = t_menuMap ? SCREEN_MULTIPLIER(0.5f) : ModSettings::missionCounterScale();
     CFont::SetFontStyle(FONT_SUBTITLES);
     CFont::SetScale(scaleX, scaleX * 2.0f);
     CFont::SetProportional(true);
@@ -476,7 +477,7 @@ void Mod::drawMissionCountsImpl(bool t_menuMap)
         {
             if (!MenuMap::worldToScreen(trace.m_vecPos, screenPos)) continue;
 
-            float offset = ScreenScale::of(7.0f);
+            float offset = SCREEN_MULTIPLIER(7.0f);
             screenPos.x += offset;
             screenPos.y += offset;
         }
@@ -488,7 +489,7 @@ void Mod::drawMissionCountsImpl(bool t_menuMap)
             if (radarSpace.x * radarSpace.x + radarSpace.y * radarSpace.y > 0.85f * 0.85f) continue;
             CRadar::TransformRadarPointToScreenSpace(screenPos, radarSpace);
 
-            float offset = ScreenScale::of(7.0f);
+            float offset = SCREEN_MULTIPLIER(7.0f);
             screenPos.x += offset;
             screenPos.y += offset;
         }
@@ -522,7 +523,7 @@ void Mod::drawMenuOverlay()
     float bottom = static_cast<float>(RsGlobal.maximumHeight);
 
     CFont::SetFontStyle(FONT_SUBTITLES);
-    CFont::SetScale(ScreenScale::of(0.7f), ScreenScale::of(1.4f));
+    CFont::SetScale(SCREEN_MULTIPLIER(0.7f), SCREEN_MULTIPLIER(1.4f));
     CFont::SetColor(connected ? CRGBA(80, 220, 80, 255) : CRGBA(220, 80, 80, 255));
     CFont::SetProportional(true);
     CFont::SetOrientation(ALIGN_LEFT);
@@ -530,13 +531,13 @@ void Mod::drawMenuOverlay()
     CFont::SetBackground(false, false);
     CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
-    CFont::PrintString(ScreenScale::of(20.0f), bottom - ScreenScale::of(100.0f),
+    CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(100.0f),
         connected ? "Archipelago: Connected" : "Archipelago: Disconnected");
 
     if (MenuGate::shouldExplainBlock())
     {
         CFont::SetColor(CRGBA(220, 180, 60, 255));
-        CFont::PrintString(ScreenScale::of(20.0f), bottom - ScreenScale::of(145.0f),
+        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f),
             "Connect the Archipelago client before starting or loading a game");
     }
     else if (!StartingSaves::missingSaveName().empty())
@@ -545,25 +546,25 @@ void Mod::drawMenuOverlay()
             + " - reinstall the starting saves";
 
         CFont::SetColor(CRGBA(220, 180, 60, 255));
-        CFont::PrintString(ScreenScale::of(20.0f), bottom - ScreenScale::of(145.0f), warning.c_str());
+        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f), warning.c_str());
     }
 
     CFont::SetFontStyle(FONT_SUBTITLES);
-    CFont::SetScale(ScreenScale::of(0.55f), ScreenScale::of(1.1f));
+    CFont::SetScale(SCREEN_MULTIPLIER(0.55f), SCREEN_MULTIPLIER(1.1f));
     CFont::SetColor(CRGBA(255, 255, 255, 255));
     CFont::SetProportional(true);
     CFont::SetOrientation(ALIGN_LEFT);
     CFont::SetDropShadowPosition(1);
     CFont::SetBackground(false, false);
 
-    CFont::PrintString(ScreenScale::of(20.0f), bottom - ScreenScale::of(55.0f),
+    CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(55.0f),
         m_blipManager.areBlipsEnabled() ? "F8 - Collectible blips on map: ON" : "F8 - Collectible blips on map: OFF");
 }
 
 void Mod::drawVersionLabel()
 {
     CFont::SetFontStyle(FONT_SUBTITLES);
-    CFont::SetScale(ScreenScale::of(0.65f), ScreenScale::of(1.3f));
+    CFont::SetScale(SCREEN_MULTIPLIER(0.65f), SCREEN_MULTIPLIER(1.3f));
     CFont::SetColor(CRGBA(255, 255, 255, 90));
     CFont::SetProportional(true);
     CFont::SetOrientation(ALIGN_LEFT);
@@ -571,7 +572,7 @@ void Mod::drawVersionLabel()
     CFont::SetBackground(false, false);
     CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
-    CFont::PrintString(ScreenScale::of(20.0f), ScreenScale::of(20.0f),
+    CFont::PrintString(SCREEN_MULTIPLIER(20.0f), SCREEN_MULTIPLIER(20.0f),
         ("Archipelago v" + std::string(MOD_VERSION)).c_str());
 }
 

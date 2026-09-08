@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <vector>
 #include <APSocket.h>
 #include "EdgeTriggeredKey.h"
@@ -19,7 +19,6 @@
 #include "SaveDataManager.h"
 #include "AutoSaveManager.h"
 #include "NotificationOverlay.h"
-#include "ScreenScale.h"
 #include "CollectibleBlipsManager.h"
 #include "BlipTarget.h"
 #include "AmmuNationShop.h"

@@ -1,5 +1,4 @@
 ﻿#include "CollectibleBlipsManager.h"
-#include "ScreenScale.h"
 #include "ModSettings.h"
 #include "MenuMap.h"
 #include "SaveDataManager.h"
@@ -7,12 +6,11 @@
 #include <algorithm>
 #include <string>
 #include <utility>
-#include <CRadar.h>
 #include <CFont.h>
 #include <CRGBA.h>
 #include <CRect.h>
-#include <CSprite2d.h>
 #include <CMenuManager.h>
+#include <plugin.h>
 
 namespace
 {
@@ -227,6 +225,35 @@ bool CollectibleBlipsManager::render(std::vector<BlipTarget> t_targets)
 	return worldWiped;
 }
 
+eRadarTraceHeight CollectibleBlipsManager::getRadarTraceHeight(BlipTarget target, CVector playerPos) const
+{
+	// If target is above player + 2
+	if (target.position.z > playerPos.z + 2)
+	{
+		return RADAR_TRACE_LOW;
+	}
+
+	// If target is greater or equal to player - 2
+	if (target.position.z >= playerPos.z - 2)
+	{
+		return RADAR_TRACE_NORMAL;
+	}
+	// Otherwise the player is level
+	else
+	{
+		return RADAR_TRACE_HIGH;
+	}
+}
+
+void CollectibleBlipsManager::drawBlipHeightOverlay(BlipTarget target, CVector2D spritePos, CVector playerPos, bool onBlip) const
+{
+	const float offsetX = onBlip ? 0.0f : SCREEN_MULTIPLIER(6.0f);
+	const float offsetY = onBlip ? 0.0f : SCREEN_MULTIPLIER(18.0f);
+
+	CRGBA markerColor = target.heightIndicatorColor;
+	CRadar::ShowRadarTraceWithHeight(spritePos.x + offsetX, spritePos.y + offsetY, 2, markerColor.r, markerColor.g, markerColor.b, markerColor.a, getRadarTraceHeight(target, playerPos));
+}
+
 void CollectibleBlipsManager::drawRadarNumbers() const
 {
 	if (MenuMap::isOpen()) return;
@@ -234,12 +261,20 @@ void CollectibleBlipsManager::drawRadarNumbers() const
 
 	CFont::SetFontStyle(FONT_SUBTITLES);
 	const float numberScale = ModSettings::collectibleNumberScale();
+	const float offset = SCREEN_MULTIPLIER(7.0f);
 	CFont::SetScale(numberScale, numberScale * 2.0f);
 	CFont::SetColor(CRGBA(255, 255, 255, 255));
 	CFont::SetProportional(true);
 	CFont::SetOrientation(ALIGN_CENTER);
 	CFont::SetDropShadowPosition(1);
 	CFont::SetBackground(false, false);
+
+	CPlayerPed* player = FindPlayerPed();
+	if (!player) return;
+
+	CVector playerPos = player->GetPosition();
+
+	ModSettings::CollectibleHeightIndicator indicatorMode = ModSettings::collectibleHeightIndicatorMode();
 
 	for (int i = 0; i < static_cast<int>(m_targets.size()); ++i)
 	{
@@ -255,7 +290,32 @@ void CollectibleBlipsManager::drawRadarNumbers() const
 
 		CVector2D screenPos;
 		CRadar::TransformRadarPointToScreenSpace(screenPos, radarSpace);
-		CFont::PrintString(screenPos.x, screenPos.y, std::to_string(target.number).c_str());
+
+		bool isPlayerInRange = playerPos.Distance2D(target.position) <= 70.0f;
+
+		switch (indicatorMode)
+		{
+		case ModSettings::CollectibleHeightIndicator::Off:
+			CFont::PrintString(screenPos.x + offset, screenPos.y + offset, std::to_string(target.number).c_str());
+			break;
+		case ModSettings::CollectibleHeightIndicator::OnBlip:
+			CFont::PrintString(screenPos.x + offset, screenPos.y + offset, std::to_string(target.number).c_str());
+			if (isPlayerInRange)
+			{
+				drawBlipHeightOverlay(target, screenPos, playerPos, true);
+			}
+			break;
+		case ModSettings::CollectibleHeightIndicator::Alternating:
+			if ((CTimer::m_snTimeInMilliseconds / 1000) % 2 && isPlayerInRange)
+			{
+				drawBlipHeightOverlay(target, screenPos, playerPos, false);
+			}
+			else
+			{
+				CFont::PrintString(screenPos.x + offset, screenPos.y + offset, std::to_string(target.number).c_str());
+			}
+			break;
+		}
 	}
 }
 
@@ -278,7 +338,7 @@ void CollectibleBlipsManager::drawMapOverlay()
 
 	clearAllBlips();
 
-	const float half = ScreenScale::of(16.0f);
+	const float half = SCREEN_MULTIPLIER(16.0f);
 	for (const BlipTarget& target : m_targets)
 	{
 		if (target.claimed) continue;
@@ -292,7 +352,7 @@ void CollectibleBlipsManager::drawMapOverlay()
 			CRGBA(255, 255, 255, 255));
 	}
 
-	const float scale = ScreenScale::of(0.5f);
+	const float scale = SCREEN_MULTIPLIER(0.5f);
 	CFont::SetFontStyle(FONT_SUBTITLES);
 	CFont::SetScale(scale, scale * 2.0f);
 	CFont::SetColor(CRGBA(255, 255, 255, 255));
@@ -301,8 +361,8 @@ void CollectibleBlipsManager::drawMapOverlay()
 	CFont::SetDropShadowPosition(1);
 	CFont::SetBackground(false, false);
 
-	const float offset = ScreenScale::of(7.0f);
-	const float numberInset = ScreenScale::of(10.0f);
+	const float offset = SCREEN_MULTIPLIER(7.0f);
+	const float numberInset = SCREEN_MULTIPLIER(10.0f);
 	for (const BlipTarget& target : m_targets)
 	{
 		if (target.claimed) continue;
