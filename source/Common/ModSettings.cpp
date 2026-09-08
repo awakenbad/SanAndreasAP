@@ -28,7 +28,7 @@ namespace
 	constexpr float SCALE_MAX = 2.0f;
 
 	constexpr int FAST_TRAVEL_DEFAULT = 1;
-	constexpr int COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT = (int) ModSettings::CollectibleHeightIndicator::Off;
+	constexpr int COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT = (int) ModSettings::CollectibleHeightIndicator::OnBlip;
 
 	constexpr int DIM_DEFAULT = 60;
 	constexpr int DIM_MIN = 10;
