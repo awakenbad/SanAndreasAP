@@ -1,4 +1,5 @@
 #include "GameStorageHook.h"
+
 #include <Patch.h>
 
 namespace

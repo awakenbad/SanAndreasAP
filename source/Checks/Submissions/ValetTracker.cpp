@@ -1,5 +1,7 @@
 #include "ValetTracker.h"
 
+#include <CStats.h>
+
 namespace
 {
 	// Cars parked in total by the end of each level - the stat is cumulative across the whole

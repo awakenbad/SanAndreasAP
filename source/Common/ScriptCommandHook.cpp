@@ -1,4 +1,5 @@
 #include "ScriptCommandHook.h"
+
 #include <CRunningScript.h>
 #include <Patch.h>
 #include <vector>

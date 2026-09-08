@@ -1,9 +1,9 @@
 #pragma once
+#include <CRGBA.h>
+#include <CVector.h>
 #include <cfloat>
 #include <climits>
 #include <vector>
-#include <CVector.h>
-#include <CRGBA.h>
 
 // One collectible described to CollectibleBlipsManager. The manager renders these and nothing more:
 // which ones are near enough to show is decided before it ever sees them (see rankByDistance), so

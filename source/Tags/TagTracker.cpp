@@ -1,11 +1,10 @@
 #include "TagTracker.h"
-#include "common.h"
-#include <CTheScripts.h>
-#include <eWeaponType.h>
-#include "TagPositions.h"
-#include "common.h"
+
 #include <CRadar.h>
+#include <common.h>
 #include <cstdint>
+
+#include "TagPositions.h"
 #include "TagSprayBlocker.h"
 
 TagTracker::TagTracker()

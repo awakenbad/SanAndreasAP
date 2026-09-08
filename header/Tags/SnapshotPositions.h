@@ -1,6 +1,6 @@
 #pragma once
-#include <array>
 #include <CVector.h>
+#include <array>
 
 // Rechecked against main.scm
 

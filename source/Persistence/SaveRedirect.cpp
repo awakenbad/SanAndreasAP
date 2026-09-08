@@ -1,9 +1,10 @@
 #include "SaveRedirect.h"
-#include <Patch.h>
-#include <CGenericGameStorage.h>
+
 #include <CFileMgr.h>
+#include <CGenericGameStorage.h>
+#include <Patch.h>
+#include <ShlObj_core.h>
 #include <windows.h>
-#include <shlobj.h>
 
 #pragma comment(lib, "Shell32.lib")
 

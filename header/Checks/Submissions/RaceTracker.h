@@ -1,7 +1,9 @@
 #pragma once
-#include "EntityIDs.h"
 #include "SubmissionTracker.h"
+
 #include <array>
+
+#include "EntityIDs.h"
 
 class RaceTracker : public SubmissionTracker
 {

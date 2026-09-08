@@ -1,11 +1,14 @@
 #include "CheckGiver.h"
-#include "common.h"
-#include "CStreaming.h"
-#include "WeaponData.h"
-#include "PlayerControl.h"
-#include "CClothes.h"
+
+#include <CClothes.h>
 #include <CStats.h>
+#include <CStreaming.h>
+#include <CWorld.h>
+#include <common.h>
 #include <map>
+
+#include "PlayerControl.h"
+#include "WeaponData.h"
 
 void CheckGiver::giveMoney(int t_amount)
 {

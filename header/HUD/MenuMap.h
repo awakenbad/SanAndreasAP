@@ -2,7 +2,6 @@
 #include <CMenuManager.h>
 #include <CVector.h>
 #include <CVector2D.h>
-#include <CSprite2d.h>
 #include <algorithm>
 
 namespace MenuMap

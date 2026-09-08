@@ -1,7 +1,5 @@
 #pragma once
 #include "TieredSubmissionTracker.h"
-#include <CStats.h>
-#include <CWorld.h>
 
 class BurglaryTracker : public TieredSubmissionTracker
 {

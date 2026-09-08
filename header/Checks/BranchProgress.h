@@ -1,8 +1,9 @@
 #pragma once
+#include "PersistentState.h"
+
 #include <map>
 #include <set>
 #include <string>
-#include "PersistentState.h"
 
 class BranchProgress : public PersistentState
 {

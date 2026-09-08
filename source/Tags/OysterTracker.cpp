@@ -1,10 +1,12 @@
 #include "OysterTracker.h"
-#include "OysterPositions.h"
-#include "PickupLock.h"
-#include "common.h"
+
 #include <CRadar.h>
 #include <CStats.h>
+#include <common.h>
 #include <eModelID.h>
+
+#include "OysterPositions.h"
+#include "PickupLock.h"
 
 OysterTracker::OysterTracker()
 	: Collectible<50>(oysterPositions, RADAR_SPRITE_BOATYARD, "oysters_claimed", "OYSTER")

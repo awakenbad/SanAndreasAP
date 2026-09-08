@@ -1,6 +1,7 @@
 #include "TaxiTracker.h"
+
+#include <CCheat.h>
 #include <eModelID.h>
-#include <cstdint>
 
 namespace
 {

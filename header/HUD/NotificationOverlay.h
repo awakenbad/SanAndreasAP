@@ -1,7 +1,7 @@
 #pragma once
-#include <string>
-#include <deque>
 #include <chrono>
+#include <deque>
+#include <string>
 
 enum class NotificationIcon
 {

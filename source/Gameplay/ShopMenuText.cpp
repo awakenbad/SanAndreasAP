@@ -1,12 +1,14 @@
 ﻿#include "ShopMenuText.h"
-#include "AmmuNationShop.h"
-#include "CMenuSystem.h"
-#include "ModSettings.h"
-#include <CText.h>
+
 #include <CFont.h>
+#include <CMenuSystem.h>
 #include <CRGBA.h>
+#include <CText.h>
 #include <Patch.h>
-#include <plugin.h>
+#include <extensions/Screen.h>
+
+#include "AmmuNationShop.h"
+#include "ModSettings.h"
 
 namespace
 {

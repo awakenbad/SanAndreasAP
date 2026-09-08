@@ -1,6 +1,7 @@
 #include "SnapshotLock.h"
-#include <Patch.h>
+
 #include <CPickups.h>
+#include <Patch.h>
 
 namespace
 {

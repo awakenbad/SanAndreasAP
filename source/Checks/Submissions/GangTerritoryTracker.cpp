@@ -1,6 +1,8 @@
 #include "GangTerritoryTracker.h"
-#include "ParseUtils.h"
+
 #include <CGangWars.h>
+
+#include "ParseUtils.h"
 
 GangTerritoryTracker::GangTerritoryTracker(int t_submissionID)
 	: TieredSubmissionTracker(t_submissionID, GANG_TERRITORY_TIERS)

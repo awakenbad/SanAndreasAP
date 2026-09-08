@@ -1,5 +1,4 @@
 #pragma once
-#include "TagTracker.h"
 
 namespace TagSprayBlocker
 {

@@ -1,4 +1,5 @@
 #include "QuarryTracker.h"
+
 #include "ScriptGlobals.h"
 
 namespace

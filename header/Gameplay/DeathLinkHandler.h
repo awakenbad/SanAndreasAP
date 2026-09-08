@@ -1,6 +1,4 @@
 #pragma once
-#include <CPlayerInfo.h>
-#include <CWorld.h>
 
 class DeathLinkHandler
 {

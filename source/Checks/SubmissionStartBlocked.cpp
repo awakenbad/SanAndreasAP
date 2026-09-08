@@ -1,39 +1,39 @@
 #include "SubmissionStartBlocked.h"
-#include "Submissions/SubmissionTracker.h"
-#include "ScriptCommandHook.h"
-#include "EntityIDs.h"
-#include <CRunningScript.h>
-#include <CTheScripts.h>
-#include <eScriptCommands.h>
-#include "common.h"
+
 #include <CHud.h>
+#include <CRunningScript.h>
+#include <common.h>
+#include <eScriptCommands.h>
+
+#include "ScriptCommandHook.h"
+#include "Submissions/SubmissionTracker.h"
 
 namespace
 {
 	const std::vector<std::unique_ptr<SubmissionTracker>>* g_trackers = nullptr;
 
-bool preventSubmissionStart(CRunningScript* t_script)
-{
-	if (_strnicmp(t_script->m_szName, "R3", 10) != 0) return false;
-	if (!g_trackers) return false;
-
-	CPlayerPed* player = FindPlayerPed();
-	if (!player) return false;
-	if (!player->bInVehicle || !player->m_pVehicle) return false;
-
-	int vehicleModelId = player->m_pVehicle->m_nModelIndex;
-
-	for (const auto& tracker : *g_trackers)
+	bool preventSubmissionStart(CRunningScript* t_script)
 	{
-		if (!tracker->isVehicleValid(vehicleModelId)) continue;
-		if (tracker->isUnlocked()) break;
+		if (_strnicmp(t_script->m_szName, "R3", 10) != 0) return false;
+		if (!g_trackers) return false;
 
-		t_script->UpdateCompareFlag(false);
-		return true;
+		CPlayerPed* player = FindPlayerPed();
+		if (!player) return false;
+		if (!player->bInVehicle || !player->m_pVehicle) return false;
+
+		int vehicleModelId = player->m_pVehicle->m_nModelIndex;
+
+		for (const auto& tracker : *g_trackers)
+		{
+			if (!tracker->isVehicleValid(vehicleModelId)) continue;
+			if (tracker->isUnlocked()) break;
+
+			t_script->UpdateCompareFlag(false);
+			return true;
+		}
+
+		return false;
 	}
-
-	return false;
-}
 }
 
 void SubmissionStartBlocked::update(const std::vector<std::unique_ptr<SubmissionTracker>>& t_trackers)

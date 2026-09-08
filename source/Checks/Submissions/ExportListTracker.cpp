@@ -1,7 +1,9 @@
 #include "ExportListTracker.h"
-#include "ExportVehicles.h"
-#include "common.h"
+
 #include <CStats.h>
+#include <common.h>
+
+#include "ExportVehicles.h"
 
 ExportListTracker::ExportListTracker()
 	: Collectible<30>({}, 0, "export_claimed", "EXPORT")

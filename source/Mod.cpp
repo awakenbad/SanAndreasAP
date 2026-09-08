@@ -1,24 +1,42 @@
 #include "Mod.h"
-#include "ModSettings.h"
-#include "PlayerControl.h"
-#include "APProtocol.h"
-#include "ItemEffects.h"
-#include "MissionBranches.h"
-#include "MenuMap.h"
-#include "SaveRedirect.h"
-#include "MenuGate.h"
-#include "StartingSaves.h"
-#include "CStreaming.h"
-#include "CPools.h"
-#include "CPickups.h"
-#include <CRadar.h>
-#include <CTimer.h>
+
 #include <CFont.h>
-#include <CRGBA.h>
-#include <CMenuManager.h>
-#include "TagSprayBlocker.h"
-#include <plugin.h>
 #include <CGame.h>
+#include <CPickups.h>
+#include <CPlayerPed.h>
+#include <CRGBA.h>
+#include <CRadar.h>
+#include <CStats.h>
+#include <CTheScripts.h>
+#include <CTimer.h>
+#include <CWorld.h>
+#include <common.h>
+#include <extensions/Screen.h>
+
+#include "APProtocol.h"
+#include "BlockedMarkerTint.h"
+#include "BranchControllers.h"
+#include "CityUnlock.h"
+#include "FastTravel.h"
+#include "GameStorageHook.h"
+#include "ItemEffects.h"
+#include "LegacyBlockerCleanup.h"
+#include "MenuGate.h"
+#include "MenuMap.h"
+#include "MissionBranches.h"
+#include "MissionLocateBlocked.h"
+#include "ModSettings.h"
+#include "ParseUtils.h"
+#include "PlayerControl.h"
+#include "SaveRedirect.h"
+#include "ShootingRangeTracker.h"
+#include "ShopMenuText.h"
+#include "StartingSaves.h"
+#include "StreetRaceUnlock.h"
+#include "SubmissionResumeLevel.h"
+#include "TagSprayBlocker.h"
+#include "WangCarsUnlock.h"
+#include "WaypointTeleport.h"
 
 Mod::Mod()
 {
@@ -29,558 +47,558 @@ Mod::Mod()
 	m_persistentSubsystems = { &m_checkListener, &m_branchProgress, &m_blipManager, &m_receivedItemLog, &m_trapHandler };
 
 	GameStorageHook::setBeforeSaveCallback([this]
-	{
-		for (PersistentState* subsystem : m_persistentSubsystems)
 		{
-			subsystem->save(m_saveDataManager);
-		}
-		m_saveDataManager.recordValuesAtSave();
-	});
+			for (PersistentState* subsystem : m_persistentSubsystems)
+			{
+				subsystem->save(m_saveDataManager);
+			}
+			m_saveDataManager.recordValuesAtSave();
+		});
 }
 
 void Mod::start()
 {
-    MissionLocateBlocked::install(m_branchProgress);
-    BlockedMarkerTint::install(m_branchProgress);
-    ShopMenuText::install(m_ammuNationShop);
-    SubmissionResumeLevel::install();
-    TagSprayBlocker::install();
-    CityUnlock::install();
-    StreetRaceUnlock::update(m_streetRacesUnlocked);
-    StreetRaceUnlock::updateDrivingSchoolBlip();
-    WangCarsUnlock::update(m_wangCarsUnlocked);
+	MissionLocateBlocked::install(m_branchProgress);
+	BlockedMarkerTint::install(m_branchProgress);
+	ShopMenuText::install(m_ammuNationShop);
+	SubmissionResumeLevel::install();
+	TagSprayBlocker::install();
+	CityUnlock::install();
+	StreetRaceUnlock::update(m_streetRacesUnlocked);
+	StreetRaceUnlock::updateDrivingSchoolBlip();
+	WangCarsUnlock::update(m_wangCarsUnlocked);
 
-    m_apSocket.update();
-    pollDeathLink();
+	m_apSocket.update();
+	pollDeathLink();
 
-    bool loadHooked = GameStorageHook::consumeLoadHappened();
+	bool loadHooked = GameStorageHook::consumeLoadHappened();
 
-    if (GameStorageHook::consumeNewGameHappened())
-    {
-        resetForNewGame();
-    }
-    else if (loadHooked)
-    {
-        m_newGameRegrantPending = false;
-    }
+	if (GameStorageHook::consumeNewGameHappened())
+	{
+		resetForNewGame();
+	}
+	else if (loadHooked)
+	{
+		m_newGameRegrantPending = false;
+	}
 
-    bool worldWiped = updateWorldState(loadHooked);
-    persistAndRestoreState(worldWiped, loadHooked);
+	bool worldWiped = updateWorldState(loadHooked);
+	persistAndRestoreState(worldWiped, loadHooked);
 
-    CheckEvent event = m_checkListener.update();
-    applyRespawnHealthTopUp();
+	CheckEvent event = m_checkListener.update();
+	applyRespawnHealthTopUp();
 
-    sendChecksToAP(event);
-    updateGameplaySystems();
-    WaypointTeleport::update();
+	sendChecksToAP(event);
+	updateGameplaySystems();
+	WaypointTeleport::update();
 
-    parseIncomingMessages();
+	parseIncomingMessages();
 }
 
 void Mod::pollDeathLink()
 {
-    if (m_deathLinkHandler.update())
-    {
-        m_apSocket.sendToServer(APProtocol::playerDied());
-    }
+	if (m_deathLinkHandler.update())
+	{
+		m_apSocket.sendToServer(APProtocol::playerDied());
+	}
 }
 
 bool Mod::updateWorldState(bool t_loadHooked)
 {
-    if (t_loadHooked)
-    {
-        m_blipManager.onWorldWiped();
-    }
-    return m_blipManager.render(collectBlipTargets());
+	if (t_loadHooked)
+	{
+		m_blipManager.onWorldWiped();
+	}
+	return m_blipManager.render(collectBlipTargets());
 }
 
 std::vector<BlipTarget> Mod::collectBlipTargets()
 {
-    std::vector<BlipTarget> targets;
-    for (CollectibleTracker* collectible : m_checkListener.getCollectibles())
-    {
-        collectible->appendBlipTargets(targets);
-    }
-    if (CPlayerPed* player = FindPlayerPed())
-    {
-        rankByDistance(targets, player->GetPosition());
-    }
-    return targets;
+	std::vector<BlipTarget> targets;
+	for (CollectibleTracker* collectible : m_checkListener.getCollectibles())
+	{
+		collectible->appendBlipTargets(targets);
+	}
+	if (CPlayerPed* player = FindPlayerPed())
+	{
+		rankByDistance(targets, player->GetPosition());
+	}
+	return targets;
 }
 
 void Mod::applyRespawnHealthTopUp()
 {
-    if (!m_deathLinkHandler.consumeRespawn()) return;
+	if (!m_deathLinkHandler.consumeRespawn()) return;
 
-    if (CPlayerPed* player = FindPlayerPed())
-    {
-        player->m_fHealth = static_cast<float>(CWorld::Players[0].m_nMaxHealth);
-    }
+	if (CPlayerPed* player = FindPlayerPed())
+	{
+		player->m_fHealth = static_cast<float>(CWorld::Players[0].m_nMaxHealth);
+	}
 }
 
 void Mod::updateGameplaySystems()
 {
-    m_ammuNationShop.update();
-    m_trapHandler.update();
-    m_checkGiver.update();
-    CityUnlock::update();
-    if (ModSettings::fastTravelEnabled()) FastTravel::update();
-    BranchControllers::update(m_branchProgress);
+	m_ammuNationShop.update();
+	m_trapHandler.update();
+	m_checkGiver.update();
+	CityUnlock::update();
+	if (ModSettings::fastTravelEnabled()) FastTravel::update();
+	BranchControllers::update(m_branchProgress);
 
-    if (m_autoSaveManager.update())
-    {
-        m_notificationOverlay.showAboveRadar("Archipelago: Autosaved (slot 8)");
-    }
+	if (m_autoSaveManager.update())
+	{
+		m_notificationOverlay.showAboveRadar("Archipelago: Autosaved (slot 8)");
+	}
 
-    for (CollectibleTracker* collectible : m_checkListener.getCollectibles())
-    {
-        if (const char* notice = collectible->consumeLockedNotice())
-        {
-            m_notificationOverlay.show(notice);
-        }
-    }
+	for (CollectibleTracker* collectible : m_checkListener.getCollectibles())
+	{
+		if (const char* notice = collectible->consumeLockedNotice())
+		{
+			m_notificationOverlay.show(notice);
+		}
+	}
 
-    int purchasedSlot = m_ammuNationShop.pollPurchasedSlot();
-    if (purchasedSlot >= 0)
-    {
-        m_pendingShopChecks.push(purchasedSlot);
-        m_notificationOverlay.show("Archipelago: Checked Ammu-Nation (" + std::string(shopItems[purchasedSlot].displayName) + ")");
-    }
+	int purchasedSlot = m_ammuNationShop.pollPurchasedSlot();
+	if (purchasedSlot >= 0)
+	{
+		m_pendingShopChecks.push(purchasedSlot);
+		m_notificationOverlay.show("Archipelago: Checked Ammu-Nation (" + std::string(shopItems[purchasedSlot].displayName) + ")");
+	}
 }
 
 static std::string collectibleLabel(const std::string& t_type)
 {
-    if (t_type == "TAG") return "LS Tag";
-    if (t_type == "SNAPSHOT") return "SF Snapshot";
-    if (t_type == "HORSESHOE") return "LV Horseshoe";
-    if (t_type == "OYSTER") return "Oyster";
-    return t_type;
+	if (t_type == "TAG") return "LS Tag";
+	if (t_type == "SNAPSHOT") return "SF Snapshot";
+	if (t_type == "HORSESHOE") return "LV Horseshoe";
+	if (t_type == "OYSTER") return "Oyster";
+	return t_type;
 }
 
 void Mod::sendChecksToAP(CheckEvent t_event)
 {
-    switch (t_event)
-    {
-    case CheckEvent::Mission:
-    {
-        std::string missionIDStr = std::to_string(
-            checkIdForMission(parseIntOr(m_checkListener.getMissionID(), -1), m_branchProgress));
-        if (m_apSocket.sendToServer(APProtocol::missionCheck(missionIDStr)))
-        {
-            int missionID = parseIntOr(missionIDStr, -1);
-            if (m_checkListener.isStoryMission(missionID))
-            {
-                m_branchProgress.completeMission(branchOfMission(missionID), missionID);
-            }
-            m_checkListener.confirmMissionSent();
-            m_autoSaveManager.requestSave();
-        }
-        break;
-    }
-    case CheckEvent::Submission:
-        if (m_apSocket.sendToServer(APProtocol::missionCheck(m_checkListener.getPendingSubmissionId())))
-        {
-            m_checkListener.confirmSubmissionSent();
-            m_autoSaveManager.requestSave();
-        }
-        break;
-    case CheckEvent::None:
-        break;
-    }
+	switch (t_event)
+	{
+	case CheckEvent::Mission:
+	{
+		std::string missionIDStr = std::to_string(
+			checkIdForMission(parseIntOr(m_checkListener.getMissionID(), -1), m_branchProgress));
+		if (m_apSocket.sendToServer(APProtocol::missionCheck(missionIDStr)))
+		{
+			int missionID = parseIntOr(missionIDStr, -1);
+			if (m_checkListener.isStoryMission(missionID))
+			{
+				m_branchProgress.completeMission(branchOfMission(missionID), missionID);
+			}
+			m_checkListener.confirmMissionSent();
+			m_autoSaveManager.requestSave();
+		}
+		break;
+	}
+	case CheckEvent::Submission:
+		if (m_apSocket.sendToServer(APProtocol::missionCheck(m_checkListener.getPendingSubmissionId())))
+		{
+			m_checkListener.confirmSubmissionSent();
+			m_autoSaveManager.requestSave();
+		}
+		break;
+	case CheckEvent::None:
+		break;
+	}
 
-    for (CollectibleTracker* collectible : m_checkListener.getCollectibles())
-    {
-        if (collectible->hasPending()
-            && m_apSocket.sendToServer(collectible->buildCheckMessage(collectible->getPendingIndex())))
-        {
-            collectible->confirmSent();
-        }
-    }
+	for (CollectibleTracker* collectible : m_checkListener.getCollectibles())
+	{
+		if (collectible->hasPending()
+			&& m_apSocket.sendToServer(collectible->buildCheckMessage(collectible->getPendingIndex())))
+		{
+			collectible->confirmSent();
+		}
+	}
 
-    if (m_checkListener.hasPendingSubmissionLevel())
-    {
-        if (m_apSocket.sendToServer(APProtocol::submissionLevelCheck(m_checkListener.getPendingSubmissionLevelSlot())))
-        {
-            m_checkListener.confirmSubmissionLevelSent();
-        }
-    }
+	if (m_checkListener.hasPendingSubmissionLevel())
+	{
+		if (m_apSocket.sendToServer(APProtocol::submissionLevelCheck(m_checkListener.getPendingSubmissionLevelSlot())))
+		{
+			m_checkListener.confirmSubmissionLevelSent();
+		}
+	}
 
-    if (m_pendingShopChecks.hasPending())
-    {
-        if (m_apSocket.sendToServer(APProtocol::shopCheck(m_pendingShopChecks.front())))
-        {
-            m_pendingShopChecks.confirm();
-        }
-    }
+	if (m_pendingShopChecks.hasPending())
+	{
+		if (m_apSocket.sendToServer(APProtocol::shopCheck(m_pendingShopChecks.front())))
+		{
+			m_pendingShopChecks.confirm();
+		}
+	}
 }
 
 void Mod::updateMenuState()
 {
-    m_apSocket.update();
+	m_apSocket.update();
 
-    std::string rawLine;
-    while (m_apSocket.tryGetMessage(rawLine))
-    {
-        APProtocol::Message message = APProtocol::parse(rawLine);
-        if (message.kind == APProtocol::MessageKind::Control)
-        {
-            applyControlMessage(message.effect, message.text);
-        }
-        else
-        {
-            m_deferredLines.push_back(rawLine);
-        }
-    }
+	std::string rawLine;
+	while (m_apSocket.tryGetMessage(rawLine))
+	{
+		APProtocol::Message message = APProtocol::parse(rawLine);
+		if (message.kind == APProtocol::MessageKind::Control)
+		{
+			applyControlMessage(message.effect, message.text);
+		}
+		else
+		{
+			m_deferredLines.push_back(rawLine);
+		}
+	}
 
-    MenuGate::update(SaveRedirect::isActive());
+	MenuGate::update(SaveRedirect::isActive());
 }
 
 void Mod::parseIncomingMessages()
 {
-    for (const std::string& line : m_deferredLines)
-    {
-        handleMessage(line);
-    }
-    m_deferredLines.clear();
+	for (const std::string& line : m_deferredLines)
+	{
+		handleMessage(line);
+	}
+	m_deferredLines.clear();
 
-    std::string rawLine;
-    while (m_apSocket.tryGetMessage(rawLine))
-    {
-        handleMessage(rawLine);
-    }
+	std::string rawLine;
+	while (m_apSocket.tryGetMessage(rawLine))
+	{
+		handleMessage(rawLine);
+	}
 
-    applyPendingItems();
+	applyPendingItems();
 }
 
 void Mod::handleMessage(const std::string& t_rawLine)
 {
-    APProtocol::Message message = APProtocol::parse(t_rawLine);
+	APProtocol::Message message = APProtocol::parse(t_rawLine);
 
-    switch (message.kind)
-    {
-    case APProtocol::MessageKind::Status:
-        m_notificationOverlay.show(message.text);
-        break;
+	switch (message.kind)
+	{
+	case APProtocol::MessageKind::Status:
+		m_notificationOverlay.show(message.text);
+		break;
 
-    case APProtocol::MessageKind::ItemSent:
-        m_notificationOverlay.show(message.text, NotificationIcon::ItemSent);
-        break;
+	case APProtocol::MessageKind::ItemSent:
+		m_notificationOverlay.show(message.text, NotificationIcon::ItemSent);
+		break;
 
-    case APProtocol::MessageKind::Locate:
-        m_checkListener.locateCollectible(message.effect, message.index);
-        if (message.index >= 0)
-        {
-            m_notificationOverlay.show("Locating " + collectibleLabel(message.effect)
-                + " #" + std::to_string(message.index + 1));
-        }
-        break;
+	case APProtocol::MessageKind::Locate:
+		m_checkListener.locateCollectible(message.effect, message.index);
+		if (message.index >= 0)
+		{
+			m_notificationOverlay.show("Locating " + collectibleLabel(message.effect)
+				+ " #" + std::to_string(message.index + 1));
+		}
+		break;
 
-    case APProtocol::MessageKind::ShopItem:
-        m_ammuNationShop.setSlotContents(message.index, message.text);
-        break;
+	case APProtocol::MessageKind::ShopItem:
+		m_ammuNationShop.setSlotContents(message.index, message.text);
+		break;
 
-    case APProtocol::MessageKind::ShopSold:
-        m_ammuNationShop.setSlotSold(message.index, message.text == "1");
-        break;
+	case APProtocol::MessageKind::ShopSold:
+		m_ammuNationShop.setSlotSold(message.index, message.text == "1");
+		break;
 
-    case APProtocol::MessageKind::ShopFlags:
-        m_ammuNationShop.setSlotFlags(message.index, parseIntOr(message.text, 0));
-        break;
+	case APProtocol::MessageKind::ShopFlags:
+		m_ammuNationShop.setSlotFlags(message.index, parseIntOr(message.text, 0));
+		break;
 
-    case APProtocol::MessageKind::Give:
-        m_receivedItemLog.recordDelivered(message.index, message.effect, message.text);
-        break;
+	case APProtocol::MessageKind::Give:
+		m_receivedItemLog.recordDelivered(message.index, message.effect, message.text);
+		break;
 
-    case APProtocol::MessageKind::Control:
-        applyControlMessage(message.effect, message.text);
-        break;
+	case APProtocol::MessageKind::Control:
+		applyControlMessage(message.effect, message.text);
+		break;
 
-    case APProtocol::MessageKind::Unknown:
-        break;
-    }
+	case APProtocol::MessageKind::Unknown:
+		break;
+	}
 }
 
 void Mod::applyControlMessage(const std::string& t_name, const std::string& t_value)
 {
-    if (t_name == "death_link")
-    {
-        m_deathLinkHandler.setEnabled(t_value == "1");
-    }
-    else if (t_name == "deathlink_kill")
-    {
-        m_deathLinkHandler.killPlayer();
-    }
-    else if (t_name == "collectibles")
-    {
-        m_checkListener.setIncludedCollectibles(t_value);
-    }
-    else if (t_name == "gated")
-    {
-        m_checkListener.setGatedContent(t_value);
-    }
-    else if (t_name == "world")
-    {
-        SaveRedirect::setWorld(t_value);
-        StartingSaves::seedIfNeeded();
-    }
-    else if (t_name == "start")
-    {
-        StartingSaves::setStartingPoint(t_value);
-        StartingSaves::seedIfNeeded();
-    }
-    else if (t_name == "street_races" && t_value == "1")
-    {
-        StreetRaceUnlock::blockVanillaUnlock();
-    }
-    else if (t_name == "wang_cars" && t_value == "1")
-    {
-        WangCarsUnlock::blockVanillaUnlock();
-    }
+	if (t_name == "death_link")
+	{
+		m_deathLinkHandler.setEnabled(t_value == "1");
+	}
+	else if (t_name == "deathlink_kill")
+	{
+		m_deathLinkHandler.killPlayer();
+	}
+	else if (t_name == "collectibles")
+	{
+		m_checkListener.setIncludedCollectibles(t_value);
+	}
+	else if (t_name == "gated")
+	{
+		m_checkListener.setGatedContent(t_value);
+	}
+	else if (t_name == "world")
+	{
+		SaveRedirect::setWorld(t_value);
+		StartingSaves::seedIfNeeded();
+	}
+	else if (t_name == "start")
+	{
+		StartingSaves::setStartingPoint(t_value);
+		StartingSaves::seedIfNeeded();
+	}
+	else if (t_name == "street_races" && t_value == "1")
+	{
+		StreetRaceUnlock::blockVanillaUnlock();
+	}
+	else if (t_name == "wang_cars" && t_value == "1")
+	{
+		WangCarsUnlock::blockVanillaUnlock();
+	}
 }
 
 void Mod::applyPendingItems()
 {
-    if (!m_firstInGameTickHandled) return;
+	if (!m_firstInGameTickHandled) return;
 
-    if (m_newGameRegrantPending)
-    {
-        if (!PlayerControl::isInControl())
-        {
-            m_newGameRegrantClockStarted = false;
-            return;
-        }
-        unsigned int now = CTimer::m_snTimeInMilliseconds;
-        if (!m_newGameRegrantClockStarted || now < m_newGameRegrantControlStartMs)
-        {
-            m_newGameRegrantClockStarted = true;
-            m_newGameRegrantControlStartMs = now;
-            return;
-        }
-        if (now - m_newGameRegrantControlStartMs < NEW_GAME_REGRANT_DELAY_MS) return;
-        m_newGameRegrantPending = false;
-    }
+	if (m_newGameRegrantPending)
+	{
+		if (!PlayerControl::isInControl())
+		{
+			m_newGameRegrantClockStarted = false;
+			return;
+		}
+		unsigned int now = CTimer::m_snTimeInMilliseconds;
+		if (!m_newGameRegrantClockStarted || now < m_newGameRegrantControlStartMs)
+		{
+			m_newGameRegrantClockStarted = true;
+			m_newGameRegrantControlStartMs = now;
+			return;
+		}
+		if (now - m_newGameRegrantControlStartMs < NEW_GAME_REGRANT_DELAY_MS) return;
+		m_newGameRegrantPending = false;
+	}
 
-    std::vector<ReceivedItem> pending = m_receivedItemLog.takePendingItems();
-    if (pending.empty()) return;
+	std::vector<ReceivedItem> pending = m_receivedItemLog.takePendingItems();
+	if (pending.empty()) return;
 
-    int restoredCount = 0;
-    for (const ReceivedItem& item : pending)
-    {
-        if (applyItemEffect(item.effect, item.value, item.isNew) && !item.isNew)
-        {
-            restoredCount++;
-        }
-    }
+	int restoredCount = 0;
+	for (const ReceivedItem& item : pending)
+	{
+		if (applyItemEffect(item.effect, item.value, item.isNew) && !item.isNew)
+		{
+			restoredCount++;
+		}
+	}
 
-    if (restoredCount > 0)
-    {
-        m_notificationOverlay.show("Archipelago: Restored " + std::to_string(restoredCount) + " items");
-    }
+	if (restoredCount > 0)
+	{
+		m_notificationOverlay.show("Archipelago: Restored " + std::to_string(restoredCount) + " items");
+	}
 }
 
 bool Mod::applyItemEffect(const std::string& t_effectName, const std::string& t_value, bool t_isNew)
 {
-    const ItemEffectSpec* spec = findItemEffect(t_effectName);
-    if (!spec) return false;
+	const ItemEffectSpec* spec = findItemEffect(t_effectName);
+	if (!spec) return false;
 
-    if (spec->effect == ItemEffect::Trap && !t_isNew) return true;
+	if (spec->effect == ItemEffect::Trap && !t_isNew) return true;
 
-    switch (spec->effect)
-    {
-    case ItemEffect::Money:              m_checkGiver.giveMoney(parseIntOr(t_value, 0)); break;
-    case ItemEffect::Weapon:             m_checkGiver.giveWeapon(t_value); break;
-    case ItemEffect::ProgressiveMission: m_branchProgress.receiveItem(t_value); break;
-    case ItemEffect::ProgressiveMap:     m_checkGiver.giveProgressiveMap(); break;
-    case ItemEffect::SubmissionCheck:    m_checkListener.submissionCheckWasReceived(spec->submissionId); break;
-    case ItemEffect::CollectibleUnlock:  m_checkListener.collectibleUnlockWasReceived(spec->trapName); break;
-    case ItemEffect::SubmissionUnlock:   m_checkListener.submissionUnlockWasReceived(spec->submissionId); break;
-    case ItemEffect::MaxSkill:           m_checkGiver.giveMaxSkill(spec->submissionId); break;
-    case ItemEffect::WeaponMastery:      m_checkListener.submissionCheckWasReceived(shootingRangeSubmissionForWeapon(t_value)); m_checkGiver.giveWeaponMastery(t_value); break;
-    case ItemEffect::ArmorRefill:        m_checkGiver.giveArmorRefill(); break;
-    case ItemEffect::CarRepair:          m_checkGiver.giveCarRepair(); break;
-    case ItemEffect::StreetRaces:        m_streetRacesUnlocked = true; break;
-    case ItemEffect::WangCars:           m_wangCarsUnlocked = true; break;
-    case ItemEffect::Trap:               m_trapHandler.giveTrap(spec->trapName); break;
-    }
+	switch (spec->effect)
+	{
+	case ItemEffect::Money:              m_checkGiver.giveMoney(parseIntOr(t_value, 0)); break;
+	case ItemEffect::Weapon:             m_checkGiver.giveWeapon(t_value); break;
+	case ItemEffect::ProgressiveMission: m_branchProgress.receiveItem(t_value); break;
+	case ItemEffect::ProgressiveMap:     m_checkGiver.giveProgressiveMap(); break;
+	case ItemEffect::SubmissionCheck:    m_checkListener.submissionCheckWasReceived(spec->submissionId); break;
+	case ItemEffect::CollectibleUnlock:  m_checkListener.collectibleUnlockWasReceived(spec->trapName); break;
+	case ItemEffect::SubmissionUnlock:   m_checkListener.submissionUnlockWasReceived(spec->submissionId); break;
+	case ItemEffect::MaxSkill:           m_checkGiver.giveMaxSkill(spec->submissionId); break;
+	case ItemEffect::WeaponMastery:      m_checkListener.submissionCheckWasReceived(shootingRangeSubmissionForWeapon(t_value)); m_checkGiver.giveWeaponMastery(t_value); break;
+	case ItemEffect::ArmorRefill:        m_checkGiver.giveArmorRefill(); break;
+	case ItemEffect::CarRepair:          m_checkGiver.giveCarRepair(); break;
+	case ItemEffect::StreetRaces:        m_streetRacesUnlocked = true; break;
+	case ItemEffect::WangCars:           m_wangCarsUnlocked = true; break;
+	case ItemEffect::Trap:               m_trapHandler.giveTrap(spec->trapName); break;
+	}
 
-    if (t_isNew)
-    {
-        bool isProgressive = spec->effect == ItemEffect::ProgressiveMission;
-        std::string message = formatItemMessage(*spec, isProgressive ? branchDisplayName(t_value) : t_value);
-        if (!message.empty())
-        {
-            int radarSprite = isProgressive ? branchRadarSprite(t_value) : -1;
-            m_notificationOverlay.show(message, spec->icon, radarSprite);
-        }
-    }
-    return true;
+	if (t_isNew)
+	{
+		bool isProgressive = spec->effect == ItemEffect::ProgressiveMission;
+		std::string message = formatItemMessage(*spec, isProgressive ? branchDisplayName(t_value) : t_value);
+		if (!message.empty())
+		{
+			int radarSprite = isProgressive ? branchRadarSprite(t_value) : -1;
+			m_notificationOverlay.show(message, spec->icon, radarSprite);
+		}
+	}
+	return true;
 }
 
 void Mod::drawOverlay()
 {
-    m_notificationOverlay.draw();
-    m_trapHandler.drawTimers();
-    if (ModSettings::fastTravelEnabled())
-    {
-        FastTravel::placeMarkers();
-        FastTravel::draw();
-    }
+	m_notificationOverlay.draw();
+	m_trapHandler.drawTimers();
+	if (ModSettings::fastTravelEnabled())
+	{
+		FastTravel::placeMarkers();
+		FastTravel::draw();
+	}
 }
 
 const char* Mod::branchAtBlip(const CVector& t_pos) const
 {
-    size_t count = missionStartPos.size();
-    if (count > MISSION_START_POS_BRANCH_COUNT) count = MISSION_START_POS_BRANCH_COUNT;
+	size_t count = missionStartPos.size();
+	if (count > MISSION_START_POS_BRANCH_COUNT) count = MISSION_START_POS_BRANCH_COUNT;
 
-    for (size_t i = 0; i < count; ++i)
-    {
-        float dx = t_pos.x - missionStartPos[i].x;
-        float dy = t_pos.y - missionStartPos[i].y;
-        if (dx * dx + dy * dy < MISSION_BLIP_TOLERANCE_SQ) return activeBranchAtMarker(i, m_branchProgress);
-    }
-    return nullptr;
+	for (size_t i = 0; i < count; ++i)
+	{
+		float dx = t_pos.x - missionStartPos[i].x;
+		float dy = t_pos.y - missionStartPos[i].y;
+		if (dx * dx + dy * dy < MISSION_BLIP_TOLERANCE_SQ) return activeBranchAtMarker(i, m_branchProgress);
+	}
+	return nullptr;
 }
 
 void Mod::drawMissionCountsOnRadar()
 {
-    if (MenuMap::isOpen()) return;
-    if (CGame::currArea != 0) return;
-    if (CTheScripts::IsPlayerOnAMission()) return;
+	if (MenuMap::isOpen()) return;
+	if (CGame::currArea != 0) return;
+	if (CTheScripts::IsPlayerOnAMission()) return;
 
-    drawMissionCountsImpl(false);
+	drawMissionCountsImpl(false);
 }
 
 void Mod::drawMissionCountsOnMap()
 {
-    if (!MenuMap::isOpen()) return;
-    if (CGame::currArea != 0) return;
-    if (CTheScripts::IsPlayerOnAMission()) return;
+	if (!MenuMap::isOpen()) return;
+	if (CGame::currArea != 0) return;
+	if (CTheScripts::IsPlayerOnAMission()) return;
 
-    drawMissionCountsImpl(true);
+	drawMissionCountsImpl(true);
 }
 
 void Mod::drawMissionCountsImpl(bool t_menuMap)
 {
-    float scaleX = t_menuMap ? SCREEN_MULTIPLIER(0.5f) : ModSettings::missionCounterScale();
-    CFont::SetFontStyle(FONT_SUBTITLES);
-    CFont::SetScale(scaleX, scaleX * 2.0f);
-    CFont::SetProportional(true);
-    CFont::SetOrientation(ALIGN_CENTER);
-    CFont::SetDropShadowPosition(1);
-    CFont::SetBackground(false, false);
+	float scaleX = t_menuMap ? SCREEN_MULTIPLIER(0.5f) : ModSettings::missionCounterScale();
+	CFont::SetFontStyle(FONT_SUBTITLES);
+	CFont::SetScale(scaleX, scaleX * 2.0f);
+	CFont::SetProportional(true);
+	CFont::SetOrientation(ALIGN_CENTER);
+	CFont::SetDropShadowPosition(1);
+	CFont::SetBackground(false, false);
 
-    for (unsigned int t = 0; t < MAX_RADAR_TRACES; ++t)
-    {
-        const tRadarTrace& trace = CRadar::ms_RadarTrace[t];
-        if (!trace.m_bInUse) continue;
+	for (unsigned int t = 0; t < MAX_RADAR_TRACES; ++t)
+	{
+		const tRadarTrace& trace = CRadar::ms_RadarTrace[t];
+		if (!trace.m_bInUse) continue;
 
-        const char* branch = branchAtBlip(trace.m_vecPos);
-        if (!branch) continue;
+		const char* branch = branchAtBlip(trace.m_vecPos);
+		if (!branch) continue;
 
-        CVector2D screenPos;
-        if (t_menuMap)
-        {
-            if (!MenuMap::worldToScreen(trace.m_vecPos, screenPos)) continue;
+		CVector2D screenPos;
+		if (t_menuMap)
+		{
+			if (!MenuMap::worldToScreen(trace.m_vecPos, screenPos)) continue;
 
-            float offset = SCREEN_MULTIPLIER(7.0f);
-            screenPos.x += offset;
-            screenPos.y += offset;
-        }
-        else
-        {
-            CVector2D radarSpace;
-            CVector2D worldPos(trace.m_vecPos.x, trace.m_vecPos.y);
-            CRadar::TransformRealWorldPointToRadarSpace(radarSpace, worldPos);
-            if (radarSpace.x * radarSpace.x + radarSpace.y * radarSpace.y > 0.85f * 0.85f) continue;
-            CRadar::TransformRadarPointToScreenSpace(screenPos, radarSpace);
+			float offset = SCREEN_MULTIPLIER(7.0f);
+			screenPos.x += offset;
+			screenPos.y += offset;
+		}
+		else
+		{
+			CVector2D radarSpace;
+			CVector2D worldPos(trace.m_vecPos.x, trace.m_vecPos.y);
+			CRadar::TransformRealWorldPointToRadarSpace(radarSpace, worldPos);
+			if (radarSpace.x * radarSpace.x + radarSpace.y * radarSpace.y > 0.85f * 0.85f) continue;
+			CRadar::TransformRadarPointToScreenSpace(screenPos, radarSpace);
 
-            float offset = SCREEN_MULTIPLIER(7.0f);
-            screenPos.x += offset;
-            screenPos.y += offset;
-        }
+			float offset = SCREEN_MULTIPLIER(7.0f);
+			screenPos.x += offset;
+			screenPos.y += offset;
+		}
 
-        int pending = m_branchProgress.pending(branch);
-        CFont::SetColor(pending > 0 ? CRGBA(120, 255, 120, 255) : CRGBA(255, 70, 70, 255));
-        CFont::PrintString(screenPos.x, screenPos.y, std::to_string(pending).c_str());
-    }
+		int pending = m_branchProgress.pending(branch);
+		CFont::SetColor(pending > 0 ? CRGBA(120, 255, 120, 255) : CRGBA(255, 70, 70, 255));
+		CFont::PrintString(screenPos.x, screenPos.y, std::to_string(pending).c_str());
+	}
 }
 
 void Mod::drawCollectiblesOnRadar()
 {
-    if (CGame::currArea != 0) return;
+	if (CGame::currArea != 0) return;
 
-    m_blipManager.drawRadarNumbers();
+	m_blipManager.drawRadarNumbers();
 }
 
 void Mod::drawCollectiblesOnMap()
 {
-    m_blipManager.drawMapOverlay();
+	m_blipManager.drawMapOverlay();
 }
 
 void Mod::drawMenuOverlay()
 {
-    drawVersionLabel();
+	drawVersionLabel();
 
-    if (m_tagBlipToggleKey.justPressed())
-    {
-        m_blipManager.toggleBlips();
-    }
+	if (m_tagBlipToggleKey.justPressed())
+	{
+		m_blipManager.toggleBlips();
+	}
 
-    bool connected = m_apSocket.isConnected();
-    float bottom = static_cast<float>(RsGlobal.maximumHeight);
+	bool connected = m_apSocket.isConnected();
+	float bottom = static_cast<float>(RsGlobal.maximumHeight);
 
-    CFont::SetFontStyle(FONT_SUBTITLES);
-    CFont::SetScale(SCREEN_MULTIPLIER(0.7f), SCREEN_MULTIPLIER(1.4f));
-    CFont::SetColor(connected ? CRGBA(80, 220, 80, 255) : CRGBA(220, 80, 80, 255));
-    CFont::SetProportional(true);
-    CFont::SetOrientation(ALIGN_LEFT);
-    CFont::SetDropShadowPosition(1);
-    CFont::SetBackground(false, false);
-    CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
+	CFont::SetFontStyle(FONT_SUBTITLES);
+	CFont::SetScale(SCREEN_MULTIPLIER(0.7f), SCREEN_MULTIPLIER(1.4f));
+	CFont::SetColor(connected ? CRGBA(80, 220, 80, 255) : CRGBA(220, 80, 80, 255));
+	CFont::SetProportional(true);
+	CFont::SetOrientation(ALIGN_LEFT);
+	CFont::SetDropShadowPosition(1);
+	CFont::SetBackground(false, false);
+	CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
-    CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(100.0f),
-        connected ? "Archipelago: Connected" : "Archipelago: Disconnected");
+	CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(100.0f),
+		connected ? "Archipelago: Connected" : "Archipelago: Disconnected");
 
-    if (MenuGate::shouldExplainBlock())
-    {
-        CFont::SetColor(CRGBA(220, 180, 60, 255));
-        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f),
-            "Connect the Archipelago client before starting or loading a game");
-    }
-    else if (!StartingSaves::missingSaveName().empty())
-    {
-        std::string warning = "Missing scripts\\Archipelago\\" + StartingSaves::missingSaveName()
-            + " - reinstall the starting saves";
+	if (MenuGate::shouldExplainBlock())
+	{
+		CFont::SetColor(CRGBA(220, 180, 60, 255));
+		CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f),
+			"Connect the Archipelago client before starting or loading a game");
+	}
+	else if (!StartingSaves::missingSaveName().empty())
+	{
+		std::string warning = "Missing scripts\\Archipelago\\" + StartingSaves::missingSaveName()
+			+ " - reinstall the starting saves";
 
-        CFont::SetColor(CRGBA(220, 180, 60, 255));
-        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f), warning.c_str());
-    }
+		CFont::SetColor(CRGBA(220, 180, 60, 255));
+		CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f), warning.c_str());
+	}
 
-    CFont::SetFontStyle(FONT_SUBTITLES);
-    CFont::SetScale(SCREEN_MULTIPLIER(0.55f), SCREEN_MULTIPLIER(1.1f));
-    CFont::SetColor(CRGBA(255, 255, 255, 255));
-    CFont::SetProportional(true);
-    CFont::SetOrientation(ALIGN_LEFT);
-    CFont::SetDropShadowPosition(1);
-    CFont::SetBackground(false, false);
+	CFont::SetFontStyle(FONT_SUBTITLES);
+	CFont::SetScale(SCREEN_MULTIPLIER(0.55f), SCREEN_MULTIPLIER(1.1f));
+	CFont::SetColor(CRGBA(255, 255, 255, 255));
+	CFont::SetProportional(true);
+	CFont::SetOrientation(ALIGN_LEFT);
+	CFont::SetDropShadowPosition(1);
+	CFont::SetBackground(false, false);
 
-    CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(55.0f),
-        m_blipManager.areBlipsEnabled() ? "F8 - Collectible blips on map: ON" : "F8 - Collectible blips on map: OFF");
+	CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(55.0f),
+		m_blipManager.areBlipsEnabled() ? "F8 - Collectible blips on map: ON" : "F8 - Collectible blips on map: OFF");
 }
 
 void Mod::drawVersionLabel()
 {
-    CFont::SetFontStyle(FONT_SUBTITLES);
-    CFont::SetScale(SCREEN_MULTIPLIER(0.65f), SCREEN_MULTIPLIER(1.3f));
-    CFont::SetColor(CRGBA(255, 255, 255, 90));
-    CFont::SetProportional(true);
-    CFont::SetOrientation(ALIGN_LEFT);
-    CFont::SetDropShadowPosition(0);
-    CFont::SetBackground(false, false);
-    CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
+	CFont::SetFontStyle(FONT_SUBTITLES);
+	CFont::SetScale(SCREEN_MULTIPLIER(0.65f), SCREEN_MULTIPLIER(1.3f));
+	CFont::SetColor(CRGBA(255, 255, 255, 90));
+	CFont::SetProportional(true);
+	CFont::SetOrientation(ALIGN_LEFT);
+	CFont::SetDropShadowPosition(0);
+	CFont::SetBackground(false, false);
+	CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
-    CFont::PrintString(SCREEN_MULTIPLIER(20.0f), SCREEN_MULTIPLIER(20.0f),
-        ("Archipelago v" + std::string(MOD_VERSION)).c_str());
+	CFont::PrintString(SCREEN_MULTIPLIER(20.0f), SCREEN_MULTIPLIER(20.0f),
+		("Archipelago v" + std::string(MOD_VERSION)).c_str());
 }
 
 void Mod::spawnCollectiblePickups()

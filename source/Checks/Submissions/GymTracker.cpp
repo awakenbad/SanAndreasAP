@@ -1,5 +1,7 @@
 #include "GymTracker.h"
-#include "common.h"
+
+#include <common.h>
+
 #include "RunningScripts.h"
 
 GymTracker::GymTracker(int t_submissionID, eFightingStyle t_taughtStyle, const char* t_scriptName,

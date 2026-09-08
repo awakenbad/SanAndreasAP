@@ -1,13 +1,14 @@
 #pragma once
+#include <CRGBA.h>
 #include <array>
 #include <span>
 #include <string>
 #include <vector>
-#include "PendingChecks.h"
-#include "SaveDataManager.h"
+
 #include "APProtocol.h"
 #include "BlipTarget.h"
-#include <CRGBA.h>
+#include "PendingChecks.h"
+#include "SaveDataManager.h"
 
 class CollectibleTracker
 {
@@ -145,7 +146,8 @@ public:
 protected:
 	Collectible(std::span<const CVector> t_positions, int t_sprite,
 		const char* t_saveKey, const char* t_checkType)
-		: m_positions(t_positions), m_sprite(t_sprite), m_saveKey(t_saveKey), m_checkType(t_checkType) {}
+		: m_positions(t_positions), m_sprite(t_sprite), m_saveKey(t_saveKey), m_checkType(t_checkType) {
+	}
 
 	virtual float readCount() const = 0;
 	virtual int identifyCollected() const = 0;

@@ -1,6 +1,8 @@
 ﻿#include "APProtocol.h"
-#include "ParseUtils.h"
+
 #include <cstring>
+
+#include "ParseUtils.h"
 
 namespace
 {

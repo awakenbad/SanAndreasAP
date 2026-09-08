@@ -1,9 +1,10 @@
 #include "CityUnlock.h"
+
 #include <CIplStore.h>
 #include <IplDef.h>
+#include <Patch.h>
 #include <eScriptCommands.h>
 #include <extensions/ScriptCommands.h>
-#include <Patch.h>
 
 // Taken from ChaosModComplementaries. Thanks to Lordmau5 for letting me use this!
 

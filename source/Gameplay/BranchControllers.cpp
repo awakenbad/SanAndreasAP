@@ -1,10 +1,12 @@
 #include "BranchControllers.h"
-#include "Branches/EdgeCases.h"
-#include "RunningScripts.h"
-#include "BranchProgress.h"
-#include "CTheScripts.h"
+
+#include <CTheScripts.h>
 #include <memory>
 #include <vector>
+
+#include "BranchProgress.h"
+#include "Branches/EdgeCases.h"
+#include "RunningScripts.h"
 
 namespace
 {

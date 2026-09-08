@@ -1,4 +1,5 @@
 #include "BlipTarget.h"
+
 #include <algorithm>
 #include <cmath>
 #include <utility>

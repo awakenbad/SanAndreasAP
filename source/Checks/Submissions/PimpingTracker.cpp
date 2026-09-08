@@ -1,4 +1,6 @@
 #include "PimpingTracker.h"
+
+#include <CStats.h>
 #include <eModelID.h>
 
 PimpingTracker::PimpingTracker(int t_submissionID)

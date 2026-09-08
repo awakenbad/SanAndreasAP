@@ -1,10 +1,10 @@
 ﻿#pragma once
-#include <vector>
-#include "BlipTarget.h"
 #include "PersistentState.h"
 
 #include <CRadar.h>
-#include <CSprite2d.h>
+#include <vector>
+
+#include "BlipTarget.h"
 
 class SaveDataManager;
 

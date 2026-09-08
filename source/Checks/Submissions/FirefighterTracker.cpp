@@ -1,4 +1,7 @@
 #include "FirefighterTracker.h"
+
+#include <CStats.h>
+#include <CWorld.h>
 #include <eModelID.h>
 
 FirefighterTracker::FirefighterTracker(int t_submissionID)

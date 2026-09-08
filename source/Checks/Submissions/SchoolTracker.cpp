@@ -1,4 +1,5 @@
 #include "SchoolTracker.h"
+
 #include "ScriptGlobals.h"
 
 SchoolTracker::SchoolTracker(int t_submissionID, const SubmissionTierSpec& t_spec,

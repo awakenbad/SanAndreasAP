@@ -1,6 +1,8 @@
 #include "DrivingSchoolTracker.h"
-#include "EntityIDs.h"
+
 #include <CStats.h>
+
+#include "EntityIDs.h"
 
 namespace
 {

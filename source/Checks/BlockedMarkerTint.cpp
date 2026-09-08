@@ -1,10 +1,12 @@
 #include "BlockedMarkerTint.h"
-#include "MissionBranches.h"
-#include "BranchProgress.h"
+
 #include <C3dMarkers.h>
-#include <CVector.h>
 #include <CRGBA.h>
+#include <CVector.h>
 #include <Patch.h>
+
+#include "BranchProgress.h"
+#include "MissionBranches.h"
 
 namespace
 {

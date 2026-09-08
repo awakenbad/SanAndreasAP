@@ -1,10 +1,11 @@
 #include "ModSettings.h"
-#include <windows.h>
+
 #include <cstdio>
 #include <cstdlib>
+#include <extensions/Screen.h>
 #include <filesystem>
 #include <string>
-#include <plugin.h>
+#include <windows.h>
 
 namespace
 {
@@ -28,7 +29,7 @@ namespace
 	constexpr float SCALE_MAX = 2.0f;
 
 	constexpr int FAST_TRAVEL_DEFAULT = 1;
-	constexpr int COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT = (int) ModSettings::CollectibleHeightIndicator::OnBlip;
+	constexpr int COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT = (int)ModSettings::CollectibleHeightIndicator::OnBlip;
 
 	constexpr int DIM_DEFAULT = 60;
 	constexpr int DIM_MIN = 10;
@@ -220,5 +221,5 @@ bool ModSettings::fastTravelEnabled()
 
 ModSettings::CollectibleHeightIndicator ModSettings::collectibleHeightIndicatorMode()
 {
-	return (ModSettings::CollectibleHeightIndicator) g_collectibleHeightIndicatorMode;
+	return (ModSettings::CollectibleHeightIndicator)g_collectibleHeightIndicatorMode;
 }

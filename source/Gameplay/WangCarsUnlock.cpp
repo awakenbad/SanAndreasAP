@@ -1,12 +1,13 @@
 #include "WangCarsUnlock.h"
 
-#include "ScriptCommandHook.h"
-#include "ScriptGlobals.h"
 #include <CRunningScript.h>
 #include <CStats.h>
 #include <eScriptCommands.h>
-#include "RunningScripts.h"
+
 #include "EntityIDs.h"
+#include "RunningScripts.h"
+#include "ScriptCommandHook.h"
+#include "ScriptGlobals.h"
 
 namespace
 {

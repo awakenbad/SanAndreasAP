@@ -1,5 +1,6 @@
 #pragma once
-#include <plugin.h>
+
+#include <Other.h>
 
 struct EdgeTriggeredKey
 {

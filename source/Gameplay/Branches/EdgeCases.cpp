@@ -1,6 +1,8 @@
 #include "EdgeCases.h"
-#include "ScriptGlobals.h"
+
 #include <CRadar.h>
+
+#include "ScriptGlobals.h"
 
 BcrashController::BcrashController()
 	: EdgeCase({ "BCRASH", 65160, 1972, 1, 1976, 1776, 1936,

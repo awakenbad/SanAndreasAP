@@ -1,12 +1,14 @@
 #include "AutoSaveManager.h"
-#include "GameStorageHook.h"
-#include "SaveRedirect.h"
-#include "common.h"
-#include "CTheScripts.h"
+
 #include <CGenericGameStorage.h>
+#include <CTheScripts.h>
+#include <common.h>
 #include <cstdio>
 #include <cstring>
 #include <string>
+
+#include "GameStorageHook.h"
+#include "SaveRedirect.h"
 
 void AutoSaveManager::requestSave()
 {

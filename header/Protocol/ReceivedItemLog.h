@@ -1,8 +1,9 @@
 #pragma once
+#include "PersistentState.h"
+
 #include <map>
 #include <string>
 #include <vector>
-#include "PersistentState.h"
 
 // One item the client has delivered, identified by its position in the server's items_received
 // list. The index is stable for the life of a seed: the server always replays the same list in

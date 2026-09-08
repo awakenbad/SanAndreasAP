@@ -1,6 +1,7 @@
 ﻿#include "CourierTracker.h"
-#include "ScriptGlobals.h"
+
 #include "RunningScripts.h"
+#include "ScriptGlobals.h"
 
 namespace
 {

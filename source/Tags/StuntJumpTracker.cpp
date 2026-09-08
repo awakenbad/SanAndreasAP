@@ -1,11 +1,12 @@
 #include "StuntJumpTracker.h"
 
-#include "StuntJumpPositions.h"
-#include "common.h"
 #include <CRadar.h>
 #include <CStats.h>
 #include <CStuntJumpManager.h>
 #include <Patch.h>
+#include <common.h>
+
+#include "StuntJumpPositions.h"
 
 namespace
 {

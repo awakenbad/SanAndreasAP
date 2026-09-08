@@ -1,37 +1,21 @@
 #pragma once
-#include <vector>
 #include <APSocket.h>
-#include "EdgeTriggeredKey.h"
-#include "ParseUtils.h"
-#include "CheckListener.h"
-#include "CheckGiver.h"
+#include <vector>
+
+#include "AmmuNationShop.h"
+#include "AutoSaveManager.h"
+#include "BlipTarget.h"
 #include "BranchProgress.h"
-#include "MissionLocateBlocked.h"
-#include "BlockedMarkerTint.h"
-#include "LegacyBlockerCleanup.h"
-#include "CStats.h"
-#include "EntityIDs.h"
-#include "CRunningScript.h"
-#include "CTheScripts.h"
+#include "CheckGiver.h"
+#include "CheckListener.h"
+#include "CollectibleBlipsManager.h"
 #include "DeathLinkHandler.h"
+#include "EdgeTriggeredKey.h"
+#include "NotificationOverlay.h"
 #include "PersistentState.h"
 #include "ReceivedItemLog.h"
 #include "SaveDataManager.h"
-#include "AutoSaveManager.h"
-#include "NotificationOverlay.h"
-#include "CollectibleBlipsManager.h"
-#include "BlipTarget.h"
-#include "AmmuNationShop.h"
-#include "ShopMenuText.h"
-#include "StreetRaceUnlock.h"
-#include "WangCarsUnlock.h"
-#include "SubmissionResumeLevel.h"
-#include "CityUnlock.h"
-#include "FastTravel.h"
-#include "BranchControllers.h"
 #include "TrapHandler.h"
-#include "GameStorageHook.h"
-#include "WaypointTeleport.h"
 
 class Mod
 {

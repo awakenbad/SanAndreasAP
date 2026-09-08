@@ -1,5 +1,7 @@
 #include "APSocket.h"
 
+#include <ws2tcpip.h>
+
 APSocket::~APSocket()
 {
 	closeConnection();

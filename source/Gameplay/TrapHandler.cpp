@@ -1,20 +1,22 @@
 #include "TrapHandler.h"
-#include "PlayerControl.h"
-#include "SaveDataManager.h"
-#include "ParseUtils.h"
-#include "common.h"
-#include "CStats.h"
-#include "CClothes.h"
-#include "CWanted.h"
-#include "CAutomobile.h"
-#include "CBike.h"
-#include "CWeather.h"
+
+#include <CAutomobile.h>
+#include <CBike.h>
+#include <CClothes.h>
 #include <CFont.h>
 #include <CRGBA.h>
 #include <CSprite2d.h>
+#include <CStats.h>
+#include <CWanted.h>
+#include <CWeather.h>
+#include <common.h>
+#include <extensions/Screen.h>
 #include <random>
 #include <vector>
-#include <plugin.h>
+
+#include "ParseUtils.h"
+#include "PlayerControl.h"
+#include "SaveDataManager.h"
 
 static std::string formatRemaining(std::chrono::steady_clock::duration t_remaining)
 {

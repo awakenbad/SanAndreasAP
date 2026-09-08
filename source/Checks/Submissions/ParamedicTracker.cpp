@@ -1,4 +1,7 @@
 #include "ParamedicTracker.h"
+
+#include <CStats.h>
+#include <CWorld.h>
 #include <eModelID.h>
 
 ParamedicTracker::ParamedicTracker(int t_submissionID)

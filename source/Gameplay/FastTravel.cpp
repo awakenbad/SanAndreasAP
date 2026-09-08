@@ -1,22 +1,25 @@
 #include "FastTravel.h"
-#include "Teleport.h"
-#include "PlayerControl.h"
-#include "EdgeTriggeredKey.h"
-#include "common.h"
+
 #include <C3dMarkers.h>
-#include <CTheScripts.h>
+#include <CAudioEngine.h>
+#include <CFont.h>
 #include <CGame.h>
 #include <CPad.h>
-#include <CTimer.h>
-#include <eScriptCommands.h>
-#include <extensions/ScriptCommands.h>
-#include <CFont.h>
 #include <CRGBA.h>
 #include <CSprite2d.h>
+#include <CTheScripts.h>
+#include <CTimer.h>
 #include <CVector.h>
-#include <CAudioEngine.h>
+#include <common.h>
+#include <eScriptCommands.h>
 #include <enums/eAudioEvents.h>
+#include <extensions/Screen.h>
+#include <extensions/ScriptCommands.h>
 #include <vector>
+
+#include "EdgeTriggeredKey.h"
+#include "PlayerControl.h"
+#include "Teleport.h"
 
 namespace
 {

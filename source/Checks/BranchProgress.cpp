@@ -1,7 +1,9 @@
 #include "BranchProgress.h"
-#include "SaveDataManager.h"
-#include "ParseUtils.h"
+
 #include <set>
+
+#include "ParseUtils.h"
+#include "SaveDataManager.h"
 
 namespace
 {

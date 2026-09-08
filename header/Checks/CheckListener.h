@@ -1,42 +1,19 @@
 ﻿#pragma once
-#include <array>
-#include <string>
-#include <memory>
-#include "plugin.h"
-#include "PendingChecks.h"
-#include "CMessages.h"
-#include <CStats.h>
-#include <CWorld.h>
-
 #include "PersistentState.h"
-#include "TagTracker.h"
-#include "StuntJumpTracker.h"
-#include "SnapshotTracker.h"
-#include "HorseshoeTracker.h"
-#include "SubmissionTracker.h"
-#include "ParamedicTracker.h"
-#include "FirefighterTracker.h"
-#include "VigilanteTracker.h"
-#include "BurglaryTracker.h"
-#include "TaxiTracker.h"
-#include "GymTracker.h"
-#include "TruckingTracker.h"
-#include "ValetTracker.h"
-#include "SchoolTracker.h"
-#include "BoatSchoolTracker.h"
-#include "BikeSchoolTracker.h"
-#include "CourierTracker.h"
-#include "RaceTracker.h"
-#include "SubmissionStartBlocked.h"
-#include "ShootingRangeTracker.h"
-#include "DrivingSchoolTracker.h"
+
+#include <array>
+#include <memory>
+#include <string>
+
 #include "ExportListTracker.h"
+#include "FightingStyleArbiter.h"
+#include "HorseshoeTracker.h"
 #include "OysterTracker.h"
-#include "QuarryTracker.h"
-#include "PimpingTracker.h"
-#include "GangTerritoryTracker.h"
-#include "GlobalFlagTracker.h"
-#include "TrainTracker.h"
+#include "PendingChecks.h"
+#include "SnapshotTracker.h"
+#include "StuntJumpTracker.h"
+#include "SubmissionTracker.h"
+#include "TagTracker.h"
 
 enum class CheckEvent
 {
@@ -98,7 +75,7 @@ private:
 	ExportListTracker m_exportTracker;
 	OysterTracker m_oysterTracker;
 	std::array<CollectibleTracker*, 6> m_collectibles{
-		&m_tagTracker,& m_stuntJumpTracker,&m_snapshotTracker, &m_horseshoeTracker, &m_exportTracker,
+		&m_tagTracker,&m_stuntJumpTracker,&m_snapshotTracker, &m_horseshoeTracker, &m_exportTracker,
 		&m_oysterTracker };
 
 	PendingChecks<std::string> m_pendingMissions;

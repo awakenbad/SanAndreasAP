@@ -1,6 +1,10 @@
 ﻿#include "ItemEffects.h"
+
+#include <eStats.h>
+#include <string>
+
 #include "EntityIDs.h"
-#include <CStats.h>
+#include "NotificationOverlay.h"
 
 namespace
 {

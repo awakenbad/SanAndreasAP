@@ -1,6 +1,6 @@
 #pragma once
-#include <array>
 #include <CVector.h>
+#include <array>
 
 // All 50 horseshoe positions, index 0-49, in Las Venturas and the surrounding desert. 
 // Source: https://ehgames.com/gta/map/sa_horseshoes

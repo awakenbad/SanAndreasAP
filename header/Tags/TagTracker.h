@@ -1,4 +1,4 @@
- #pragma once
+#pragma once
 #include "Collectible.h"
 
 class TagTracker : public Collectible<100>

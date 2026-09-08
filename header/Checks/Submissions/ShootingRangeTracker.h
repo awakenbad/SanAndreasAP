@@ -1,5 +1,6 @@
 #pragma once
 #include "TieredSubmissionTracker.h"
+
 #include <string>
 
 int shootingRangeSubmissionForWeapon(const std::string& t_weaponName);

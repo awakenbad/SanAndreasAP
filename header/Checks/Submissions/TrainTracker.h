@@ -1,6 +1,5 @@
 #pragma once
 #include "TieredSubmissionTracker.h"
-#include "ScriptGlobals.h"
 
 class TrainTracker : public TieredSubmissionTracker
 {

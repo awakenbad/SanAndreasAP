@@ -1,7 +1,10 @@
 #include "DeathLinkHandler.h"
-#include "PlayerControl.h"
-#include "common.h"
+
 #include <CVehicle.h>
+#include <CWorld.h>
+#include <common.h>
+
+#include "PlayerControl.h"
 
 void DeathLinkHandler::setEnabled(bool enabled)
 {

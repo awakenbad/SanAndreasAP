@@ -1,16 +1,42 @@
 ﻿#include "CheckListener.h"
-#include "EntityIDs.h"
-#include "SaveDataManager.h"
-#include "ItemEffects.h"
-#include "ParseUtils.h"
-#include "common.h"
-#include "CTheScripts.h"
-#include "CCutsceneMgr.h"
-#include "CZone.h"
-#include <algorithm>
-#include <cctype>
+
+#include <CCutsceneMgr.h>
+#include <CPed.h>
+#include <CStats.h>
+#include <CZone.h>
+#include <common.h>
 #include <cstring>
 #include <map>
+
+#include "APProtocol.h"
+#include "BikeSchoolTracker.h"
+#include "BoatSchoolTracker.h"
+#include "BurglaryTracker.h"
+#include "Collectible.h"
+#include "CourierTracker.h"
+#include "DrivingSchoolTracker.h"
+#include "EntityIDs.h"
+#include "FirefighterTracker.h"
+#include "GangTerritoryTracker.h"
+#include "GlobalFlagTracker.h"
+#include "GymTracker.h"
+#include "ItemEffects.h"
+#include "ParamedicTracker.h"
+#include "ParseUtils.h"
+#include "PendingChecks.h"
+#include "PimpingTracker.h"
+#include "QuarryTracker.h"
+#include "RaceTracker.h"
+#include "SaveDataManager.h"
+#include "SchoolTracker.h"
+#include "ShootingRangeTracker.h"
+#include "SubmissionStartBlocked.h"
+#include "TaxiTracker.h"
+#include "TrainTracker.h"
+#include "TruckingTracker.h"
+#include "ValetTracker.h"
+#include "VigilanteTracker.h"
+
 
 CheckListener::CheckListener()
 {

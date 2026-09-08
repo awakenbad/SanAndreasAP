@@ -1,5 +1,7 @@
 #include "TruckingTracker.h"
 
+#include <CStats.h>
+
 TruckingTracker::TruckingTracker(int t_submissionID)
 	: TieredSubmissionTracker(t_submissionID, TRUCKING_TIERS)
 {

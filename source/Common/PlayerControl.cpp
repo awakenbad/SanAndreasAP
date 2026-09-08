@@ -1,7 +1,8 @@
 #include "PlayerControl.h"
-#include "common.h"
-#include <CPad.h>
+
 #include <CCutsceneMgr.h>
+#include <CPad.h>
+#include <common.h>
 
 bool PlayerControl::isInControl()
 {

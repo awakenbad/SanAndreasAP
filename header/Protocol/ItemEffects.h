@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+
 #include "NotificationOverlay.h"
 
 enum class ItemEffect

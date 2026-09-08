@@ -1,10 +1,12 @@
-#include "RunningScripts.h"
-#include "TagPositions.h"
 #include "TagSprayBlocker.h"
+
 #include <CPlayerPed.h>
 #include <CVector.h>
 #include <Patch.h>
 #include <common.h>
+
+#include "RunningScripts.h"
+#include "TagPositions.h"
 
 namespace
 {
@@ -21,7 +23,7 @@ namespace
 		CVector playerPosition = player->GetPosition();
 
 		// Tagging Up Turf Spray Tag IDs
-		int tags[] = {0, 1, 2, 25, 26, 27};
+		int tags[] = { 0, 1, 2, 25, 26, 27 };
 		for (int tagId : tags)
 		{
 			if (playerPosition.Distance(tagPositions[tagId]) < 5.0f) return true;

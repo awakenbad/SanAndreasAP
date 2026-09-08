@@ -1,9 +1,11 @@
 #include "BranchController.h"
-#include "BranchProgress.h"
-#include "ScriptGlobals.h"
+
 #include <CRadar.h>
 #include <eScriptCommands.h>
 #include <extensions/ScriptCommands.h>
+
+#include "BranchProgress.h"
+#include "ScriptGlobals.h"
 
 namespace
 {

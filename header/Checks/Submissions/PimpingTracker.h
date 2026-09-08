@@ -1,6 +1,5 @@
 #pragma once
 #include "TieredSubmissionTracker.h"
-#include <CStats.h>
 
 class PimpingTracker : public TieredSubmissionTracker
 {

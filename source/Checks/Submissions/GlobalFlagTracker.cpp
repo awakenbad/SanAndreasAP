@@ -1,4 +1,5 @@
 #include "GlobalFlagTracker.h"
+
 #include "ScriptGlobals.h"
 
 GlobalFlagTracker::GlobalFlagTracker(int t_locationId, int t_completedGlobal)

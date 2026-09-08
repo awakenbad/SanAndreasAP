@@ -1,6 +1,6 @@
 #pragma once
-#include <array>
 #include <CVector.h>
+#include <array>
 
 // All 100 spray tag positions in Los Santos, index 0-99. Sourced from
 // https://gtag.sannybuilder.com/maps/gtasa/ (a Sanny Builder community map tool)

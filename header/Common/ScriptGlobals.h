@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CTheScripts.h"
+#include <CTheScripts.h>
 
 // The SCM's global variable array - where state with no CStats entry lives (driving school scores).
 namespace ScriptGlobals

@@ -1,7 +1,8 @@
 #include "SaveDataManager.h"
+
 #include <CGenericGameStorage.h>
+#include <ShlObj_core.h>
 #include <fstream>
-#include <shlobj.h>
 
 #pragma comment(lib, "Shell32.lib")
 

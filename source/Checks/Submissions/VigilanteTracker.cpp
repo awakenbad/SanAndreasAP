@@ -1,4 +1,7 @@
 #include "VigilanteTracker.h"
+
+#include <CStats.h>
+#include <CWorld.h>
 #include <eModelID.h>
 
 VigilanteTracker::VigilanteTracker(int t_submissionID)

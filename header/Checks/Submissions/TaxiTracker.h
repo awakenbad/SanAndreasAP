@@ -1,6 +1,5 @@
 #pragma once
 #include "TieredSubmissionTracker.h"
-#include <CCheat.h>
 
 class TaxiTracker : public TieredSubmissionTracker
 {

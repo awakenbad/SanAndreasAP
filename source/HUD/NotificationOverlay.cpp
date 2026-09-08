@@ -1,13 +1,14 @@
 #include "NotificationOverlay.h"
-#include "ModSettings.h"
-#include <algorithm>
+
+#include <CAudioEngine.h>
 #include <CFont.h>
 #include <CRGBA.h>
-#include <CAudioEngine.h>
-#include <enums/eAudioEvents.h>
 #include <CRadar.h>
 #include <CSprite2d.h>
-#include <plugin.h>
+#include <enums/eAudioEvents.h>
+#include <extensions/Screen.h>
+
+#include "ModSettings.h"
 
 namespace
 {

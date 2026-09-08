@@ -1,4 +1,5 @@
 #include "TieredSubmissionTracker.h"
+
 #include "ParseUtils.h"
 
 TieredSubmissionTracker::TieredSubmissionTracker(int t_submissionID, const SubmissionTierSpec& t_spec)

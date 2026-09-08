@@ -1,4 +1,7 @@
 #include "BurglaryTracker.h"
+
+#include <CStats.h>
+#include <CWorld.h>
 #include <eModelID.h>
 
 BurglaryTracker::BurglaryTracker(int t_submissionID)

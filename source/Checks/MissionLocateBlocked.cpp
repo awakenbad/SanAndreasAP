@@ -1,10 +1,12 @@
 #include "MissionLocateBlocked.h"
-#include "BranchProgress.h"
-#include "MissionBranches.h"
-#include "ScriptCommandHook.h"
+
 #include <CRunningScript.h>
 #include <CTheScripts.h>
 #include <eScriptCommands.h>
+
+#include "BranchProgress.h"
+#include "MissionBranches.h"
+#include "ScriptCommandHook.h"
 
 namespace
 {

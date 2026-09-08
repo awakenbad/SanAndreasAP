@@ -1,10 +1,12 @@
 ﻿#include "LegacyBlockerCleanup.h"
-#include "EntityIDs.h"
-#include "common.h"
-#include "CPools.h"
+
 #include <CObject.h>
+#include <CPools.h>
 #include <CWorld.h>
+#include <common.h>
 #include <eModelID.h>
+
+#include "EntityIDs.h"
 
 namespace
 {

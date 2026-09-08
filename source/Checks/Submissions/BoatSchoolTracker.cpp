@@ -1,4 +1,5 @@
 #include "BoatSchoolTracker.h"
+
 #include "EntityIDs.h"
 #include "ScriptGlobals.h"
 

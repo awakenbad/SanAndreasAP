@@ -1,12 +1,14 @@
 #include "SubmissionResumeLevel.h"
-#include "EntityIDs.h"
-#include "ScriptGlobals.h"
-#include "ScriptCommandHook.h"
+
 #include <CRunningScript.h>
 #include <CStats.h>
-#include <eScriptCommands.h>
 #include <algorithm>
 #include <cstring>
+#include <eScriptCommands.h>
+
+#include "EntityIDs.h"
+#include "ScriptCommandHook.h"
+#include "ScriptGlobals.h"
 
 namespace
 {

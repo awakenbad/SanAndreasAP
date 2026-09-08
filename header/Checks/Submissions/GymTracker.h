@@ -1,7 +1,9 @@
 #pragma once
 #include "SubmissionTracker.h"
-#include "FightingStyleArbiter.h"
+
 #include <CPed.h>
+
+#include "FightingStyleArbiter.h"
 
 // A gym fight school (Los Santos boxing, San Fierro kung fu, Las Venturas knee-head). Each teaches
 // one fighting style once its instructor is beaten. The three differ only in the style they grant

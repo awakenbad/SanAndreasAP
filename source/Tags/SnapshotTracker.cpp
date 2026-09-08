@@ -1,11 +1,13 @@
 #include "SnapshotTracker.h"
-#include "SnapshotPositions.h"
-#include "SnapshotLock.h"
-#include "common.h"
-#include <CStats.h>
+
 #include <CCamera.h>
+#include <CMatrix.h>
 #include <CRadar.h>
+#include <CStats.h>
 #include <cmath>
+
+#include "SnapshotLock.h"
+#include "SnapshotPositions.h"
 
 SnapshotTracker::SnapshotTracker()
 	: Collectible<50>(snapshotPositions, RADAR_SPRITE_QMARK, "snapshots_claimed", "SNAPSHOT")

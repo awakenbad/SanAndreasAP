@@ -1,9 +1,9 @@
 #pragma once
-#include <array>
 #include <CVector.h>
+#include <array>
 
 // The 50 oysters, from https://ehgames.com/gta/map/sa_oysters.
-inline const std::array<CVector, 50> oysterPositions = {{
+inline const std::array<CVector, 50> oysterPositions = { {
 	{979.0f, -2210.0f, -3.0f}, {2750.0f, -2584.0f, -5.0f},
 	{1279.0f, -806.0f, 85.0f}, {2945.1f, -2051.9f, -3.0f},
 	{67.0f, -1018.0f, -5.0f}, {2327.0f, -2662.0f, -5.0f},
@@ -29,4 +29,4 @@ inline const std::array<CVector, 50> oysterPositions = {{
 	{-821.0f, 1374.0f, -8.0f}, {-2110.5f, 2329.7f, -7.5f},
 	{-1538.0f, 1708.0f, -3.3f}, {-2685.0f, 2153.0f, -5.0f},
 	{796.0f, 2939.0f, -5.0f}, {2179.0f, 235.0f, -5.0f},
-}};
+} };

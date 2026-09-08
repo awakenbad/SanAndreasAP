@@ -1,4 +1,5 @@
 #include "RaceTracker.h"
+
 #include "ScriptGlobals.h"
 
 namespace

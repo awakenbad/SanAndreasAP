@@ -1,7 +1,9 @@
 #include "MenuGate.h"
-#include "EdgeTriggeredKey.h"
+
 #include <CMenuManager.h>
 #include <windows.h>
+
+#include "EdgeTriggeredKey.h"
 
 namespace
 {

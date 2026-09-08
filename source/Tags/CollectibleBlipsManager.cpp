@@ -1,16 +1,18 @@
 ﻿#include "CollectibleBlipsManager.h"
-#include "ModSettings.h"
-#include "MenuMap.h"
-#include "SaveDataManager.h"
-#include "common.h"
-#include <algorithm>
-#include <string>
-#include <utility>
+
 #include <CFont.h>
 #include <CRGBA.h>
 #include <CRect.h>
-#include <CMenuManager.h>
-#include <plugin.h>
+#include <CTimer.h>
+#include <algorithm>
+#include <common.h>
+#include <extensions/Screen.h>
+#include <string>
+#include <utility>
+
+#include "MenuMap.h"
+#include "ModSettings.h"
+#include "SaveDataManager.h"
 
 namespace
 {

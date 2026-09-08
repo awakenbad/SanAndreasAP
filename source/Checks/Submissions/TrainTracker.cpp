@@ -1,5 +1,7 @@
 #include "TrainTracker.h"
 
+#include "ScriptGlobals.h"
+
 namespace
 {
 	constexpr int LEVEL_ONE_PASSED = 2;

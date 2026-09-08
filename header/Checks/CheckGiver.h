@@ -1,7 +1,5 @@
 #pragma once
-#include <plugin.h>
 #include <string>
-#include "CWorld.h"
 
 class CheckGiver
 {

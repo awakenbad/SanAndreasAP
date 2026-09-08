@@ -1,10 +1,12 @@
 #include "HorseshoeTracker.h"
-#include "HorseshoePositions.h"
-#include "PickupLock.h"
-#include "common.h"
+
 #include <CRadar.h>
 #include <CStats.h>
+#include <common.h>
 #include <eModelID.h>
+
+#include "HorseshoePositions.h"
+#include "PickupLock.h"
 
 HorseshoeTracker::HorseshoeTracker()
 	: Collectible<50>(horseshoePositions, RADAR_SPRITE_CASH, "horseshoes_claimed", "HORSESHOE")

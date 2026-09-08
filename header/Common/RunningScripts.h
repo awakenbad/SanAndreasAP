@@ -1,5 +1,5 @@
 #pragma once
-#include "CTheScripts.h"
+#include <CTheScripts.h>
 #include <cstring>
 
 namespace RunningScripts

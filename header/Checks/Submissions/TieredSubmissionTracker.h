@@ -1,7 +1,9 @@
 #pragma once
 #include "SubmissionTracker.h"
-#include "EntityIDs.h"
+
 #include <vector>
+
+#include "EntityIDs.h"
 
 class TieredSubmissionTracker : public SubmissionTracker
 {

@@ -1,11 +1,13 @@
 #include "StreetRaceUnlock.h"
-#include "EntityIDs.h"
-#include "ScriptGlobals.h"
-#include "ScriptCommandHook.h"
-#include "RunningScripts.h"
+
 #include <CRunningScript.h>
-#include <eScriptCommands.h>
 #include <cstring>
+#include <eScriptCommands.h>
+
+#include "EntityIDs.h"
+#include "RunningScripts.h"
+#include "ScriptCommandHook.h"
+#include "ScriptGlobals.h"
 
 namespace
 {

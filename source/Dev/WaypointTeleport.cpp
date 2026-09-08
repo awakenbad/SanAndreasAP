@@ -2,11 +2,12 @@
 
 #ifdef DEBUG
 
+#include <CRadar.h>
+#include <CVector.h>
+
 #include "EdgeTriggeredKey.h"
 #include "PlayerControl.h"
 #include "Teleport.h"
-#include <CRadar.h>
-#include <CVector.h>
 
 namespace
 {

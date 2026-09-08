@@ -1,8 +1,10 @@
 #include "StartingSaves.h"
-#include "SaveRedirect.h"
-#include "MenuGate.h"
-#include <windows.h>
+
 #include <filesystem>
+#include <windows.h>
+
+#include "MenuGate.h"
+#include "SaveRedirect.h"
 
 namespace
 {
