@@ -18,6 +18,7 @@
 #include <CMenuManager.h>
 #include "TagSprayBlocker.h"
 #include <plugin.h>
+#include <CGame.h>
 
 Mod::Mod()
 {
@@ -443,14 +444,18 @@ const char* Mod::branchAtBlip(const CVector& t_pos) const
 void Mod::drawMissionCountsOnRadar()
 {
     if (MenuMap::isOpen()) return;
-    if (!CTheScripts::IsPlayerOnAMission())
+    if (CGame::currArea != 0) return;
+    if (CTheScripts::IsPlayerOnAMission()) return;
+
     drawMissionCountsImpl(false);
 }
 
 void Mod::drawMissionCountsOnMap()
 {
     if (!MenuMap::isOpen()) return;
-    if (!CTheScripts::IsPlayerOnAMission())
+    if (CGame::currArea != 0) return;
+    if (CTheScripts::IsPlayerOnAMission()) return;
+
     drawMissionCountsImpl(true);
 }
 
@@ -502,6 +507,8 @@ void Mod::drawMissionCountsImpl(bool t_menuMap)
 
 void Mod::drawCollectiblesOnRadar()
 {
+    if (CGame::currArea != 0) return;
+
     m_blipManager.drawRadarNumbers();
 }
 

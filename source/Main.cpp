@@ -26,9 +26,9 @@ struct Main
         Events::drawHudEvent += []{ gInstance.mod.drawOverlay(); };
         Events::drawMenuBackgroundEvent += []{ gInstance.mod.updateMenuState(); };
         Events::drawMenuBackgroundEvent += []{ gInstance.mod.drawMenuOverlay(); };
-        Events::drawBlipsEvent += []{ gInstance.mod.drawCollectiblesOnRadar(); };
         Events::drawBlipsEvent += []{ gInstance.mod.drawMissionCountsOnRadar(); };
         Events::drawBlipsEvent += []{ gInstance.mod.drawMissionCountsOnMap(); };
+        Events::drawBlipsEvent += []{ gInstance.mod.drawCollectiblesOnRadar(); };
         Events::drawBlipsEvent += []{ gInstance.mod.drawCollectiblesOnMap(); };
     }
 
