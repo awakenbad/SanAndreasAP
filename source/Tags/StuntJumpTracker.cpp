@@ -67,5 +67,5 @@ bool StuntJumpTracker::update()
 
 CRGBA StuntJumpTracker::getHeightIndicatorColor() const
 {
-	return CRGBA(240, 170, 20, 255);
+	return CRGBA(30, 170, 240, 255);
 }
