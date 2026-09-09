@@ -18,6 +18,7 @@ namespace
 	constexpr char DIM_KEY[] = "UnselectedDim";
 	constexpr char FAST_TRAVEL_KEY[] = "FastTravel";
 	constexpr char COLLECTIBLE_HEIGHT_INDICATOR_KEY[] = "CollectibleHeightIndicator";
+	constexpr char DISABLE_HORSE_BETTING_KEY[] = "DisableHorseBetting";
 
 	constexpr float NOTIFICATION_DEFAULT = 8.0f;
 	constexpr float NOTIFICATION_MIN = 1.0f;
@@ -29,6 +30,7 @@ namespace
 
 	constexpr int FAST_TRAVEL_DEFAULT = 1;
 	constexpr int COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT = (int) ModSettings::CollectibleHeightIndicator::OnBlip;
+	constexpr int DISABLE_HORSE_BETTING_DEFAULT = 0;
 
 	constexpr int DIM_DEFAULT = 60;
 	constexpr int DIM_MIN = 10;
@@ -73,7 +75,11 @@ namespace
 		"\r\n"
 		"; Shows a height indicator (Above △, Below ▽, Same Height □) for collectibles when you're\r\n"
 		"; close enough to them (0 = off, 1 = on top of blip, 2 = alternating with number, default = 1).\r\n"
-		"CollectibleHeightIndicator=1\r\n";
+		"CollectibleHeightIndicator=1\r\n"
+		"\r\n"
+		"; Disables the horse betting machines"
+		"; (0 = machines are active, 1 = machines are inactive, default = 0)\r\n"
+		"DisableHorseBetting=0\r\n";
 
 	float g_notificationSeconds = NOTIFICATION_DEFAULT;
 	float g_collectibleNumberScale = SCALE_DEFAULT;
@@ -81,6 +87,7 @@ namespace
 	int g_unselectedDimPercent = DIM_DEFAULT;
 	bool g_fastTravelEnabled = FAST_TRAVEL_DEFAULT != 0;
 	int g_collectibleHeightIndicatorMode = COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT;
+	bool g_disableHorseBetting = DISABLE_HORSE_BETTING_DEFAULT != 0;
 	CRGBA g_itemColours[COLOUR_COUNT];
 
 	std::string settingsPath()
@@ -186,6 +193,7 @@ void ModSettings::load()
 
 	g_fastTravelEnabled = readInt(path, GAMEPLAY_SECTION, FAST_TRAVEL_KEY, FAST_TRAVEL_DEFAULT, 0, 1) != 0;
 	g_collectibleHeightIndicatorMode = readInt(path, GAMEPLAY_SECTION, COLLECTIBLE_HEIGHT_INDICATOR_KEY, COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT, 0, 2);
+	g_disableHorseBetting = readInt(path, GAMEPLAY_SECTION, DISABLE_HORSE_BETTING_KEY, DISABLE_HORSE_BETTING_DEFAULT, 0, 1) != 0;
 }
 
 float ModSettings::notificationSeconds()
@@ -221,4 +229,9 @@ bool ModSettings::fastTravelEnabled()
 ModSettings::CollectibleHeightIndicator ModSettings::collectibleHeightIndicatorMode()
 {
 	return (ModSettings::CollectibleHeightIndicator) g_collectibleHeightIndicatorMode;
+}
+
+bool ModSettings::horseBettingDisabled()
+{
+	return g_disableHorseBetting;
 }

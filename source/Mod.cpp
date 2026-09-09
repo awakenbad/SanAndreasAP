@@ -49,6 +49,7 @@ void Mod::start()
     StreetRaceUnlock::update(m_streetRacesUnlocked);
     StreetRaceUnlock::updateDrivingSchoolBlip();
     WangCarsUnlock::update(m_wangCarsUnlocked);
+    HorseBettingHandler::install();
 
     m_apSocket.update();
     pollDeathLink();

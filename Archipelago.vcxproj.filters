@@ -336,6 +336,9 @@
     <ClInclude Include="header\Tags\StuntJumpPositions.h">
       <Filter>Header\Tags</Filter>
     </ClInclude>
+    <ClInclude Include="header\Gameplay\HorseBettingHandler.h">
+      <Filter>Header\Gameplay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Main.cpp">
@@ -556,6 +559,9 @@
     </ClCompile>
     <ClCompile Include="source\Tags\StuntJumpTracker.cpp">
       <Filter>Source\Tags</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Gameplay\HorseBettingHandler.cpp">
+      <Filter>Source\Gameplay</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

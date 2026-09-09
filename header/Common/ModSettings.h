@@ -27,4 +27,5 @@ namespace ModSettings
 	int unselectedDimPercent();
 	bool fastTravelEnabled();
 	ModSettings::CollectibleHeightIndicator collectibleHeightIndicatorMode();
+	bool horseBettingDisabled();
 }

@@ -32,6 +32,7 @@
 #include "TrapHandler.h"
 #include "GameStorageHook.h"
 #include "WaypointTeleport.h"
+#include "HorseBettingHandler.h"
 
 class Mod
 {
