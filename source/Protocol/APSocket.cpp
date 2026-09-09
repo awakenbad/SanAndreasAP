@@ -1,5 +1,27 @@
 #include "APSocket.h"
 
+namespace
+{
+	struct WinsockManager {
+		bool initialized = false;
+
+		WinsockManager() {
+			WSADATA wsaData;
+			if (WSAStartup(MAKEWORD(2, 2), &wsaData) == 0) {
+				initialized = true;
+			}
+		}
+
+		~WinsockManager() {
+			if (initialized) {
+				WSACleanup();
+			}
+		}
+	};
+
+	static WinsockManager g_winsockManager;
+}
+
 APSocket::~APSocket()
 {
 	closeConnection();
@@ -25,17 +47,9 @@ bool APSocket::connectToServer(const std::string& ip, int port)
 
 void APSocket::connectAttemptThreadFunc(std::string ip, int port)
 {
-	WSADATA wsaData;
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-	{
-		connecting = false;
-		return;
-	}
-
 	SOCKET newSock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (newSock == INVALID_SOCKET)
 	{
-		WSACleanup();
 		connecting = false;
 		return;
 	}
@@ -48,7 +62,6 @@ void APSocket::connectAttemptThreadFunc(std::string ip, int port)
 	if (connect(newSock, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
 	{
 		closesocket(newSock);
-		WSACleanup();
 		connecting = false;
 		return;
 	}
@@ -96,7 +109,6 @@ void APSocket::closeConnection()
 	}
 
 	connected = false;
-	WSACleanup();
 }
 
 bool APSocket::tryGetMessage(std::string& outMsg)
