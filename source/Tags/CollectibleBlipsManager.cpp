@@ -1,4 +1,4 @@
-﻿#include "CollectibleBlipsManager.h"
+#include "CollectibleBlipsManager.h"
 #include "ModSettings.h"
 #include "MenuMap.h"
 #include "SaveDataManager.h"
@@ -306,7 +306,7 @@ void CollectibleBlipsManager::drawRadarNumbers() const
 			}
 			break;
 		case ModSettings::CollectibleHeightIndicator::Alternating:
-			if ((CTimer::m_snTimeInMilliseconds / 1000) % 2 && isPlayerInRange)
+			if ((int)(CTimer::m_snTimeInMilliseconds / 1000 / CTimer::ms_fTimeScale) % 2 && isPlayerInRange)
 			{
 				drawBlipHeightOverlay(target, screenPos, playerPos, false);
 			}
