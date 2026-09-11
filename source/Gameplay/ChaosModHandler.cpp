@@ -100,7 +100,7 @@ void ChaosModHandler::applyEffect(const Effect* t_effect)
 	HMODULE hMod = GetModuleHandleA("trilogychaosmod.sa.asi");
 	if (!hMod) return; // Chaos mod is not installed
 
-	auto QueueEffect = reinterpret_cast<QueueEffectFn>(GetProcAddress(hMod, "QueueEffect"));
+	auto QueueEffect = (QueueEffectFn) GetProcAddress(hMod, "QueueEffect");
 
 	if (QueueEffect)
 	{
