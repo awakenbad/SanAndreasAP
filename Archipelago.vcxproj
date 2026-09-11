@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release GTA-SA|Win32">
@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Gameplay\AmmuNationShop.h" />
+    <ClInclude Include="header\Gameplay\ChaosModHandler.h" />
     <ClInclude Include="header\Gameplay\WangCarsUnlock.h" />
     <ClInclude Include="header\Persistence\AutoSaveManager.h" />
     <ClInclude Include="header\Protocol\APSocket.h" />
@@ -104,6 +105,7 @@
   <ItemGroup>
     <ClCompile Include="source\Checks\Submissions\TrainTracker.cpp" />
     <ClCompile Include="source\Gameplay\AmmuNationShop.cpp" />
+    <ClCompile Include="source\Gameplay\ChaosModHandler.cpp" />
     <ClCompile Include="source\Gameplay\WangCarsUnlock.cpp" />
     <ClCompile Include="source\Persistence\AutoSaveManager.cpp" />
     <ClCompile Include="source\Protocol\APSocket.cpp" />

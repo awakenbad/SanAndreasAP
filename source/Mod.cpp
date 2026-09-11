@@ -26,7 +26,7 @@ Mod::Mod()
 
 	m_apSocket.connectToServer(APProtocol::CLIENT_HOST, APProtocol::CLIENT_PORT);
 
-	m_persistentSubsystems = { &m_checkListener, &m_branchProgress, &m_blipManager, &m_receivedItemLog, &m_trapHandler };
+	m_persistentSubsystems = { &m_checkListener, &m_branchProgress, &m_blipManager, &m_receivedItemLog, &m_trapHandler, &m_chaosModHandler };
 
 	GameStorageHook::setBeforeSaveCallback([this]
 	{
@@ -122,6 +122,7 @@ void Mod::updateGameplaySystems()
 {
     m_ammuNationShop.update();
     m_trapHandler.update();
+	m_chaosModHandler.update();
     m_checkGiver.update();
     CityUnlock::update();
     if (ModSettings::fastTravelEnabled()) FastTravel::update();
@@ -401,6 +402,7 @@ bool Mod::applyItemEffect(const std::string& t_effectName, const std::string& t_
     case ItemEffect::StreetRaces:        m_streetRacesUnlocked = true; break;
     case ItemEffect::WangCars:           m_wangCarsUnlocked = true; break;
     case ItemEffect::Trap:               m_trapHandler.giveTrap(spec->trapName); break;
+    case ItemEffect::ChaosModEffect:	 m_chaosModHandler.giveEffect((ChaosModHandler::EffectSeverity)spec->submissionId); break;
     }
 
     if (t_isNew)

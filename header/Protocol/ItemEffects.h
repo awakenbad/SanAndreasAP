@@ -18,6 +18,7 @@ enum class ItemEffect
 	StreetRaces,
 	WangCars,
 	Trap,
+	ChaosModEffect
 };
 
 class ItemEffectSpec

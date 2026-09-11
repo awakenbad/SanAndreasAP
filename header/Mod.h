@@ -32,6 +32,7 @@
 #include "TrapHandler.h"
 #include "GameStorageHook.h"
 #include "WaypointTeleport.h"
+#include "ChaosModHandler.h"
 
 class Mod
 {
@@ -71,6 +72,7 @@ private:
 	CollectibleBlipsManager m_blipManager;
 	AmmuNationShop m_ammuNationShop;
 	TrapHandler m_trapHandler;
+	ChaosModHandler m_chaosModHandler;
 	ReceivedItemLog m_receivedItemLog;
 	PendingChecks<int> m_pendingShopChecks;
 

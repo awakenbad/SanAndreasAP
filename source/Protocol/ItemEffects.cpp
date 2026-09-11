@@ -46,6 +46,10 @@ namespace
 		{ "trap_wanted",         ItemEffect::Trap,               -1,                  "wanted",    "Archipelago: Wanted Level Trap!",           NotificationIcon::Trap },
 		{ "trap_carfire",        ItemEffect::Trap,               -1,                  "carfire",   "Archipelago: Car Fire Trap!",               NotificationIcon::Trap },
 		{ "trap_weather",        ItemEffect::Trap,               -1,                  "weather",   "Archipelago: Bad Weather Trap!",            NotificationIcon::Trap },
+
+		{ "chaos_low",			 ItemEffect::ChaosModEffect,	 0,						 nullptr,	  "Archipelago: Chaos Mod Effect",			NotificationIcon::Trap },
+		{ "chaos_medium",		 ItemEffect::ChaosModEffect,	 1,						 nullptr,	  "Archipelago: Chaos Mod Effect",			NotificationIcon::Trap },
+		{ "chaos_high",			 ItemEffect::ChaosModEffect,	 2,						 nullptr,	  "Archipelago: Chaos Mod Effect",			NotificationIcon::Trap },
 	};
 
 	constexpr char VALUE_PLACEHOLDER[] = "{}";
