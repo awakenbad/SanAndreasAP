@@ -1,10 +1,6 @@
 #pragma once
 #include "PersistentState.h"
-#include <chrono>
-#include <string>
 #include <vector>
-
-class CVehicle;
 
 class ChaosModHandler : public PersistentState
 {
@@ -30,7 +26,6 @@ public:
 	void update();
 
 private:
-	using Clock = std::chrono::steady_clock;
 	int randomSeconds(int t_low, int t_high) const;
 	static constexpr int TRAP_MIN_SECONDS = 30;
 	static constexpr int TRAP_MAX_SECONDS = 120;

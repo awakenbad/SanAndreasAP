@@ -384,7 +384,7 @@ bool Mod::applyItemEffect(const std::string& t_effectName, const std::string& t_
     const ItemEffectSpec* spec = findItemEffect(t_effectName);
     if (!spec) return false;
 
-    if (spec->effect == ItemEffect::Trap && !t_isNew) return true;
+    if ((spec->effect == ItemEffect::Trap || spec->effect == ItemEffect::ChaosModEffect) && !t_isNew) return true;
 
     switch (spec->effect)
     {
