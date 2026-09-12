@@ -317,6 +317,8 @@ void CollectibleBlipsManager::drawRadarNumbers() const
 			break;
 		}
 	}
+
+	CFont::DrawFonts();
 }
 
 void CollectibleBlipsManager::clearAllBlips()
@@ -374,6 +376,8 @@ void CollectibleBlipsManager::drawMapOverlay()
 		CVector2D numberPos = MenuMap::clampToMap(CVector2D(iconPos.x + offset, iconPos.y + offset), numberInset);
 		CFont::PrintString(numberPos.x, numberPos.y, std::to_string(target.number).c_str());
 	}
+
+	CFont::DrawFonts();
 }
 
 void CollectibleBlipsManager::toggleBlips()
