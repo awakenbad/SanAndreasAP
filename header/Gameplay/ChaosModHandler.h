@@ -17,7 +17,7 @@ public:
 		EffectSeverity severity;
 		const char* effectID;
 		const char* displayName;
-		int duration = -1;
+		int duration = -1; // -1 = Random, 0 = One-Time, Anything Else = Set duration
 	};
 
 	void save(SaveDataManager& t_saveData) override;

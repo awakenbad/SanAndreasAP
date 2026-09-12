@@ -16,28 +16,28 @@ namespace
 		{ ChaosModHandler::LOW, "effect_one_bullet_magazines", "One Bullet Magazines" },
 		{ ChaosModHandler::LOW, "effect_pedal_to_the_metal", "Pedal To The Metal" },
 		{ ChaosModHandler::LOW, "effect_shaky_hands", "Shaky Hands" },
-		{ ChaosModHandler::LOW, "effect_struck_by_truck", "You've been struck by..." },
+		{ ChaosModHandler::LOW, "effect_struck_by_truck", "You've been struck by...", 0 },
 
 		{ ChaosModHandler::MEDIUM, "effect_half_game_speed", "0.5x Game Speed" },
 		{ ChaosModHandler::MEDIUM, "effect_double_game_speed", "2x Game Speed" },
-		{ ChaosModHandler::MEDIUM, "effect_random_teleport", "Random Teleport" },
+		{ ChaosModHandler::MEDIUM, "effect_random_teleport", "Random Teleport", 0 },
 
 		{ ChaosModHandler::MEDIUM, "effect_beyblade", "Beyblade" },
 		{ ChaosModHandler::MEDIUM, "effect_bumper_peds", "Bumper Peds" },
-		{ ChaosModHandler::MEDIUM, "effect_one_percent_death", "Death (1% Chance)" },
+		{ ChaosModHandler::MEDIUM, "effect_one_percent_death", "Death (1% Chance)", 1000 * 10 },
 		{ ChaosModHandler::MEDIUM, "effect_cops_everywhere", "Cops Everywhere" },
 
-		{ ChaosModHandler::MEDIUM, "effect_freefall", "Freefall!" },
+		{ ChaosModHandler::MEDIUM, "effect_freefall", "Freefall!", 0 },
 		{ ChaosModHandler::MEDIUM, "effect_inverted_controls", "Inverted Controls" },
-		{ ChaosModHandler::MEDIUM, "effect_remove_all_weapons", "Remove All Weapons" },
-		{ ChaosModHandler::MEDIUM, "effect_send_vehicles_to_space", "Send Vehicles To Space" },
+		{ ChaosModHandler::MEDIUM, "effect_remove_all_weapons", "Remove All Weapons", 0 },
+		{ ChaosModHandler::MEDIUM, "effect_send_vehicles_to_space", "Send Vehicles To Space", 0 },
 		{ ChaosModHandler::MEDIUM, "effect_vehicle_one_hit_ko", "Vehicle One Hit K.O." },
 
-		{ ChaosModHandler::HIGH, "effect_death", "Death" },
-		{ ChaosModHandler::HIGH, "effect_wanted_level_six_stars", "Six Wanted Stars" },
-		{ ChaosModHandler::HIGH, "effect_explode_all_cars", "Explode All Vehicles" },
+		{ ChaosModHandler::HIGH, "effect_death", "Death", 0 },
+		{ ChaosModHandler::HIGH, "effect_wanted_level_six_stars", "Six Wanted Stars", 0 },
+		{ ChaosModHandler::HIGH, "effect_explode_all_cars", "Explode All Vehicles", 0 },
 		{ ChaosModHandler::HIGH, "effect_carmageddon", "Carmageddon" },
-		{ ChaosModHandler::HIGH, "effect_insane_gravity", "Insane Gravity", 10000 },
+		{ ChaosModHandler::HIGH, "effect_insane_gravity", "Insane Gravity", 1000 * 10 },
 	};
 
 	int randomBetween(int t_low, int t_high)
@@ -104,9 +104,16 @@ void ChaosModHandler::applyEffect(const Effect* t_effect)
 
 	if (QueueEffect)
 	{
-		int duration = (t_effect->duration != -1)
-			? t_effect->duration
-			: randomSeconds(TRAP_MIN_SECONDS, TRAP_MAX_SECONDS) * 1000;
+		int duration = t_effect->duration;
+		if (duration == -1)
+		{
+			duration = randomSeconds(TRAP_MIN_SECONDS, TRAP_MAX_SECONDS) * 1000;
+		}
+		else if (duration == 0)
+		{
+			// 30 seconds draw time for one-time effects
+			duration = 30 * 1000;
+		}
 
 		std::string jsonStr = std::format(
 			R"({{"effectID":"{}","displayName":"{}","duration":{},"subtext":"Archipelago","drawnTemporarily":true}})",
