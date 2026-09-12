@@ -427,6 +427,8 @@ void Mod::drawOverlay()
         FastTravel::placeMarkers();
         FastTravel::draw();
     }
+
+    CFont::DrawFonts();
 }
 
 const char* Mod::branchAtBlip(const CVector& t_pos) const
@@ -505,6 +507,8 @@ void Mod::drawMissionCountsImpl(bool t_menuMap)
         CFont::SetColor(pending > 0 ? CRGBA(120, 255, 120, 255) : CRGBA(255, 70, 70, 255));
         CFont::PrintString(screenPos.x, screenPos.y, std::to_string(pending).c_str());
     }
+
+    CFont::DrawFonts();
 }
 
 void Mod::drawCollectiblesOnRadar()
@@ -568,6 +572,8 @@ void Mod::drawMenuOverlay()
 
     CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(55.0f),
         m_blipManager.areBlipsEnabled() ? "F8 - Collectible blips on map: ON" : "F8 - Collectible blips on map: OFF");
+
+    CFont::DrawFonts();
 }
 
 void Mod::drawVersionLabel()
