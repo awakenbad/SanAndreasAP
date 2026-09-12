@@ -3,8 +3,8 @@
 
 namespace
 {
-	// Quarry missions completed - neither quarry stat counts them, so it comes from a script global.
 	constexpr int MISSIONS_COMPLETED_GLOBAL = 8171;
+	constexpr int QUARRY_DONE_GLOBAL = 1493;
 }
 
 QuarryTracker::QuarryTracker(int t_submissionID)
@@ -18,5 +18,6 @@ void QuarryTracker::enforceSubmissionReward()
 
 float QuarryTracker::getProgress() const
 {
+	if (ScriptGlobals::read(QUARRY_DONE_GLOBAL) == 1) return static_cast<float>(SPEC.tierCount);
 	return static_cast<float>(ScriptGlobals::read(MISSIONS_COMPLETED_GLOBAL));
 }
