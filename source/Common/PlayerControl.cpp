@@ -1,22 +1,42 @@
 #include "PlayerControl.h"
 #include "common.h"
+#include "RunningScripts.h"
+#include "ScriptGlobals.h"
 #include <CPad.h>
 #include <CCutsceneMgr.h>
+#include <cmath>
+
+namespace
+{
+	constexpr char HIGH_STAKES_SCRIPT[] = "CESAR1";
+	constexpr int CESAR_MARKER_X = 480;
+	constexpr int CESAR_MARKER_Y = 481;
+	constexpr int CESAR_MARKER_Z = 482;
+	constexpr float MARKER_HORIZONTAL_RADIUS = 14.0f;
+	constexpr float MARKER_VERTICAL_RADIUS = 6.0f;
+}
 
 bool PlayerControl::isInControl()
 {
-	// No ped means no one to act on - during a load, or between worlds.
 	if (!FindPlayerPed()) return false;
-
-	// Covers the streamed .cuts cutscenes, which are only some of them.
 	if (CCutsceneMgr::ms_running) return false;
-
-	// Covers the rest: in-game scripted sequences take control away by setting one of the bits in
-	// this union (bPlayerSafeForCutscene, bPlayerSafe, bPlayerSkipsToDestination,
-	// bPlayerTalksOnPhone, ...). Testing the whole word for zero catches every one of them without
-	// having to know which flag a given mission happens to use.
 	CPad* pad = CPad::GetPad(0);
 	if (pad && pad->DisablePlayerControls != 0) return false;
 
 	return true;
+}
+
+bool PlayerControl::isInHighStakesDriveway()
+{
+	CPlayerPed* player = FindPlayerPed();
+	if (!player) return false;
+	if (!RunningScripts::isActive(HIGH_STAKES_SCRIPT)) return false;
+
+	CVector position = player->bInVehicle && player->m_pVehicle
+		? player->m_pVehicle->GetPosition()
+		: player->GetPosition();
+
+	return std::fabs(position.x - ScriptGlobals::readFloat(CESAR_MARKER_X)) <= MARKER_HORIZONTAL_RADIUS
+		&& std::fabs(position.y - ScriptGlobals::readFloat(CESAR_MARKER_Y)) <= MARKER_HORIZONTAL_RADIUS
+		&& std::fabs(position.z - ScriptGlobals::readFloat(CESAR_MARKER_Z)) <= MARKER_VERTICAL_RADIUS;
 }

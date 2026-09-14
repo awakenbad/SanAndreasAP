@@ -41,4 +41,6 @@ private:
 
 	// Does the actual killing, with no control check.
 	void applyKill();
+
+	bool canKillNow() const;
 };

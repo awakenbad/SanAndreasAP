@@ -15,7 +15,7 @@ bool DeathLinkHandler::update()
 		CWorld::Players[0].m_bGetOutOfHospitalFree = true;
 	}
 
-	if (m_killDeferred && PlayerControl::isInControl())
+	if (m_killDeferred && canKillNow())
 	{
 		m_killDeferred = false;
 		applyKill();
@@ -49,7 +49,7 @@ bool DeathLinkHandler::consumeRespawn()
 
 bool DeathLinkHandler::killPlayer()
 {
-	if (!PlayerControl::isInControl())
+	if (!canKillNow())
 	{
 		m_killDeferred = true;
 		return false;
@@ -57,6 +57,11 @@ bool DeathLinkHandler::killPlayer()
 
 	applyKill();
 	return true;
+}
+
+bool DeathLinkHandler::canKillNow() const
+{
+	return PlayerControl::isInControl() && !PlayerControl::isInHighStakesDriveway();
 }
 
 bool DeathLinkHandler::hasDeferredKill() const

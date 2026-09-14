@@ -231,7 +231,7 @@ void TrapHandler::update()
 		burstTires(vehicle);
 	}
 
-	if (m_carFirePending)
+	if (m_carFirePending && !PlayerControl::isInHighStakesDriveway())
 	{
 		m_carFirePending = false;
 		if (vehicle->m_fHealth > 240.0f)
