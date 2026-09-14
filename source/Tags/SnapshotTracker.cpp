@@ -3,9 +3,7 @@
 #include "SnapshotLock.h"
 #include "common.h"
 #include <CStats.h>
-#include <CCamera.h>
 #include <CRadar.h>
-#include <cmath>
 #include <Patch.h>
 #include <CPickups.h>
 
