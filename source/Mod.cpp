@@ -1,5 +1,6 @@
 #include "Mod.h"
 #include "ModSettings.h"
+#include "CleoCheck.h"
 #include "PlayerControl.h"
 #include "APProtocol.h"
 #include "ItemEffects.h"
@@ -233,7 +234,7 @@ void Mod::updateMenuState()
         }
     }
 
-    MenuGate::update(SaveRedirect::isActive());
+    MenuGate::update(SaveRedirect::isActive() && !CleoCheck::isOutdatedCleoLoaded());
 }
 
 void Mod::parseIncomingMessages()
@@ -547,7 +548,13 @@ void Mod::drawMenuOverlay()
     CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(100.0f),
         connected ? "Archipelago: Connected" : "Archipelago: Disconnected");
 
-    if (MenuGate::shouldExplainBlock())
+    if (CleoCheck::isOutdatedCleoLoaded())
+    {
+        CFont::SetColor(CRGBA(220, 180, 60, 255));
+        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f),
+            "CLEO 4 or older detected - update to CLEO 5 or remove CLEO.asi to play");
+    }
+    else if (MenuGate::shouldExplainBlock())
     {
         CFont::SetColor(CRGBA(220, 180, 60, 255));
         CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f),

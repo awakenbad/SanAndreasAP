@@ -39,7 +39,7 @@ namespace
 	}
 }
 
-void MenuGate::update(bool t_worldKnown)
+void MenuGate::update(bool t_playAllowed)
 {
 	CMenuScreen::CMenuEntry* entries = aScreens[MENUPAGE_NEW_GAME].m_aEntries;
 
@@ -50,7 +50,7 @@ void MenuGate::update(bool t_worldKnown)
 		g_captured = true;
 	}
 
-	if (t_worldKnown)
+	if (t_playAllowed)
 	{
 		g_confirmPending = false;
 		g_explainUntilMs = 0;
@@ -60,14 +60,14 @@ void MenuGate::update(bool t_worldKnown)
 		watchForBlockedConfirm();
 	}
 
-	if (g_applied && t_worldKnown == g_open) return;
+	if (g_applied && t_playAllowed == g_open) return;
 	g_applied = true;
-	g_open = t_worldKnown;
+	g_open = t_playAllowed;
 
-	entries[NEW_GAME_ENTRY].m_nAction = t_worldKnown ? g_openAction[0] : MENUACTION_SKIP;
-	entries[LOAD_GAME_ENTRY].m_nAction = t_worldKnown ? g_openAction[1] : MENUACTION_SKIP;
+	entries[NEW_GAME_ENTRY].m_nAction = t_playAllowed ? g_openAction[0] : MENUACTION_SKIP;
+	entries[LOAD_GAME_ENTRY].m_nAction = t_playAllowed ? g_openAction[1] : MENUACTION_SKIP;
 
-	if (t_worldKnown) refreshSaveSlotList();
+	if (t_playAllowed) refreshSaveSlotList();
 }
 
 void MenuGate::refreshSaveSlotList()

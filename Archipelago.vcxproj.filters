@@ -168,6 +168,9 @@
     <ClInclude Include="header\Checks\Submissions\PimpingTracker.h">
       <Filter>Header\Checks\Submissions</Filter>
     </ClInclude>
+    <ClInclude Include="header\Common\CleoCheck.h">
+      <Filter>Header\Common</Filter>
+    </ClInclude>
     <ClInclude Include="header\Common\ModSettings.h">
       <Filter>Header\Common</Filter>
     </ClInclude>
@@ -537,6 +540,9 @@
       <Filter>Source\HUD</Filter>
     </ClCompile>
     <ClCompile Include="source\Common\Position.cpp">
+      <Filter>Source\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Common\CleoCheck.cpp">
       <Filter>Source\Common</Filter>
     </ClCompile>
     <ClCompile Include="source\Common\ModSettings.cpp">

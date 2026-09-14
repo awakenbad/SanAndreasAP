@@ -56,6 +56,7 @@
     <ClInclude Include="header\Tags\OysterTracker.h" />
     <ClInclude Include="header\Tags\OysterPositions.h" />
     <ClInclude Include="header\Checks\Submissions\PimpingTracker.h" />
+    <ClInclude Include="header\Common\CleoCheck.h" />
     <ClInclude Include="header\Common\ModSettings.h" />
     <ClInclude Include="header\Common\RunningScripts.h" />
     <ClInclude Include="header\Common\ScriptCommandHook.h" />
@@ -156,6 +157,7 @@
     <ClCompile Include="source\Checks\Submissions\ParamedicTracker.cpp" />
     <ClCompile Include="source\Protocol\APProtocol.cpp" />
     <ClCompile Include="source\Protocol\ItemEffects.cpp" />
+    <ClCompile Include="source\Common\CleoCheck.cpp" />
     <ClCompile Include="source\Common\ModSettings.cpp" />
     <ClCompile Include="source\Common\ScriptCommandHook.cpp" />
     <ClCompile Include="source\Common\PlayerControl.cpp" />

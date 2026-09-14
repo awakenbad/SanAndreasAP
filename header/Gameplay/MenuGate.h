@@ -2,7 +2,7 @@
 
 namespace MenuGate
 {
-	void update(bool t_worldKnown);
+	void update(bool t_playAllowed);
 	bool shouldExplainBlock();
 	void refreshSaveSlotList();
 }
