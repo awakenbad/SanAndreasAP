@@ -6,10 +6,28 @@
 #include <CCamera.h>
 #include <CRadar.h>
 #include <cmath>
+#include <Patch.h>
+#include <CPickups.h>
+
+namespace
+{
+	constexpr uintptr_t SNAPSHOT_REMOVE_ENTITY = 0x456C19;
+	static inline CPickup* lastCompletedSnapshot;
+
+	void onSnapshotBlipCleared(eBlipType blipType, int entityHandle)
+	{
+		// Inverse calculation for "(v10 - CPickups::aPickUps) | (CPickups::aPickUps[v10 - CPickups::aPickUps].m_wReferenceIndex << 16)"
+		int pickupIndex = entityHandle & 0xFFFF;
+		lastCompletedSnapshot = &CPickups::aPickUps[pickupIndex];
+
+		CRadar::ClearBlipForEntity(blipType, entityHandle);
+	}
+}
 
 SnapshotTracker::SnapshotTracker()
 	: Collectible<50>(snapshotPositions, RADAR_SPRITE_QMARK, "snapshots_claimed", "SNAPSHOT")
 {
+	plugin::patch::RedirectCall(SNAPSHOT_REMOVE_ENTITY, &onSnapshotBlipCleared);
 }
 
 float SnapshotTracker::readCount() const
@@ -19,36 +37,20 @@ float SnapshotTracker::readCount() const
 
 int SnapshotTracker::identifyCollected() const
 {
-	CVector camPos = TheCamera.m_mCameraMatrix.GetPosition();
-	CVector camDir = TheCamera.m_mCameraMatrix.GetForward();
-
-	float camLength = camDir.Magnitude();
-	if (camLength < 0.0001f) return -1;
-	camDir /= camLength;
-
 	int best = -1;
-	float bestDot = MIN_AIM_DOT;
 	float bestDistance = 0.0f;
+
+	if (!lastCompletedSnapshot) return -1;
 
 	for (int i = 0; i < static_cast<int>(snapshotPositions.size()); ++i)
 	{
 		if (isClaimed(i)) continue;
 
-		CVector toTarget = snapshotPositions[i] - camPos;
-		float distance = toTarget.Magnitude();
-		if (distance < 0.0001f) continue;
-		toTarget /= distance;
+		float distance = snapshotPositions[i].Distance(lastCompletedSnapshot->GetPosn());
 
-		float dot = camDir.x * toTarget.x + camDir.y * toTarget.y + camDir.z * toTarget.z;
-		if (dot < bestDot) continue;
-
-		if (best != -1 && std::fabs(dot - bestDot) < AIM_TIE_EPSILON && distance >= bestDistance)
-		{
-			continue;
-		}
+		if (best != -1 && distance >= bestDistance) continue;
 
 		best = i;
-		bestDot = dot;
 		bestDistance = distance;
 	}
 
