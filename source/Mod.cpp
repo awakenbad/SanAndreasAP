@@ -545,19 +545,19 @@ void Mod::drawMenuOverlay()
     CFont::SetBackground(false, false);
     CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
-    CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(100.0f),
+    CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(120.0f),
         connected ? "Archipelago: Connected" : "Archipelago: Disconnected");
 
     if (CleoCheck::isOutdatedCleoLoaded())
     {
         CFont::SetColor(CRGBA(220, 180, 60, 255));
-        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f),
+        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(165.0f),
             "CLEO 4 or older detected - update to CLEO 5 or remove CLEO.asi to play");
     }
     else if (MenuGate::shouldExplainBlock())
     {
         CFont::SetColor(CRGBA(220, 180, 60, 255));
-        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f),
+        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(165.0f),
             "Connect the Archipelago client before starting or loading a game");
     }
     else if (!StartingSaves::missingSaveName().empty())
@@ -566,7 +566,7 @@ void Mod::drawMenuOverlay()
             + " - reinstall the starting saves";
 
         CFont::SetColor(CRGBA(220, 180, 60, 255));
-        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(145.0f), warning.c_str());
+        CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(165.0f), warning.c_str());
     }
 
     CFont::SetFontStyle(FONT_SUBTITLES);
@@ -577,7 +577,7 @@ void Mod::drawMenuOverlay()
     CFont::SetDropShadowPosition(1);
     CFont::SetBackground(false, false);
 
-    CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(55.0f),
+    CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(75.0f),
         m_blipManager.areBlipsEnabled() ? "F8 - Collectible blips on map: ON" : "F8 - Collectible blips on map: OFF");
 
     CFont::DrawFonts();
