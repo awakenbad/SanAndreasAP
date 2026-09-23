@@ -8,8 +8,8 @@ Mission items; collectibles, Ammu-Nation purchases, and side activities send
 checks to the multiworld.
 
 > [!NOTE]
-> All regions are randomized (Big Smoke → End of the Line), but not all side activities are. 
-> The rest of the game will come in future updates. Feel free to bug report either through `Issues` or using [GTA SA Thread](https://discord.com/channels/1085716850370957462/1098055987648282717) in Archipelago After Dark
+> All regions and planned side-activities are randomized (Big Smoke → End of the Line), however the mod still remains unstable. 
+> Feel free to bug report either through `Issues` or using [GTA SA Thread](https://discord.com/channels/1085716850370957462/1098055987648282717) in Archipelago After Dark
 
 ## Related repositories
 
@@ -18,7 +18,7 @@ The randomizer logic (locations, items, rules) is developed in my
 `worlds/gta_sa` — that's where `gta_sa.apworld` comes from. This repo only has
 the C++ mod.
 
-## Current scope (v0.8.3)
+## Current scope (v0.9.0)
 
 - **Goal:**
     - **The Green Sabre** (Los Santos only)
@@ -30,7 +30,7 @@ the C++ mod.
 - 100 story missions across all regions
   gated by Progressive Mission items
 - Choosing a starting point (Badlands, San Fierro, Las Venturas)
-- Spray tags, snapshots, horseshoes and oysters as individual locations (toggleable)
+- Spray tags, snapshots, horseshoes, oysters and stunt jumps as individual locations (toggleable)
 - Submissions sending checks per level (tunable):
     - Paramedic, Firefighter and Vigilante (12 levels each)
     - Taxi Driver (one per fare)
