@@ -1,8 +1,10 @@
 #include "BranchControllers.h"
 #include "Branches/EdgeCases.h"
-#include "RunningScripts.h"
+#include "Branches/OutOfOrderGuards.h"
+#include "ScriptCommandHook.h"
 #include "BranchProgress.h"
 #include "CTheScripts.h"
+#include <eScriptCommands.h>
 #include <memory>
 #include <vector>
 
@@ -34,24 +36,66 @@ namespace
 		controllers.push_back(std::make_unique<CatController>());
 		controllers.push_back(std::make_unique<TruController>());
 		controllers.push_back(std::make_unique<BcesarController>());
+		controllers.push_back(std::make_unique<GarageController>());
+		controllers.push_back(std::make_unique<WuziController>());
+		controllers.push_back(std::make_unique<TorenoController>());
+		controllers.push_back(std::make_unique<CasinoController>());
+		controllers.push_back(std::make_unique<VegasCrashController>());
+		controllers.push_back(std::make_unique<MaddDoggController>());
 
 		return controllers;
 	}
 
+	std::vector<std::unique_ptr<BranchController>>& controllers()
+	{
+		static std::vector<std::unique_ptr<BranchController>> all = makeControllers();
+		return all;
+	}
+
 	void startScriptIfNeeded(const BranchController& t_controller)
 	{
-		if (RunningScripts::isActive(t_controller.scriptName())) return;
+		if (t_controller.running()) return;
 
 		CTheScripts::StartNewScript(
 			reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace) + t_controller.address());
+	}
+
+	constexpr unsigned char END_OF_ARGUMENTS = 0;
+
+	bool skipDuplicateStart(CRunningScript* t_script)
+	{
+		t_script->CollectParameters(1);
+		int target = ScriptParams[0];
+
+		if (*t_script->m_pCurrentIP != END_OF_ARGUMENTS) return false;
+
+		for (const std::unique_ptr<BranchController>& controller : controllers())
+		{
+			if (controller->address() != target) continue;
+			if (!controller->running()) return false;
+
+			++t_script->m_pCurrentIP;
+			return true;
+		}
+		return false;
+	}
+
+	void installHooks()
+	{
+		static bool installed = false;
+		if (installed) return;
+		installed = true;
+
+		ScriptCommandHook::replaceCommand(COMMAND_START_NEW_SCRIPT, &skipDuplicateStart);
+		OutOfOrderGuards::install();
 	}
 }
 
 void BranchControllers::update(const BranchProgress& t_progress)
 {
-	static std::vector<std::unique_ptr<BranchController>> controllers = makeControllers();
+	installHooks();
 
-	for (const std::unique_ptr<BranchController>& controller : controllers)
+	for (const std::unique_ptr<BranchController>& controller : controllers())
 	{
 		EdgeCase* edge = controller->asEdgeCase();
 
@@ -64,4 +108,6 @@ void BranchControllers::update(const BranchProgress& t_progress)
 
 		if (!edge) controller->defaultMarker().raise();
 	}
+
+	OutOfOrderGuards::update();
 }

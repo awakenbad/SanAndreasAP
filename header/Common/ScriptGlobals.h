@@ -35,4 +35,9 @@ namespace ScriptGlobals
 	{
 		return t_byteOffset / 4;
 	}
+
+	inline int readAt(int t_byteOffset)
+	{
+		return read(slotOf(t_byteOffset));
+	}
 }

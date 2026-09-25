@@ -67,6 +67,12 @@
     <Filter Include="Source\Common">
       <UniqueIdentifier>{1e2d3a4f-bc8b-41ae-d364-3f4a5b6c7d8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header\Gameplay\Branches\Helpers">
+      <UniqueIdentifier>{97b4f249-4d67-43dc-a98f-3b5bd1799701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Gameplay\Branches\Helpers">
+      <UniqueIdentifier>{aa70c6c1-e60f-4acf-b57e-73b20aa9f071}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Mod.h">
@@ -216,6 +222,9 @@
     <ClInclude Include="header\Gameplay\Branches\EdgeCases.h">
       <Filter>Header\Gameplay\Branches</Filter>
     </ClInclude>
+    <ClInclude Include="header\Gameplay\Branches\OutOfOrderGuards.h">
+      <Filter>Header\Gameplay\Branches</Filter>
+    </ClInclude>
     <ClInclude Include="header\Gameplay\BranchControllers.h">
       <Filter>Header\Gameplay</Filter>
     </ClInclude>
@@ -341,6 +350,18 @@
     </ClInclude>
     <ClInclude Include="header\Gameplay\ChaosModHandler.h">
       <Filter>Header\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Gameplay\Branches\Helpers\BranchRow.h">
+      <Filter>Header\Gameplay\Branches\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Gameplay\Branches\Helpers\EdgeCase.h">
+      <Filter>Header\Gameplay\Branches\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Gameplay\Branches\Helpers\Marker.h">
+      <Filter>Header\Gameplay\Branches\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Gameplay\Branches\Helpers\ScriptSlice.h">
+      <Filter>Header\Gameplay\Branches\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -473,6 +494,9 @@
     <ClCompile Include="source\Gameplay\Branches\EdgeCases.cpp">
       <Filter>Source\Gameplay\Branches</Filter>
     </ClCompile>
+    <ClCompile Include="source\Gameplay\Branches\OutOfOrderGuards.cpp">
+      <Filter>Source\Gameplay\Branches</Filter>
+    </ClCompile>
     <ClCompile Include="source\Gameplay\BranchControllers.cpp">
       <Filter>Source\Gameplay</Filter>
     </ClCompile>
@@ -568,6 +592,12 @@
     </ClCompile>
     <ClCompile Include="source\Gameplay\ChaosModHandler.cpp">
       <Filter>Source\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Gameplay\Branches\Helpers\Marker.cpp">
+      <Filter>Source\Gameplay\Branches\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Gameplay\Branches\Helpers\ScriptSlice.cpp">
+      <Filter>Source\Gameplay\Branches\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

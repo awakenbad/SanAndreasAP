@@ -1,5 +1,5 @@
 #pragma once
-#include "BranchController.h"
+#include "EdgeCase.h"
 
 // Body Harvest puts King in Exile's market on the spot where badlands is, so it has to be deleted first
 class BcrashController : public EdgeCase
@@ -25,6 +25,7 @@ private:
 	static constexpr int BLIP_HANDLE_OFFSET = 1932;
 
 	Marker firstDate() const;
+	Marker cabin() const;
 	void writeSkippedMissionState() const;
 };
 
@@ -55,4 +56,61 @@ private:
 	static constexpr int CATALINA_ROBBERIES_DONE = 4;
 	static constexpr int FAREWELL_FIRST = 5;
 	static constexpr int FAREWELL_LAST = 7;
+};
+
+class GarageController : public EdgeCase
+{
+public:
+	GarageController();
+
+	void update() override;
+
+private:
+	static constexpr int SCRASH_COUNTER_OFFSET = 2184;
+	static constexpr int SCRASH_FINISHED = 2;
+	static constexpr int SYND_COUNTER_OFFSET = 2180;
+	static constexpr int SYND_FINISHED = 10;
+
+	Marker garage() const;
+};
+
+class WuziController : public EdgeCase
+{
+public:
+	WuziController();
+
+	void update() override;
+};
+
+class TorenoController : public EdgeCase
+{
+public:
+	TorenoController();
+
+	void update() override;
+};
+
+class CasinoController : public EdgeCase
+{
+public:
+	CasinoController();
+
+	void update() override;
+};
+
+class VegasCrashController : public EdgeCase
+{
+public:
+	VegasCrashController();
+
+	void update() override;
+};
+
+// The Meat Business re-adds this blip at its end even when Madd Dogg is already done
+class MaddDoggController : public EdgeCase
+{
+public:
+	MaddDoggController();
+
+	void update() override;
 };

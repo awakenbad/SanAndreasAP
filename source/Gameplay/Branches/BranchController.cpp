@@ -1,81 +1,10 @@
 #include "BranchController.h"
 #include "BranchProgress.h"
 #include "ScriptGlobals.h"
-#include <CRadar.h>
-#include <eScriptCommands.h>
-#include <extensions/ScriptCommands.h>
 
 namespace
 {
 	constexpr int GLOBAL_SIZE = 4;
-	constexpr float TOLERANCE_SQ = 9.0f;
-
-	constexpr bool FOREIGN_SPRITES_ONLY = false;
-	constexpr bool EVERY_SPRITE = true;
-}
-
-bool Marker::stillDrawn() const
-{
-	int handle = ScriptGlobals::read(ScriptGlobals::slotOf(blipHandleOffset));
-	if (handle == 0) return false;
-	if (!handleMayBeStale) return true;
-
-	int index = CRadar::GetActualBlipArrayIndex(handle);
-	return index >= 0 && CRadar::ms_RadarTrace[index].m_bInUse;
-}
-
-void Marker::raise() const
-{
-	if (stillDrawn()) return;
-	if (sprite == 0) return;
-	if (position.x == 0.0f && position.y == 0.0f && position.z == 0.0f) return;
-
-	int handle = 0;
-	plugin::Command<eScriptCommands::COMMAND_ADD_SPRITE_BLIP_FOR_CONTACT_POINT>(
-		position.x, position.y, position.z, sprite, &handle);
-
-	ScriptGlobals::write(ScriptGlobals::slotOf(blipHandleOffset), handle);
-
-	if (blipDisplay != LEAVE_DISPLAY)
-	{
-		plugin::Command<eScriptCommands::COMMAND_CHANGE_BLIP_DISPLAY>(handle, blipDisplay);
-	}
-}
-
-void Marker::clearForeign() const
-{
-	clear(FOREIGN_SPRITES_ONLY);
-}
-
-void Marker::clearAll() const
-{
-	clear(EVERY_SPRITE);
-}
-
-void Marker::clear(bool t_includeOurSprite) const
-{
-	int handleSlot = ScriptGlobals::slotOf(blipHandleOffset);
-
-	for (unsigned int i = 0; i < MAX_RADAR_TRACES; ++i)
-	{
-		const tRadarTrace& trace = CRadar::ms_RadarTrace[i];
-		if (!trace.m_bInUse) continue;
-		if (trace.m_nBlipType != BLIP_CONTACTPOINT) continue;
-		if (!t_includeOurSprite && trace.m_nRadarSprite == sprite) continue;
-
-		float dx = position.x - trace.m_vecPos.x;
-		float dy = position.y - trace.m_vecPos.y;
-		if (dx * dx + dy * dy > TOLERANCE_SQ) continue;
-
-		int blip = CRadar::GetNewUniqueBlipIndex(static_cast<int>(i));
-		if (blip == ScriptGlobals::read(handleSlot)) ScriptGlobals::write(handleSlot, 0);
-		CRadar::ClearBlip(blip);
-	}
-}
-
-int BranchController::readGlobal(int t_byteOffset)
-{
-	return ScriptGlobals::read(ScriptGlobals::slotOf(t_byteOffset));
 }
 
 CVector BranchController::positionAt(int t_byteOffset, int t_strideBytes)
@@ -90,7 +19,7 @@ CVector BranchController::positionAt(int t_byteOffset, int t_strideBytes)
 
 int BranchController::counter() const
 {
-	return readGlobal(m_row.counterOffset);
+	return ScriptGlobals::readAt(m_row.counterOffset);
 }
 
 bool BranchController::finished() const
@@ -104,8 +33,26 @@ bool BranchController::gateOpen(const BranchProgress& t_progress) const
 		|| t_progress.missionCompleted(m_row.requiresMission);
 }
 
+bool BranchController::running() const
+{
+	unsigned char* entry = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace) + m_row.address;
+
+	for (CRunningScript* script = CTheScripts::pActiveScripts; script; script = script->m_pNext)
+	{
+		if (script->m_pCurrentIP == entry) return true;
+		if (_strnicmp(script->m_szName, m_row.scriptName, sizeof(script->m_szName)) == 0) return true;
+	}
+	return false;
+}
+
+bool BranchController::positionsInitialised() const
+{
+	CVector position = positionAt(m_row.positionOffset);
+	return position.x != 0.0f || position.y != 0.0f;
+}
+
 Marker BranchController::defaultMarker() const
 {
-	return { positionAt(m_row.positionOffset), readGlobal(m_row.spriteOffset),
+	return { positionAt(m_row.positionOffset), ScriptGlobals::readAt(m_row.spriteOffset),
 		m_row.blipHandleOffset, m_row.blipDisplay };
 }

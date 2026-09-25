@@ -31,4 +31,19 @@ namespace RunningScripts
 			t_script.ProcessOneCommand();
 		}
 	}
+
+	inline void runSlice(int t_from, int t_to)
+	{
+		int savedParams[32];
+		memcpy(savedParams, ScriptParams, sizeof(savedParams));
+
+		unsigned char* scriptSpace = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace);
+
+		CRunningScript script;
+		script.Init();
+		script.m_pBaseIP = scriptSpace;
+		runScript(script, scriptSpace + t_from, scriptSpace + t_to);
+
+		memcpy(ScriptParams, savedParams, sizeof(savedParams));
+	}
 }
