@@ -225,6 +225,9 @@
     <ClInclude Include="header\Gameplay\Branches\OutOfOrderGuards.h">
       <Filter>Header\Gameplay\Branches</Filter>
     </ClInclude>
+    <ClInclude Include="header\Gameplay\Branches\CrossBranchUnlocks.h">
+      <Filter>Header\Gameplay\Branches</Filter>
+    </ClInclude>
     <ClInclude Include="header\Gameplay\BranchControllers.h">
       <Filter>Header\Gameplay</Filter>
     </ClInclude>
@@ -363,6 +366,9 @@
     <ClInclude Include="header\Gameplay\Branches\Helpers\ScriptSlice.h">
       <Filter>Header\Gameplay\Branches\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="header\Gameplay\Branches\Helpers\PhoneCall.h">
+      <Filter>Header\Gameplay\Branches\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Main.cpp">
@@ -497,6 +503,9 @@
     <ClCompile Include="source\Gameplay\Branches\OutOfOrderGuards.cpp">
       <Filter>Source\Gameplay\Branches</Filter>
     </ClCompile>
+    <ClCompile Include="source\Gameplay\Branches\CrossBranchUnlocks.cpp">
+      <Filter>Source\Gameplay\Branches</Filter>
+    </ClCompile>
     <ClCompile Include="source\Gameplay\BranchControllers.cpp">
       <Filter>Source\Gameplay</Filter>
     </ClCompile>
@@ -597,6 +606,9 @@
       <Filter>Source\Gameplay\Branches\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="source\Gameplay\Branches\Helpers\ScriptSlice.cpp">
+      <Filter>Source\Gameplay\Branches\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Gameplay\Branches\Helpers\PhoneCall.cpp">
       <Filter>Source\Gameplay\Branches\Helpers</Filter>
     </ClCompile>
   </ItemGroup>

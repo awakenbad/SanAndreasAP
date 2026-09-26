@@ -38,8 +38,6 @@ public:
 
 private:
 	static constexpr int SAN_FIERRO_OFFSET = 1988;
-	static constexpr int BCESAR_COUNTER_OFFSET = 1968;
-	static constexpr int BCESAR_FINISHED = 10;
 };
 
 // Wu Zi Mu and Farewell, My Love. One mission script re-entered at five counter stages with two
@@ -52,8 +50,6 @@ public:
 	void update() override;
 
 private:
-	static constexpr int CATALINA_COUNTER_OFFSET = 256;
-	static constexpr int CATALINA_ROBBERIES_DONE = 4;
 	static constexpr int FAREWELL_FIRST = 5;
 	static constexpr int FAREWELL_LAST = 7;
 };

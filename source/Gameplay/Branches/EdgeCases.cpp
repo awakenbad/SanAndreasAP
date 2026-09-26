@@ -1,7 +1,7 @@
 #include "EdgeCases.h"
 #include "ScriptGlobals.h"
-#include "RunningScripts.h"
 #include "ScriptSlice.h"
+#include "PhoneCall.h"
 #include <CRadar.h>
 
 namespace
@@ -17,19 +17,12 @@ namespace
 	constexpr int CASINO_CALLED_OFFSET = 5612;
 	constexpr int WUZI_CALLED_OFFSET = 5604;
 
-	class PhoneCall
-	{
-	public:
-		int offset;
-		int counterAtLeast;
-		const char* phoneScript;
-		ScriptSlice body;
-	};
+	constexpr int DESERT_COUNTER_OFFSET = 2372;
 
 	constexpr PhoneCall TORENO_CALLS[] = {
-		{ 5600, 1, "MOB_SF", { MOB_SF + 1565, MOB_SF + 1593 } },
-		{ 5608, 2, "MOB_SF", { MOB_SF + 1707, MOB_SF + 1736 } },
-		{ 5556, 8, "MOB_VEG", { MOB_VEG + 255, MOB_VEG + 284 } },
+		{ 5600, DESERT_COUNTER_OFFSET, 1, { MOB_SF + 1565, MOB_SF + 1593 } },
+		{ 5608, DESERT_COUNTER_OFFSET, 2, { MOB_SF + 1707, MOB_SF + 1736 } },
+		{ 5556, DESERT_COUNTER_OFFSET, 8, { MOB_VEG + 255, MOB_VEG + 284 } },
 	};
 }
 
@@ -125,12 +118,16 @@ void TruController::update()
 		return;
 	}
 
-	if (finished()) return;
-	if (ScriptGlobals::readAt(BCESAR_COUNTER_OFFSET) < BCESAR_FINISHED) return;
-
 	Marker sanFierro = defaultMarker();
 	sanFierro.position = positionAt(SAN_FIERRO_OFFSET);
 	sanFierro.handleMayBeStale = true;
+
+	if (finished())
+	{
+		sanFierro.clearAll();
+		return;
+	}
+
 	sanFierro.raise();
 }
 
@@ -149,7 +146,6 @@ void BcesarController::update()
 	}
 
 	if (counter() < FAREWELL_FIRST || counter() > FAREWELL_LAST) return;
-	if (ScriptGlobals::readAt(CATALINA_COUNTER_OFFSET) < CATALINA_ROBBERIES_DONE) return;
 
 	Marker farewell = defaultMarker();
 	farewell.position = CVector(-513.9356f, -188.314f, 77.4599f);
@@ -212,11 +208,7 @@ void TorenoController::update()
 
 	for (const PhoneCall& call : TORENO_CALLS)
 	{
-		if (counter() < call.counterAtLeast) continue;
-		if (ScriptGlobals::readAt(call.offset) != 0) continue;
-		if (RunningScripts::isActive(call.phoneScript)) continue;
-
-		call.body.run();
+		call.runIfDue();
 	}
 }
 

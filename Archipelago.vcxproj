@@ -49,6 +49,7 @@
     <ClInclude Include="header\Gameplay\Branches\BranchController.h" />
     <ClInclude Include="header\Gameplay\Branches\EdgeCases.h" />
     <ClInclude Include="header\Gameplay\Branches\OutOfOrderGuards.h" />
+    <ClInclude Include="header\Gameplay\Branches\CrossBranchUnlocks.h" />
     <ClInclude Include="header\Gameplay\Branches\Helpers\BranchRow.h" />
     <ClInclude Include="header\Common\Teleport.h" />
     <ClInclude Include="header\Checks\SubmissionStartBlocked.h" />
@@ -107,12 +108,14 @@
     <ClInclude Include="header\Common\EdgeTriggeredKey.h" />
     <ClInclude Include="header\Checks\Submissions\TrainTracker.h" />
     <ClInclude Include="header\Gameplay\Branches\Helpers\ScriptSlice.h" />
+    <ClInclude Include="header\Gameplay\Branches\Helpers\PhoneCall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Checks\Submissions\TrainTracker.cpp" />
     <ClCompile Include="source\Gameplay\AmmuNationShop.cpp" />
     <ClCompile Include="source\Gameplay\Branches\Helpers\Marker.cpp" />
     <ClCompile Include="source\Gameplay\Branches\Helpers\ScriptSlice.cpp" />
+    <ClCompile Include="source\Gameplay\Branches\Helpers\PhoneCall.cpp" />
     <ClCompile Include="source\Gameplay\ChaosModHandler.cpp" />
     <ClCompile Include="source\Gameplay\WangCarsUnlock.cpp" />
     <ClCompile Include="source\Persistence\AutoSaveManager.cpp" />
@@ -147,6 +150,7 @@
     <ClCompile Include="source\Gameplay\Branches\BranchController.cpp" />
     <ClCompile Include="source\Gameplay\Branches\EdgeCases.cpp" />
     <ClCompile Include="source\Gameplay\Branches\OutOfOrderGuards.cpp" />
+    <ClCompile Include="source\Gameplay\Branches\CrossBranchUnlocks.cpp" />
     <ClCompile Include="source\Common\Teleport.cpp" />
     <ClCompile Include="source\Checks\SubmissionStartBlocked.cpp" />
     <ClCompile Include="source\Checks\Submissions\Lockable.cpp" />

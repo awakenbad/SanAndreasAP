@@ -1,6 +1,7 @@
 #include "BranchControllers.h"
 #include "Branches/EdgeCases.h"
 #include "Branches/OutOfOrderGuards.h"
+#include "Branches/CrossBranchUnlocks.h"
 #include "ScriptCommandHook.h"
 #include "BranchProgress.h"
 #include "CTheScripts.h"
@@ -88,6 +89,7 @@ namespace
 
 		ScriptCommandHook::replaceCommand(COMMAND_START_NEW_SCRIPT, &skipDuplicateStart);
 		OutOfOrderGuards::install();
+		CrossBranchUnlocks::install();
 	}
 }
 
@@ -109,5 +111,6 @@ void BranchControllers::update(const BranchProgress& t_progress)
 		if (!edge) controller->defaultMarker().raise();
 	}
 
+	CrossBranchUnlocks::update();
 	OutOfOrderGuards::update();
 }
