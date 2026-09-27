@@ -110,3 +110,42 @@ public:
 
 	void update() override;
 };
+
+class MansionController : public EdgeCase
+{
+public:
+	MansionController();
+
+	void update() override;
+
+private:
+	static constexpr int CASINO_COUNTER_OFFSET = 2388;
+	static constexpr int FISH_IN_A_BARREL_DONE = 7;
+	static constexpr int FOUR_DRAGONS_OFFSET = 2428;
+	static constexpr int FOUR_DRAGONS_SPRITE_OFFSET = 2352;
+	static constexpr int MANSION_CALLED_OFFSET = 5408;
+};
+
+class GroveController : public EdgeCase
+{
+public:
+	GroveController();
+
+	void update() override;
+
+private:
+	static constexpr int INT_COUNTER_OFFSET = 1792;
+};
+
+class RiotController : public EdgeCase
+{
+public:
+	RiotController();
+
+	void update() override;
+
+private:
+	static constexpr int FLOW_DISPATCHED_OFFSET = 232;
+	static constexpr int MANSION_COUNTER_OFFSET = 2504;
+	static constexpr int MANSION_FINISHED = 4;
+};

@@ -2,6 +2,8 @@
 #include "Branches/EdgeCases.h"
 #include "Branches/OutOfOrderGuards.h"
 #include "Branches/CrossBranchUnlocks.h"
+#include "Branches/SharedSpots.h"
+#include "Branches/EndOfTheLine.h"
 #include "ScriptCommandHook.h"
 #include "BranchProgress.h"
 #include "CTheScripts.h"
@@ -43,6 +45,9 @@ namespace
 		controllers.push_back(std::make_unique<CasinoController>());
 		controllers.push_back(std::make_unique<VegasCrashController>());
 		controllers.push_back(std::make_unique<MaddDoggController>());
+		controllers.push_back(std::make_unique<MansionController>());
+		controllers.push_back(std::make_unique<GroveController>());
+		controllers.push_back(std::make_unique<RiotController>());
 
 		return controllers;
 	}
@@ -81,7 +86,7 @@ namespace
 		return false;
 	}
 
-	void installHooks()
+	void installHooks(const BranchProgress& t_progress)
 	{
 		static bool installed = false;
 		if (installed) return;
@@ -90,12 +95,14 @@ namespace
 		ScriptCommandHook::replaceCommand(COMMAND_START_NEW_SCRIPT, &skipDuplicateStart);
 		OutOfOrderGuards::install();
 		CrossBranchUnlocks::install();
+		SharedSpots::install();
+		EndOfTheLine::install(t_progress);
 	}
 }
 
 void BranchControllers::update(const BranchProgress& t_progress)
 {
-	installHooks();
+	installHooks(t_progress);
 
 	for (const std::unique_ptr<BranchController>& controller : controllers())
 	{
@@ -112,5 +119,6 @@ void BranchControllers::update(const BranchProgress& t_progress)
 	}
 
 	CrossBranchUnlocks::update();
+	EndOfTheLine::update();
 	OutOfOrderGuards::update();
 }

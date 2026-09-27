@@ -52,6 +52,11 @@ bool BranchProgress::missionCompleted(int t_missionId) const
 	return m_completedMissions.count(t_missionId) != 0;
 }
 
+int BranchProgress::completedMissionCount() const
+{
+	return static_cast<int>(m_completedMissions.size());
+}
+
 int BranchProgress::completed(const std::string& t_branch) const
 {
 	auto completed = m_completed.find(t_branch);

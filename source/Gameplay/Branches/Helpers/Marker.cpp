@@ -10,8 +10,25 @@ namespace
 	constexpr float TOLERANCE_SQ = 9.0f;
 }
 
+bool Marker::isDrawnHere() const
+{
+	for (unsigned int i = 0; i < MAX_RADAR_TRACES; ++i)
+	{
+		const tRadarTrace& trace = CRadar::ms_RadarTrace[i];
+		if (!trace.m_bInUse) continue;
+		if (trace.m_nBlipType != BLIP_CONTACTPOINT) continue;
+
+		float dx = position.x - trace.m_vecPos.x;
+		float dy = position.y - trace.m_vecPos.y;
+		if (dx * dx + dy * dy <= TOLERANCE_SQ) return true;
+	}
+	return false;
+}
+
 bool Marker::stillDrawn() const
 {
+	if (blipHandleOffset == NO_HANDLE_GLOBAL) return isDrawnHere();
+
 	int handle = ScriptGlobals::readAt(blipHandleOffset);
 	if (handle == 0) return false;
 	if (!handleMayBeStale) return true;
@@ -30,7 +47,10 @@ void Marker::raise() const
 	plugin::Command<eScriptCommands::COMMAND_ADD_SPRITE_BLIP_FOR_CONTACT_POINT>(
 		position.x, position.y, position.z, sprite, &handle);
 
-	ScriptGlobals::write(ScriptGlobals::slotOf(blipHandleOffset), handle);
+	if (blipHandleOffset != NO_HANDLE_GLOBAL)
+	{
+		ScriptGlobals::write(ScriptGlobals::slotOf(blipHandleOffset), handle);
+	}
 
 	if (blipDisplay != LEAVE_DISPLAY)
 	{
@@ -64,7 +84,10 @@ void Marker::clear(bool t_includeOurSprite) const
 		if (dx * dx + dy * dy > TOLERANCE_SQ) continue;
 
 		int blip = CRadar::GetNewUniqueBlipIndex(static_cast<int>(i));
-		if (blip == ScriptGlobals::read(handleSlot)) ScriptGlobals::write(handleSlot, 0);
+		if (blipHandleOffset != NO_HANDLE_GLOBAL && blip == ScriptGlobals::read(handleSlot))
+		{
+			ScriptGlobals::write(handleSlot, 0);
+		}
 		CRadar::ClearBlip(blip);
 	}
 }

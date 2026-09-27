@@ -50,6 +50,8 @@
     <ClInclude Include="header\Gameplay\Branches\EdgeCases.h" />
     <ClInclude Include="header\Gameplay\Branches\OutOfOrderGuards.h" />
     <ClInclude Include="header\Gameplay\Branches\CrossBranchUnlocks.h" />
+    <ClInclude Include="header\Gameplay\Branches\SharedSpots.h" />
+    <ClInclude Include="header\Gameplay\Branches\EndOfTheLine.h" />
     <ClInclude Include="header\Gameplay\Branches\Helpers\BranchRow.h" />
     <ClInclude Include="header\Common\Teleport.h" />
     <ClInclude Include="header\Checks\SubmissionStartBlocked.h" />
@@ -151,6 +153,8 @@
     <ClCompile Include="source\Gameplay\Branches\EdgeCases.cpp" />
     <ClCompile Include="source\Gameplay\Branches\OutOfOrderGuards.cpp" />
     <ClCompile Include="source\Gameplay\Branches\CrossBranchUnlocks.cpp" />
+    <ClCompile Include="source\Gameplay\Branches\SharedSpots.cpp" />
+    <ClCompile Include="source\Gameplay\Branches\EndOfTheLine.cpp" />
     <ClCompile Include="source\Common\Teleport.cpp" />
     <ClCompile Include="source\Checks\SubmissionStartBlocked.cpp" />
     <ClCompile Include="source\Checks\Submissions\Lockable.cpp" />

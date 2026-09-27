@@ -228,6 +228,12 @@
     <ClInclude Include="header\Gameplay\Branches\CrossBranchUnlocks.h">
       <Filter>Header\Gameplay\Branches</Filter>
     </ClInclude>
+    <ClInclude Include="header\Gameplay\Branches\SharedSpots.h">
+      <Filter>Header\Gameplay\Branches</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Gameplay\Branches\EndOfTheLine.h">
+      <Filter>Header\Gameplay\Branches</Filter>
+    </ClInclude>
     <ClInclude Include="header\Gameplay\BranchControllers.h">
       <Filter>Header\Gameplay</Filter>
     </ClInclude>
@@ -504,6 +510,12 @@
       <Filter>Source\Gameplay\Branches</Filter>
     </ClCompile>
     <ClCompile Include="source\Gameplay\Branches\CrossBranchUnlocks.cpp">
+      <Filter>Source\Gameplay\Branches</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Gameplay\Branches\SharedSpots.cpp">
+      <Filter>Source\Gameplay\Branches</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Gameplay\Branches\EndOfTheLine.cpp">
       <Filter>Source\Gameplay\Branches</Filter>
     </ClCompile>
     <ClCompile Include="source\Gameplay\BranchControllers.cpp">

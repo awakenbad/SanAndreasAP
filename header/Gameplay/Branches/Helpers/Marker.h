@@ -8,6 +8,9 @@ public:
 	static constexpr int LEAVE_DISPLAY = -1;
 	static constexpr int BLIP_ONLY = 2;
 
+	// A marker the mod owns completely.
+	static constexpr int NO_HANDLE_GLOBAL = 0;
+
 	CVector position;
 	int sprite = 0;
 	int blipHandleOffset = 0;
@@ -23,5 +26,6 @@ public:
 private:
 	void clear(bool t_includeOurSprite) const;
 	bool stillDrawn() const;
+	bool isDrawnHere() const;
 };
 

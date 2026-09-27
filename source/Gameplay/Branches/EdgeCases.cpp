@@ -258,3 +258,73 @@ void MaddDoggController::update()
 
 	defaultMarker().raise();
 }
+
+MansionController::MansionController()
+	: EdgeCase({ "MANSION", 73661, 2504, 4, 2532, 2496, 2488,
+		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+{
+}
+
+void MansionController::update()
+{
+	int calledSlot = ScriptGlobals::slotOf(MANSION_CALLED_OFFSET);
+	if (ScriptGlobals::read(calledSlot) == 0) ScriptGlobals::write(calledSlot, 1);
+
+	Marker fourDragons{ positionAt(FOUR_DRAGONS_OFFSET), ScriptGlobals::readAt(FOUR_DRAGONS_SPRITE_OFFSET),
+		Marker::NO_HANDLE_GLOBAL, Marker::LEAVE_DISPLAY };
+
+	if (counter() == 0)
+	{
+		if (ScriptGlobals::readAt(CASINO_COUNTER_OFFSET) >= FISH_IN_A_BARREL_DONE) fourDragons.raise();
+		return;
+	}
+
+	fourDragons.clearAll();
+
+	if (finished()) return;
+
+	Marker mansion = defaultMarker();
+	mansion.handleMayBeStale = true;
+	mansion.raise();
+}
+
+GroveController::GroveController()
+	: EdgeCase({ "GROVE", 74046, 2508, 2, 1836, 0, 2492,
+		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+{
+}
+
+void GroveController::update()
+{
+	if (counter() != 0) return;
+	if (ScriptGlobals::readAt(INT_COUNTER_OFFSET) == 0) return;
+
+	Marker house{ positionAt(m_row.positionOffset), RADAR_SPRITE_SWEET,
+		m_row.blipHandleOffset, Marker::LEAVE_DISPLAY, true };
+	house.raise();
+}
+
+RiotController::RiotController()
+	: EdgeCase({ "RIOT", 74327, 2516, 5, 2532, 2496, 2488,
+		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+{
+}
+
+void RiotController::update()
+{
+	int flowSlot = ScriptGlobals::slotOf(FLOW_DISPATCHED_OFFSET);
+	if (ScriptGlobals::read(flowSlot) == 0) ScriptGlobals::write(flowSlot, 1);
+
+	if (ScriptGlobals::readAt(MANSION_COUNTER_OFFSET) < MANSION_FINISHED) return;
+
+	Marker mansion = defaultMarker();
+	mansion.handleMayBeStale = true;
+
+	if (counter() == 0)
+	{
+		mansion.raise();
+		return;
+	}
+
+	mansion.clearAll();
+}
