@@ -9,7 +9,7 @@ class EdgeCase;
 class BranchController
 {
 public:
-	static constexpr int NO_PREREQUISITE = 0;
+	static constexpr int FIRST_IN_BRANCH = 0;
 
 	explicit BranchController(const BranchRow& t_row) : m_row(t_row) {}
 	virtual ~BranchController() = default;

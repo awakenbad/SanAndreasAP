@@ -111,6 +111,7 @@
     <ClInclude Include="header\Checks\Submissions\TrainTracker.h" />
     <ClInclude Include="header\Gameplay\Branches\Helpers\ScriptSlice.h" />
     <ClInclude Include="header\Gameplay\Branches\Helpers\PhoneCall.h" />
+    <ClInclude Include="header\Gameplay\Branches\Helpers\HeldCheck.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Checks\Submissions\TrainTracker.cpp" />

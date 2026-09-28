@@ -15,15 +15,15 @@ namespace
 {
 	constexpr int LEAVE = Marker::LEAVE_DISPLAY;
 	constexpr int BLIP_ONLY = Marker::BLIP_ONLY;
-	constexpr int NONE = BranchController::NO_PREREQUISITE;
+	constexpr int FIRST = BranchController::FIRST_IN_BRANCH;
 
 	constexpr BranchRow LINEAR_BRANCHES[] = {
-		{ "SWEET", 62090, 1808, 9, 1848, 1768, 1740, LEAVE, NONE },
-		{ "RYDER", 63143, 1812, 3, 1860, 1772, 1744, LEAVE, 12 },
-		{ "SMOKE", 63492, 1816, 4, 1872, 1780, 1736, LEAVE, NONE },
-		{ "STRAP", 63835, 1820, 5, 1884, 1784, 1748, LEAVE, NONE },
-		{ "CRASH", 62904, 1824, 2, 1908, 1776, 1752, LEAVE, NONE },
-		{ "CESAR", 64462, 1828, 1, 1920, 1788, 1760, BLIP_ONLY, NONE },
+		{ "SWEET", 62090, 1808, 9, 1848, 1768, 1740, LEAVE, "Sweet", FIRST, 0 },
+		{ "RYDER", 63143, 1812, 3, 1860, 1772, 1744, LEAVE, "Ryder", 1792, 2 },
+		{ "SMOKE", 63492, 1816, 4, 1872, 1780, 1736, LEAVE, "Big Smoke", FIRST, 0 },
+		{ "STRAP", 63835, 1820, 5, 1884, 1784, 1748, LEAVE, "OG Loc", FIRST, 0 },
+		{ "CRASH", 62904, 1824, 2, 1908, 1776, 1752, LEAVE, "C.R.A.S.H.", FIRST, 0 },
+		{ "CESAR", 64462, 1828, 1, 1920, 1788, 1760, BLIP_ONLY, "Cesar", FIRST, 0 },
 	};
 
 	std::vector<std::unique_ptr<BranchController>> makeControllers()
@@ -68,6 +68,8 @@ namespace
 
 	constexpr unsigned char END_OF_ARGUMENTS = 0;
 
+	const BranchProgress* g_progress = nullptr;
+
 	bool skipDuplicateStart(CRunningScript* t_script)
 	{
 		t_script->CollectParameters(1);
@@ -78,7 +80,7 @@ namespace
 		for (const std::unique_ptr<BranchController>& controller : controllers())
 		{
 			if (controller->address() != target) continue;
-			if (!controller->running()) return false;
+			if (controller->gateOpen(*g_progress) && !controller->running()) return false;
 
 			++t_script->m_pCurrentIP;
 			return true;
@@ -91,6 +93,7 @@ namespace
 		static bool installed = false;
 		if (installed) return;
 		installed = true;
+		g_progress = &t_progress;
 
 		ScriptCommandHook::replaceCommand(COMMAND_START_NEW_SCRIPT, &skipDuplicateStart);
 		OutOfOrderGuards::install();
@@ -106,12 +109,13 @@ void BranchControllers::update(const BranchProgress& t_progress)
 
 	for (const std::unique_ptr<BranchController>& controller : controllers())
 	{
+		if (!controller->gateOpen(t_progress)) continue;
+
 		EdgeCase* edge = controller->asEdgeCase();
 
 		if (edge) edge->update();
 
 		if (controller->finished()) continue;
-		if (!controller->gateOpen(t_progress)) continue;
 
 		startScriptIfNeeded(*controller);
 

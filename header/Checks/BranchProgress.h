@@ -14,6 +14,7 @@ public:
 	void completeMission(const std::string& t_branch, int t_missionId);
 	bool isBlocked(const std::string& t_branch) const;
 	int pending(const std::string& t_branch) const;
+	int received(const std::string& t_branch) const;
 	bool missionCompleted(int t_missionId) const;
 	int completedMissionCount() const;
 	int completed(const std::string& t_branch) const;

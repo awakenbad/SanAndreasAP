@@ -11,5 +11,7 @@ public:
 	int spriteOffset;
 	int blipHandleOffset;
 	int blipDisplay;
-	int requiresMission;
+	const char* branch;
+	int previousCounterOffset;
+	int previousFinishedAt;
 };

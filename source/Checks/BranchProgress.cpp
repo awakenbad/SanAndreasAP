@@ -40,11 +40,15 @@ int BranchProgress::pending(const std::string& t_branch) const
 {
 	if (t_branch.empty()) return 0;
 
-	auto received = m_received.find(t_branch);
 	auto completed = m_completed.find(t_branch);
-	int receivedCount = received == m_received.end() ? 0 : received->second;
 	int completedCount = completed == m_completed.end() ? 0 : completed->second;
-	return receivedCount - completedCount;
+	return received(t_branch) - completedCount;
+}
+
+int BranchProgress::received(const std::string& t_branch) const
+{
+	auto received = m_received.find(t_branch);
+	return received == m_received.end() ? 0 : received->second;
 }
 
 bool BranchProgress::missionCompleted(int t_missionId) const

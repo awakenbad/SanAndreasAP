@@ -1,7 +1,7 @@
 #include "SharedSpots.h"
 #include "ScriptCommandHook.h"
 #include "ScriptGlobals.h"
-#include "RunningScripts.h"
+#include "HeldCheck.h"
 #include <eScriptCommands.h>
 
 namespace
@@ -74,14 +74,7 @@ namespace
 			|| ScriptGlobals::readAt(RIOT_COUNTER_OFFSET) >= END_OF_THE_LINE_STAGE;
 	}
 
-	class HeldLocate
-	{
-	public:
-		int instruction;
-		bool (*held)();
-	};
-
-	constexpr HeldLocate HELD_LOCATES[] = {
+	constexpr HeldCheck HELD_LOCATES[] = {
 		{ 73661 + 90, &fourDragonsTaken },
 		{ 74046 + 90, &johnsonHouseTaken },
 		{ 74046 + 184, &sweetsHouseTaken },
@@ -91,11 +84,8 @@ namespace
 
 	bool holdLaterScript(CRunningScript* t_script)
 	{
-		for (const HeldLocate& locate : HELD_LOCATES)
-		{
-			if (RunningScripts::isAtInstruction(t_script, locate.instruction)) return locate.held();
-		}
-		return false;
+		const HeldCheck* locate = heldCheckAt(t_script, HELD_LOCATES);
+		return locate && locate->condition();
 	}
 }
 

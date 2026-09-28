@@ -375,6 +375,9 @@
     <ClInclude Include="header\Gameplay\Branches\Helpers\PhoneCall.h">
       <Filter>Header\Gameplay\Branches\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="header\Gameplay\Branches\Helpers\HeldCheck.h">
+      <Filter>Header\Gameplay\Branches\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Main.cpp">

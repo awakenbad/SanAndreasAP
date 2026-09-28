@@ -28,7 +28,7 @@ namespace
 
 BcrashController::BcrashController()
 	: EdgeCase({ "BCRASH", 65160, 1972, 1, 1976, 1776, 1936,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "C.R.A.S.H.", 1824, 2 })
 {
 }
 
@@ -49,7 +49,7 @@ void BcrashController::update()
 
 CatController::CatController()
 	: EdgeCase({ "CAT", 65347, 256, 4, 0, 0, BLIP_HANDLE_OFFSET,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "Catalina", FIRST_IN_BRANCH, 0 })
 {
 }
 
@@ -106,7 +106,7 @@ void CatController::writeSkippedMissionState() const
 
 TruController::TruController()
 	: EdgeCase({ "TRU", 66412, 1964, 2, 2000, 1952, 1944,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "The Truth", FIRST_IN_BRANCH, 0 })
 {
 }
 
@@ -133,7 +133,7 @@ void TruController::update()
 
 BcesarController::BcesarController()
 	: EdgeCase({ "BCESAR", 66700, 1968, 10, 2012, 1788, 1940,
-		Marker::BLIP_ONLY, NO_PREREQUISITE })
+		Marker::BLIP_ONLY, "Cesar", 1828, 1 })
 {
 }
 
@@ -156,7 +156,7 @@ void BcesarController::update()
 
 GarageController::GarageController()
 	: EdgeCase({ "GARAGE", 67587, 2164, 2, 2188, 0, 2132,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "Garage", FIRST_IN_BRANCH, 0 })
 {
 }
 
@@ -182,7 +182,7 @@ void GarageController::update()
 
 WuziController::WuziController()
 	: EdgeCase({ "WUZI", 68090, 2172, 5, 2212, 2136, 2096,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "Woozie", FIRST_IN_BRANCH, 0 })
 {
 }
 
@@ -196,7 +196,7 @@ void WuziController::update()
 
 TorenoController::TorenoController()
 	: EdgeCase({ "DESERT", 70939, 2372, 9, 2404, 2344, 2320,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "Toreno", FIRST_IN_BRANCH, 0 })
 {
 }
 
@@ -214,7 +214,7 @@ void TorenoController::update()
 
 CasinoController::CasinoController()
 	: EdgeCase({ "CASINO", 71913, 2388, 9, 2428, 2352, 2328,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "Four Dragons Casino", FIRST_IN_BRANCH, 0 })
 {
 }
 
@@ -227,7 +227,7 @@ void CasinoController::update()
 
 VegasCrashController::VegasCrashController()
 	: EdgeCase({ "VCRASH", 72627, 2392, 2, 2452, 1776, 2332,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "C.R.A.S.H.", 2184, 2 })
 {
 }
 
@@ -244,7 +244,7 @@ void VegasCrashController::update()
 
 MaddDoggController::MaddDoggController()
 	: EdgeCase({ "DOC", 72921, 2396, 1, 2464, 2356, 2336,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "Madd Dogg", FIRST_IN_BRANCH, 0 })
 {
 }
 
@@ -261,7 +261,7 @@ void MaddDoggController::update()
 
 MansionController::MansionController()
 	: EdgeCase({ "MANSION", 73661, 2504, 4, 2532, 2496, 2488,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "Four Dragons Casino", 2388, 7 })
 {
 }
 
@@ -290,7 +290,7 @@ void MansionController::update()
 
 GroveController::GroveController()
 	: EdgeCase({ "GROVE", 74046, 2508, 2, 1836, 0, 2492,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "Sweet", 1832, 2 })
 {
 }
 
@@ -306,7 +306,7 @@ void GroveController::update()
 
 RiotController::RiotController()
 	: EdgeCase({ "RIOT", 74327, 2516, 5, 2532, 2496, 2488,
-		Marker::LEAVE_DISPLAY, NO_PREREQUISITE })
+		Marker::LEAVE_DISPLAY, "Sweet", 2508, 2 })
 {
 }
 

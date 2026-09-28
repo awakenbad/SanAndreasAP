@@ -29,8 +29,9 @@ bool BranchController::finished() const
 
 bool BranchController::gateOpen(const BranchProgress& t_progress) const
 {
-	return m_row.requiresMission == NO_PREREQUISITE
-		|| t_progress.missionCompleted(m_row.requiresMission);
+	if (m_row.previousCounterOffset == FIRST_IN_BRANCH) return t_progress.received(m_row.branch) > 0;
+
+	return ScriptGlobals::readAt(m_row.previousCounterOffset) >= m_row.previousFinishedAt;
 }
 
 bool BranchController::running() const
