@@ -47,6 +47,11 @@ void BcrashController::update()
 	trailer.raise();
 }
 
+void BcrashController::whileClosed()
+{
+	defaultMarker().remove();
+}
+
 CatController::CatController()
 	: EdgeCase({ "CAT", 65347, 256, 4, 0, 0, BLIP_HANDLE_OFFSET,
 		Marker::LEAVE_DISPLAY, "Catalina", FIRST_IN_BRANCH, 0 })
@@ -110,13 +115,6 @@ TruController::TruController()
 {
 }
 
-void TruController::clearKingInExile() const
-{
-	Marker trailer{ positionAt(TRAILER_OFFSET), ScriptGlobals::readAt(CRASH_SPRITE_OFFSET),
-		TRAILER_HANDLE_OFFSET, Marker::LEAVE_DISPLAY, true };
-	trailer.clearForeign();
-}
-
 void TruController::update()
 {
 	if (counter() == 0)
@@ -124,8 +122,6 @@ void TruController::update()
 		defaultMarker().raise();
 		return;
 	}
-
-	clearKingInExile();
 
 	Marker sanFierro = defaultMarker();
 	sanFierro.position = positionAt(SAN_FIERRO_OFFSET);
@@ -264,6 +260,11 @@ void VegasCrashController::update()
 	defaultMarker().clearAll();
 }
 
+void VegasCrashController::whileClosed()
+{
+	defaultMarker().remove();
+}
+
 MaddDoggController::MaddDoggController()
 	: EdgeCase({ "DOC", 72921, 2396, 1, 2464, 2356, 2336,
 		Marker::LEAVE_DISPLAY, "Madd Dogg", FIRST_IN_BRANCH, 0 })
@@ -324,6 +325,11 @@ void GroveController::update()
 	Marker house{ positionAt(m_row.positionOffset), RADAR_SPRITE_SWEET,
 		m_row.blipHandleOffset, Marker::LEAVE_DISPLAY, true };
 	house.raise();
+}
+
+void GroveController::whileClosed()
+{
+	defaultMarker().remove();
 }
 
 RiotController::RiotController()

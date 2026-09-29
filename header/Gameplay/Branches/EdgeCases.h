@@ -8,6 +8,7 @@ public:
 	BcrashController();
 
 	void update() override;
+	void whileClosed() override;
 };
 
 class CatController : public EdgeCase
@@ -38,11 +39,6 @@ public:
 
 private:
 	static constexpr int SAN_FIERRO_OFFSET = 1988;
-	static constexpr int TRAILER_OFFSET = 1976;
-	static constexpr int CRASH_SPRITE_OFFSET = 1776;
-	static constexpr int TRAILER_HANDLE_OFFSET = 1936;
-
-	void clearKingInExile() const;
 };
 
 // Wu Zi Mu and Farewell, My Love. One mission script re-entered at five counter stages with two
@@ -111,6 +107,7 @@ public:
 	VegasCrashController();
 
 	void update() override;
+	void whileClosed() override;
 };
 
 // The Meat Business re-adds this blip at its end even when Madd Dogg is already done
@@ -143,6 +140,7 @@ public:
 	GroveController();
 
 	void update() override;
+	void whileClosed() override;
 
 private:
 	static constexpr int INT_COUNTER_OFFSET = 1792;

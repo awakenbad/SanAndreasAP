@@ -10,4 +10,5 @@ public:
 	EdgeCase* asEdgeCase() override { return this; }
 
 	virtual void update() = 0;
+	virtual void whileClosed() {}
 };

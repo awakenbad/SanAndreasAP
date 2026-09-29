@@ -123,9 +123,13 @@ void BranchControllers::update(const BranchProgress& t_progress)
 
 	for (const std::unique_ptr<BranchController>& controller : controllers())
 	{
-		if (!controller->gateOpen(t_progress)) continue;
-
 		EdgeCase* edge = controller->asEdgeCase();
+
+		if (!controller->gateOpen(t_progress))
+		{
+			if (edge) edge->whileClosed();
+			continue;
+		}
 
 		if (edge) edge->update();
 

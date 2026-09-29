@@ -22,6 +22,7 @@ public:
 	void raise() const;
 	void clearForeign() const;
 	void clearAll() const;
+	void remove() const;
 
 private:
 	void clear(bool t_includeOurSprite) const;

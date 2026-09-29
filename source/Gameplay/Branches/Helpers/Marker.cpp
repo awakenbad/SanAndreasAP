@@ -58,6 +58,19 @@ void Marker::raise() const
 	}
 }
 
+void Marker::remove() const
+{
+	if (blipHandleOffset == NO_HANDLE_GLOBAL) return;
+
+	int handleSlot = ScriptGlobals::slotOf(blipHandleOffset);
+	int handle = ScriptGlobals::read(handleSlot);
+	if (handle == 0) return;
+
+	int index = CRadar::GetActualBlipArrayIndex(handle);
+	if (index >= 0 && CRadar::ms_RadarTrace[index].m_bInUse) CRadar::ClearBlip(handle);
+	ScriptGlobals::write(handleSlot, 0);
+}
+
 void Marker::clearForeign() const
 {
 	clear(FOREIGN_SPRITES_ONLY);
