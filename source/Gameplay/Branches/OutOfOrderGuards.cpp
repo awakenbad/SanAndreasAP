@@ -1,6 +1,5 @@
 #include "OutOfOrderGuards.h"
 #include "ScriptCommandHook.h"
-#include "BranchControllers.h"
 #include "ScriptGlobals.h"
 #include "RunningScripts.h"
 #include <CStats.h>
@@ -24,8 +23,6 @@ namespace
 
 	bool keepCitiesPassedFromDropping(CRunningScript* t_script)
 	{
-		if (!BranchControllers::enabled()) return false;
-
 		t_script->CollectParameters(2);
 		if (ScriptParams[0] != STAT_CITY_UNLOCKED) return false;
 
@@ -35,16 +32,12 @@ namespace
 
 	bool holdMobLa1UntilGreenSabre(CRunningScript* t_script)
 	{
-		if (!BranchControllers::enabled()) return false;
-
 		if (!RunningScripts::isAtInstruction(t_script, MOB_LA1_CITIES_CHECK)) return false;
 		return ScriptGlobals::readAt(GREEN_SABRE_COUNTER_OFFSET) < GREEN_SABRE_FINISHED;
 	}
 
 	bool holdOpenUpUntilEveryCityOpened(CRunningScript* t_script)
 	{
-		if (!BranchControllers::enabled()) return false;
-
 		if (!RunningScripts::isAtInstruction(t_script, OPENUP_LAST_CITY_CHECK)) return false;
 
 		for (int latch : OPENUP_CITY_LATCHES)
