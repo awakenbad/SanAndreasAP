@@ -110,6 +110,13 @@ TruController::TruController()
 {
 }
 
+void TruController::clearKingInExile() const
+{
+	Marker trailer{ positionAt(TRAILER_OFFSET), ScriptGlobals::readAt(CRASH_SPRITE_OFFSET),
+		TRAILER_HANDLE_OFFSET, Marker::LEAVE_DISPLAY, true };
+	trailer.clearForeign();
+}
+
 void TruController::update()
 {
 	if (counter() == 0)
@@ -117,6 +124,8 @@ void TruController::update()
 		defaultMarker().raise();
 		return;
 	}
+
+	clearKingInExile();
 
 	Marker sanFierro = defaultMarker();
 	sanFierro.position = positionAt(SAN_FIERRO_OFFSET);
@@ -166,11 +175,24 @@ Marker GarageController::garage() const
 		m_row.blipHandleOffset, Marker::LEAVE_DISPLAY };
 }
 
+bool GarageController::nothingOfferedAfterOutrider() const
+{
+	return ScriptGlobals::readAt(SYND_COUNTER_OFFSET) == OUTRIDER_DONE
+		&& ScriptGlobals::readAt(SCRASH_COUNTER_OFFSET) == SNAIL_TRAIL_STAGE
+		&& ScriptGlobals::readAt(BCRASH_COUNTER_OFFSET) < BADLANDS_DONE;
+}
+
 void GarageController::update()
 {
 	if (!finished())
 	{
 		garage().raise();
+		return;
+	}
+
+	if (nothingOfferedAfterOutrider())
+	{
+		garage().clearAll();
 		return;
 	}
 
@@ -312,9 +334,6 @@ RiotController::RiotController()
 
 void RiotController::update()
 {
-	int flowSlot = ScriptGlobals::slotOf(FLOW_DISPATCHED_OFFSET);
-	if (ScriptGlobals::read(flowSlot) == 0) ScriptGlobals::write(flowSlot, 1);
-
 	if (ScriptGlobals::readAt(MANSION_COUNTER_OFFSET) < MANSION_FINISHED) return;
 
 	Marker mansion = defaultMarker();

@@ -38,6 +38,11 @@ public:
 
 private:
 	static constexpr int SAN_FIERRO_OFFSET = 1988;
+	static constexpr int TRAILER_OFFSET = 1976;
+	static constexpr int CRASH_SPRITE_OFFSET = 1776;
+	static constexpr int TRAILER_HANDLE_OFFSET = 1936;
+
+	void clearKingInExile() const;
 };
 
 // Wu Zi Mu and Farewell, My Love. One mission script re-entered at five counter stages with two
@@ -66,8 +71,14 @@ private:
 	static constexpr int SCRASH_FINISHED = 2;
 	static constexpr int SYND_COUNTER_OFFSET = 2180;
 	static constexpr int SYND_FINISHED = 10;
+	static constexpr int SNAIL_TRAIL_STAGE = 1;
+	static constexpr int OUTRIDER_DONE = 6;
+	static constexpr int BCRASH_COUNTER_OFFSET = 1972;
+	static constexpr int BADLANDS_DONE = 1;
 
 	Marker garage() const;
+	// Outrider's Triads blip outlives it while Snail Trail waits for Badlands
+	bool nothingOfferedAfterOutrider() const;
 };
 
 class WuziController : public EdgeCase
@@ -145,7 +156,6 @@ public:
 	void update() override;
 
 private:
-	static constexpr int FLOW_DISPATCHED_OFFSET = 232;
 	static constexpr int MANSION_COUNTER_OFFSET = 2504;
 	static constexpr int MANSION_FINISHED = 4;
 };

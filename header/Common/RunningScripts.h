@@ -15,6 +15,18 @@ namespace RunningScripts
 		return false;
 	}
 
+	inline bool isRunningOrStarting(const char* t_scriptName, int t_address)
+	{
+		unsigned char* entry = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace) + t_address;
+
+		for (CRunningScript* script = CTheScripts::pActiveScripts; script; script = script->m_pNext)
+		{
+			if (script->m_pCurrentIP == entry) return true;
+			if (_strnicmp(script->m_szName, t_scriptName, sizeof(script->m_szName)) == 0) return true;
+		}
+		return false;
+	}
+
 	inline bool isAtInstruction(CRunningScript* t_script, int t_offset)
 	{
 		unsigned char* instruction = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace)

@@ -1,5 +1,6 @@
 #include "CrossBranchUnlocks.h"
 #include "ScriptCommandHook.h"
+#include "BranchControllers.h"
 #include "PhoneCall.h"
 #include "HeldCheck.h"
 #include "ScriptGlobals.h"
@@ -44,6 +45,8 @@ namespace
 
 	bool replaceCheck(CRunningScript* t_script)
 	{
+		if (!BranchControllers::enabled()) return false;
+
 		const HeldCheck* check = heldCheckAt(t_script, REPLACED_CHECKS);
 		if (!check) return false;
 

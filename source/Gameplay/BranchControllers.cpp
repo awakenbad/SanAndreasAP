@@ -13,6 +13,8 @@
 
 namespace
 {
+	bool g_enabled = false;
+
 	constexpr int LEAVE = Marker::LEAVE_DISPLAY;
 	constexpr int BLIP_ONLY = Marker::BLIP_ONLY;
 	constexpr int FIRST = BranchController::FIRST_IN_BRANCH;
@@ -72,6 +74,8 @@ namespace
 
 	bool skipDuplicateStart(CRunningScript* t_script)
 	{
+		if (!g_enabled) return false;
+
 		t_script->CollectParameters(1);
 		int target = ScriptParams[0];
 
@@ -101,6 +105,16 @@ namespace
 		SharedSpots::install();
 		EndOfTheLine::install(t_progress);
 	}
+}
+
+void BranchControllers::setEnabled(bool t_enabled)
+{
+	g_enabled = t_enabled;
+}
+
+bool BranchControllers::enabled()
+{
+	return g_enabled;
 }
 
 void BranchControllers::update(const BranchProgress& t_progress)

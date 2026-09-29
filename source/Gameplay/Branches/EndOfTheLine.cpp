@@ -3,6 +3,7 @@
 #include "BranchProgress.h"
 #include "ScriptGlobals.h"
 #include "ScriptCommandHook.h"
+#include "BranchControllers.h"
 #include "RunningScripts.h"
 #include "common.h"
 #include <CRadar.h>
@@ -11,9 +12,10 @@
 
 namespace
 {
-	constexpr int MISSIONS_REQUIRED = 1;
+	int g_missionsRequired = 0;
 
-	constexpr int RIOT_SWEET_LOCATE = 74327 + 184;
+	constexpr int RIOT_ADDRESS = 74327;
+	constexpr int RIOT_SWEET_LOCATE = RIOT_ADDRESS + 184;
 
 	constexpr int RIOT_COUNTER_OFFSET = 2516;
 	constexpr int SWEET_CALLED_OFFSET = 5420;
@@ -27,6 +29,7 @@ namespace
 	const CVector MARKER_POSITION(2488.5f, -1671.0f, 12.6f);
 	constexpr float MARKER_RADIUS_SQ = 1.44f;
 	constexpr float MARKER_HEIGHT = 2.0f;
+	constexpr float BLIP_TOLERANCE_SQ = 9.0f;
 
 	const BranchProgress* g_progress = nullptr;
 
@@ -35,14 +38,19 @@ namespace
 		return { MARKER_POSITION, RADAR_SPRITE_SWEET, Marker::NO_HANDLE_GLOBAL, Marker::LEAVE_DISPLAY };
 	}
 
-	bool thresholdMet()
+	bool configured()
 	{
-		return g_progress && g_progress->completedMissionCount() >= MISSIONS_REQUIRED;
+		return g_progress && g_missionsRequired > 0;
+	}
+
+	bool riotFinished()
+	{
+		return ScriptGlobals::readAt(RIOT_COUNTER_OFFSET) >= RIOT_FINISHED;
 	}
 
 	bool offerable()
 	{
-		return thresholdMet() && ScriptGlobals::readAt(RIOT_COUNTER_OFFSET) < RIOT_FINISHED;
+		return EndOfTheLine::unlocked() && !riotFinished();
 	}
 
 	bool playerInMarker()
@@ -58,8 +66,17 @@ namespace
 			&& std::fabs(position.z - MARKER_POSITION.z) <= MARKER_HEIGHT;
 	}
 
+	void startRiotIfNeeded()
+	{
+		if (RunningScripts::isRunningOrStarting("RIOT", RIOT_ADDRESS)) return;
+
+		CTheScripts::StartNewScript(reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace) + RIOT_ADDRESS);
+	}
+
 	bool takeShortcut(CRunningScript* t_script)
 	{
+		if (!BranchControllers::enabled()) return false;
+
 		if (!RunningScripts::isAtInstruction(t_script, RIOT_SWEET_LOCATE)) return false;
 		if (!offerable() || !playerInMarker()) return false;
 
@@ -85,13 +102,40 @@ void EndOfTheLine::install(const BranchProgress& t_progress)
 	ScriptCommandHook::replaceCommand(COMMAND_LOCATE_CHAR_ON_FOOT_3D, &takeShortcut);
 }
 
+void EndOfTheLine::setMissionsRequired(int t_count)
+{
+	g_missionsRequired = t_count;
+}
+
 void EndOfTheLine::update()
 {
-	if (offerable())
+	if (!configured()) return;
+
+	if (riotFinished())
 	{
-		marker().raise();
+		marker().clearAll();
 		return;
 	}
 
-	if (thresholdMet()) marker().clearAll();
+	marker().raise();
+	if (unlocked()) startRiotIfNeeded();
+}
+
+bool EndOfTheLine::markerAt(const CVector& t_position)
+{
+	if (!BranchControllers::enabled() || !configured()) return false;
+
+	float dx = t_position.x - MARKER_POSITION.x;
+	float dy = t_position.y - MARKER_POSITION.y;
+	return dx * dx + dy * dy <= BLIP_TOLERANCE_SQ;
+}
+
+int EndOfTheLine::missionsCompleted()
+{
+	return g_progress ? g_progress->completedMissionCount() : 0;
+}
+
+bool EndOfTheLine::unlocked()
+{
+	return configured() && missionsCompleted() >= g_missionsRequired;
 }

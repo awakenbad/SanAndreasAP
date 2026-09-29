@@ -1,5 +1,6 @@
 #include "OutOfOrderGuards.h"
 #include "ScriptCommandHook.h"
+#include "BranchControllers.h"
 #include "ScriptGlobals.h"
 #include "RunningScripts.h"
 #include <CStats.h>
@@ -8,6 +9,8 @@
 
 namespace
 {
+	constexpr int FLOW_DISPATCHED_OFFSET = 232;
+
 	constexpr int SAVE_ICON_COUNT_OFFSET = 3540;
 	constexpr int SAVE_PICKUPS_CREATED_OFFSET = 3536;
 	constexpr int ALL_SAVE_ICONS = 18;
@@ -21,6 +24,8 @@ namespace
 
 	bool keepCitiesPassedFromDropping(CRunningScript* t_script)
 	{
+		if (!BranchControllers::enabled()) return false;
+
 		t_script->CollectParameters(2);
 		if (ScriptParams[0] != STAT_CITY_UNLOCKED) return false;
 
@@ -30,12 +35,16 @@ namespace
 
 	bool holdMobLa1UntilGreenSabre(CRunningScript* t_script)
 	{
+		if (!BranchControllers::enabled()) return false;
+
 		if (!RunningScripts::isAtInstruction(t_script, MOB_LA1_CITIES_CHECK)) return false;
 		return ScriptGlobals::readAt(GREEN_SABRE_COUNTER_OFFSET) < GREEN_SABRE_FINISHED;
 	}
 
 	bool holdOpenUpUntilEveryCityOpened(CRunningScript* t_script)
 	{
+		if (!BranchControllers::enabled()) return false;
+
 		if (!RunningScripts::isAtInstruction(t_script, OPENUP_LAST_CITY_CHECK)) return false;
 
 		for (int latch : OPENUP_CITY_LATCHES)
@@ -43,6 +52,21 @@ namespace
 			if (ScriptGlobals::readAt(latch) == 0) return true;
 		}
 		return false;
+	}
+
+	void keepFlowRunning()
+	{
+		int flowSlot = ScriptGlobals::slotOf(FLOW_DISPATCHED_OFFSET);
+		if (ScriptGlobals::read(flowSlot) == 0) ScriptGlobals::write(flowSlot, 1);
+	}
+
+	void unlockEverySaveIcon()
+	{
+		int countSlot = ScriptGlobals::slotOf(SAVE_ICON_COUNT_OFFSET);
+		if (ScriptGlobals::read(countSlot) >= ALL_SAVE_ICONS) return;
+
+		ScriptGlobals::write(countSlot, ALL_SAVE_ICONS);
+		ScriptGlobals::write(ScriptGlobals::slotOf(SAVE_PICKUPS_CREATED_OFFSET), 0);
 	}
 }
 
@@ -55,9 +79,6 @@ void OutOfOrderGuards::install()
 
 void OutOfOrderGuards::update()
 {
-	int countSlot = ScriptGlobals::slotOf(SAVE_ICON_COUNT_OFFSET);
-	if (ScriptGlobals::read(countSlot) >= ALL_SAVE_ICONS) return;
-
-	ScriptGlobals::write(countSlot, ALL_SAVE_ICONS);
-	ScriptGlobals::write(ScriptGlobals::slotOf(SAVE_PICKUPS_CREATED_OFFSET), 0);
+	keepFlowRunning();
+	unlockEverySaveIcon();
 }

@@ -5,6 +5,7 @@
 #include "APProtocol.h"
 #include "ItemEffects.h"
 #include "MissionBranches.h"
+#include "Branches/EndOfTheLine.h"
 #include "MenuMap.h"
 #include "SaveRedirect.h"
 #include "MenuGate.h"
@@ -127,7 +128,7 @@ void Mod::updateGameplaySystems()
     m_checkGiver.update();
     CityUnlock::update();
     if (ModSettings::fastTravelEnabled()) FastTravel::update();
-    BranchControllers::update(m_branchProgress);
+    if (BranchControllers::enabled()) BranchControllers::update(m_branchProgress);
 
     if (m_autoSaveManager.update())
     {
@@ -338,6 +339,14 @@ void Mod::applyControlMessage(const std::string& t_name, const std::string& t_va
     {
         WangCarsUnlock::blockVanillaUnlock();
     }
+    else if (t_name == "mission_order")
+    {
+        BranchControllers::setEnabled(t_value == "1");
+    }
+    else if (t_name == "eotl_missions")
+    {
+        EndOfTheLine::setMissionsRequired(parseIntOr(t_value, 0));
+    }
 }
 
 void Mod::applyPendingItems()
@@ -479,8 +488,9 @@ void Mod::drawMissionCountsImpl(bool t_menuMap)
         const tRadarTrace& trace = CRadar::ms_RadarTrace[t];
         if (!trace.m_bInUse) continue;
 
-        const char* branch = branchAtBlip(trace.m_vecPos);
-        if (!branch) continue;
+        bool endOfTheLine = EndOfTheLine::markerAt(trace.m_vecPos);
+        const char* branch = endOfTheLine ? nullptr : branchAtBlip(trace.m_vecPos);
+        if (!endOfTheLine && !branch) continue;
 
         CVector2D screenPos;
         if (t_menuMap)
@@ -504,9 +514,10 @@ void Mod::drawMissionCountsImpl(bool t_menuMap)
             screenPos.y += offset;
         }
 
-        int pending = m_branchProgress.pending(branch);
-        CFont::SetColor(pending > 0 ? CRGBA(120, 255, 120, 255) : CRGBA(255, 70, 70, 255));
-        CFont::PrintString(screenPos.x, screenPos.y, std::to_string(pending).c_str());
+        int count = endOfTheLine ? EndOfTheLine::missionsCompleted() : m_branchProgress.pending(branch);
+        bool available = endOfTheLine ? EndOfTheLine::unlocked() : count > 0;
+        CFont::SetColor(available ? CRGBA(120, 255, 120, 255) : CRGBA(255, 70, 70, 255));
+        CFont::PrintString(screenPos.x, screenPos.y, std::to_string(count).c_str());
     }
 
     CFont::DrawFonts();

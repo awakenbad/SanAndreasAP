@@ -1,6 +1,7 @@
 #include "BranchController.h"
 #include "BranchProgress.h"
 #include "ScriptGlobals.h"
+#include "RunningScripts.h"
 
 namespace
 {
@@ -36,14 +37,7 @@ bool BranchController::gateOpen(const BranchProgress& t_progress) const
 
 bool BranchController::running() const
 {
-	unsigned char* entry = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace) + m_row.address;
-
-	for (CRunningScript* script = CTheScripts::pActiveScripts; script; script = script->m_pNext)
-	{
-		if (script->m_pCurrentIP == entry) return true;
-		if (_strnicmp(script->m_szName, m_row.scriptName, sizeof(script->m_szName)) == 0) return true;
-	}
-	return false;
+	return RunningScripts::isRunningOrStarting(m_row.scriptName, m_row.address);
 }
 
 bool BranchController::positionsInitialised() const

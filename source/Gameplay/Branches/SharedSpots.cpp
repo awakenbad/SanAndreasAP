@@ -1,5 +1,6 @@
 #include "SharedSpots.h"
 #include "ScriptCommandHook.h"
+#include "BranchControllers.h"
 #include "ScriptGlobals.h"
 #include "HeldCheck.h"
 #include <eScriptCommands.h>
@@ -67,6 +68,11 @@ namespace
 		return ScriptGlobals::readAt(MANSION_COUNTER_OFFSET) < MANSION_FINISHED;
 	}
 
+	bool riotAtMansionHeld()
+	{
+		return mansionTaken() || ScriptGlobals::readAt(GROVE_COUNTER_OFFSET) < GROVE_FINISHED;
+	}
+
 	bool riotAtSweetsHouseHeld()
 	{
 		return sweetsHouseTaken()
@@ -78,12 +84,14 @@ namespace
 		{ 73661 + 90, &fourDragonsTaken },
 		{ 74046 + 90, &johnsonHouseTaken },
 		{ 74046 + 184, &sweetsHouseTaken },
-		{ 74327 + 74, &mansionTaken },
+		{ 74327 + 74, &riotAtMansionHeld },
 		{ 74327 + 184, &riotAtSweetsHouseHeld },
 	};
 
 	bool holdLaterScript(CRunningScript* t_script)
 	{
+		if (!BranchControllers::enabled()) return false;
+
 		const HeldCheck* locate = heldCheckAt(t_script, HELD_LOCATES);
 		return locate && locate->condition();
 	}

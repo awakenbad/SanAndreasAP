@@ -1,6 +1,7 @@
 #include "BlockedMarkerTint.h"
 #include "MissionBranches.h"
 #include "BranchProgress.h"
+#include "EndOfTheLine.h"
 #include <C3dMarkers.h>
 #include <CVector.h>
 #include <CRGBA.h>
@@ -35,11 +36,21 @@ namespace
 
 		if (!g_progress) return;
 
-		int marker = missionMarkerIndexAt(t_posn.x, t_posn.y);
-		if (marker < 0) return;
+		bool blocked = false;
+		if (EndOfTheLine::markerAt(t_posn))
+		{
+			blocked = !EndOfTheLine::unlocked();
+		}
+		else
+		{
+			int marker = missionMarkerIndexAt(t_posn.x, t_posn.y);
+			if (marker < 0) return;
+
+			blocked = markerIsBlocked(marker, *g_progress);
+		}
 
 		CRGBA colour;
-		if (markerIsBlocked(marker, *g_progress))
+		if (blocked)
 		{
 			colour = CRGBA(BLOCKED_GREY, BLOCKED_GREY, BLOCKED_GREY, BLOCKED_ALPHA);
 		}
