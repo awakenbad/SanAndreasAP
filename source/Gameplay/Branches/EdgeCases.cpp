@@ -1,4 +1,5 @@
 #include "EdgeCases.h"
+#include "BranchProgress.h"
 #include "ScriptGlobals.h"
 #include "ScriptSlice.h"
 #include "PhoneCall.h"
@@ -18,6 +19,8 @@ namespace
 	constexpr int WUZI_CALLED_OFFSET = 5604;
 
 	constexpr int DESERT_COUNTER_OFFSET = 2372;
+
+	constexpr char RETURN_BRANCH[] = "Return";
 
 	constexpr PhoneCall TORENO_CALLS[] = {
 		{ 5600, DESERT_COUNTER_OFFSET, 1, { MOB_SF + 1565, MOB_SF + 1593 } },
@@ -288,6 +291,21 @@ MansionController::MansionController()
 {
 }
 
+bool MansionController::gateOpen(const BranchProgress& t_progress) const
+{
+	return EdgeCase::gateOpen(t_progress) || t_progress.received(RETURN_BRANCH) > 0;
+}
+
+bool MansionController::homeInTheHillsDone()
+{
+	return ScriptGlobals::readAt(MANSION_SAVE_BLIP_OFFSET) != 0;
+}
+
+int MansionController::returnMissionsDone()
+{
+	return ScriptGlobals::readAt(MANSION_COUNTER_OFFSET) - (homeInTheHillsDone() ? 1 : 0);
+}
+
 void MansionController::update()
 {
 	int calledSlot = ScriptGlobals::slotOf(MANSION_CALLED_OFFSET);
@@ -296,15 +314,10 @@ void MansionController::update()
 	Marker fourDragons{ positionAt(FOUR_DRAGONS_OFFSET), ScriptGlobals::readAt(FOUR_DRAGONS_SPRITE_OFFSET),
 		Marker::NO_HANDLE_GLOBAL, Marker::LEAVE_DISPLAY };
 
-	if (counter() == 0)
-	{
-		if (ScriptGlobals::readAt(CASINO_COUNTER_OFFSET) >= FISH_IN_A_BARREL_DONE) fourDragons.raise();
-		return;
-	}
+	if (homeInTheHillsDone()) fourDragons.clearAll();
+	else if (ScriptGlobals::readAt(CASINO_COUNTER_OFFSET) >= FISH_IN_A_BARREL_DONE) fourDragons.raise();
 
-	fourDragons.clearAll();
-
-	if (finished()) return;
+	if (returnMissionsDone() >= RETURN_MISSIONS) return;
 
 	Marker mansion = defaultMarker();
 	mansion.handleMayBeStale = true;
@@ -340,7 +353,7 @@ RiotController::RiotController()
 
 void RiotController::update()
 {
-	if (ScriptGlobals::readAt(MANSION_COUNTER_OFFSET) < MANSION_FINISHED) return;
+	if (MansionController::returnMissionsDone() < MansionController::RETURN_MISSIONS) return;
 
 	Marker mansion = defaultMarker();
 	mansion.handleMayBeStale = true;

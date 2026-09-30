@@ -124,9 +124,17 @@ class MansionController : public EdgeCase
 public:
 	MansionController();
 
+	bool gateOpen(const BranchProgress& t_progress) const override;
 	void update() override;
 
+	static constexpr int RETURN_MISSIONS = 3;
+
+	static bool homeInTheHillsDone();
+	static int returnMissionsDone();
+
 private:
+	static constexpr int MANSION_COUNTER_OFFSET = 2504;
+	static constexpr int MANSION_SAVE_BLIP_OFFSET = 6872;
 	static constexpr int CASINO_COUNTER_OFFSET = 2388;
 	static constexpr int FISH_IN_A_BARREL_DONE = 7;
 	static constexpr int FOUR_DRAGONS_OFFSET = 2428;
@@ -152,8 +160,4 @@ public:
 	RiotController();
 
 	void update() override;
-
-private:
-	static constexpr int MANSION_COUNTER_OFFSET = 2504;
-	static constexpr int MANSION_FINISHED = 4;
 };

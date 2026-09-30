@@ -21,7 +21,7 @@ public:
 
 	int counter() const;
 	bool finished() const;
-	bool gateOpen(const BranchProgress& t_progress) const;
+	virtual bool gateOpen(const BranchProgress& t_progress) const;
 
 	bool running() const;
 	bool positionsInitialised() const;

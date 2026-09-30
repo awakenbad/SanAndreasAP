@@ -3,6 +3,7 @@
 #include "BranchControllers.h"
 #include "ScriptGlobals.h"
 #include "HeldCheck.h"
+#include "EdgeCases.h"
 #include <eScriptCommands.h>
 
 namespace
@@ -11,14 +12,12 @@ namespace
 	constexpr int SWEET_COUNTER_OFFSET = 1808;
 	constexpr int GREEN_SABRE_COUNTER_OFFSET = 1832;
 	constexpr int CASINO_COUNTER_OFFSET = 2388;
-	constexpr int MANSION_COUNTER_OFFSET = 2504;
 	constexpr int GROVE_COUNTER_OFFSET = 2508;
 	constexpr int RIOT_COUNTER_OFFSET = 2516;
 
 	constexpr int SWEET_FINISHED = 9;
 	constexpr int GREEN_SABRE_FINISHED = 2;
 	constexpr int FISH_IN_A_BARREL_DONE = 7;
-	constexpr int MANSION_FINISHED = 4;
 	constexpr int GROVE_FINISHED = 2;
 	constexpr int END_OF_THE_LINE_STAGE = 2;
 
@@ -65,7 +64,7 @@ namespace
 
 	bool mansionTaken()
 	{
-		return ScriptGlobals::readAt(MANSION_COUNTER_OFFSET) < MANSION_FINISHED;
+		return MansionController::returnMissionsDone() < MansionController::RETURN_MISSIONS;
 	}
 
 	bool riotAtMansionHeld()

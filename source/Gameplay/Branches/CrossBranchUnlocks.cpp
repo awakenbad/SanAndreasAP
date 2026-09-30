@@ -4,12 +4,14 @@
 #include "PhoneCall.h"
 #include "HeldCheck.h"
 #include "ScriptGlobals.h"
+#include "EdgeCases.h"
 #include <eScriptCommands.h>
 
 namespace
 {
 	constexpr int MOB_LA1 = 180158;
 	constexpr int MOB_VEG = 185175;
+	constexpr int MANSION = 73661;
 
 	constexpr int SCRASH_COUNTER_OFFSET = 2184;
 	constexpr int SNAIL_TRAIL_STAGE = 1;
@@ -27,12 +29,36 @@ namespace
 			&& ScriptGlobals::readAt(BCRASH_COUNTER_OFFSET) >= BADLANDS_DONE;
 	}
 
+	bool homeInTheHillsNext()
+	{
+		return !MansionController::homeInTheHillsDone();
+	}
+
+	bool verticalBirdNext()
+	{
+		return MansionController::returnMissionsDone() == 0;
+	}
+
+	bool homeComingNext()
+	{
+		return MansionController::returnMissionsDone() == 1;
+	}
+
+	bool cutThroatBusinessNext()
+	{
+		return MansionController::returnMissionsDone() == 2;
+	}
+
 	constexpr HeldCheck REPLACED_CHECKS[] = {
 		{ 66412 + 191, &always },
 		{ 66700 + 483, &always },
 		{ 68612 + 464, &always },
 		{ 67844 + 184, &snailTrailAfterBadlands },
 		{ 95290 + 680, &snailTrailAfterBadlands },
+		{ MANSION + 132, &homeInTheHillsNext },
+		{ MANSION + 226, &verticalBirdNext },
+		{ MANSION + 278, &homeComingNext },
+		{ MANSION + 330, &cutThroatBusinessNext },
 	};
 
 	constexpr PhoneCall CALLS[] = {
