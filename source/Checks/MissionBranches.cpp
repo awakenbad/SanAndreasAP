@@ -26,7 +26,7 @@ namespace
         {90, "Caligula's Palace"}, {91, "Caligula's Palace"}, {92, "Caligula's Palace"},
         {93, "C.R.A.S.H."}, {94, "C.R.A.S.H."}, {95, "Madd Dogg"}, {102, "Four Dragons Casino"},
         {103, "Mansion"}, {104, "Mansion"}, {105, "Mansion"}, {106, "Sweet"}, {107, "Sweet"},
-        {108, "Sweet"}, {109, "Sweet"}, {112, "Sweet"}, {135, "Cesar"},
+        {108, "Mansion"}, {109, "Sweet"}, {112, "Sweet"}, {135, "Cesar"},
     };
 
     const std::string NO_BRANCH;
@@ -62,8 +62,7 @@ namespace
 
     const char* activeBranchAtMaddDoggMansion(const BranchProgress& t_progress)
     {
-        if (!t_progress.missionCompleted(105)) return "Mansion";  // 103, 104, then 105
-        if (!t_progress.missionCompleted(108)) return "Sweet";   // Riot
+        if (!t_progress.missionCompleted(108)) return "Mansion";  // 103, 104, 105, then Riot
         return nullptr;
     }
 
