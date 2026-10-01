@@ -1,6 +1,8 @@
 #include "MissionBranches.h"
 #include "BranchProgress.h"
 #include "EntityIDs.h"
+#include "RunningScripts.h"
+#include "ScriptGlobals.h"
 #include <CRadar.h>
 #include <unordered_map>
 
@@ -38,6 +40,9 @@ namespace
     constexpr size_t MADD_DOGG_MANSION_MARKER = 31;
     constexpr size_t JOHNSON_HOUSE_MARKER = 33;
 
+    constexpr char GROVE_SCRIPT[] = "GROVE";
+    constexpr int GROVE_COUNTER_OFFSET = 2508;
+
     const char* activeBranchAtAngelPineTrailer(const BranchProgress& t_progress)
     {
         if (!t_progress.missionCompleted(39)) return "C.R.A.S.H.";
@@ -62,10 +67,10 @@ namespace
         return nullptr;
     }
 
-    const char* activeBranchAtJohnsonHouse(const BranchProgress& t_progress)
+    const char* activeBranchAtJohnsonHouse()
     {
-        if (!t_progress.missionCompleted(104)) return nullptr;   // Home Coming
-        if (!t_progress.missionCompleted(106)) return "Sweet";   // Beat Down on B Dup
+        if (!RunningScripts::isActive(GROVE_SCRIPT)) return nullptr;
+        if (ScriptGlobals::readAt(GROVE_COUNTER_OFFSET) == 0) return "Sweet";   // Beat Down on B Dup
         return nullptr;
     }
 
@@ -117,7 +122,7 @@ const char* activeBranchAtMarker(size_t t_markerIndex, const BranchProgress& t_p
     if (t_markerIndex == ANGEL_PINE_TRAILER_MARKER) return activeBranchAtAngelPineTrailer(t_progress);
     if (t_markerIndex == DOHERTY_GARAGE_MARKER) return activeBranchAtDohertyGarage(t_progress);
     if (t_markerIndex == MADD_DOGG_MANSION_MARKER) return activeBranchAtMaddDoggMansion(t_progress);
-    if (t_markerIndex == JOHNSON_HOUSE_MARKER) return activeBranchAtJohnsonHouse(t_progress);
+    if (t_markerIndex == JOHNSON_HOUSE_MARKER) return activeBranchAtJohnsonHouse();
     if (t_markerIndex == FLIGHT_SCHOOL_MARKER) return activeBranchAtFlightSchool(t_progress);
 
     return t_markerIndex < MISSION_START_POS_BRANCH_COUNT ? missionStartPosBranch[t_markerIndex]
