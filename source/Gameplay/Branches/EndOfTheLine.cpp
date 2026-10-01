@@ -26,7 +26,7 @@ namespace
 
 	constexpr short LOCATE_PARAM_COUNT = 8;
 
-	const CVector MARKER_POSITION(2488.5f, -1671.0f, 12.6f);
+	const CVector MARKER_POSITION(2256.0f, -1260.7f, 23.0f);
 	constexpr float MARKER_RADIUS_SQ = 1.44f;
 	constexpr float MARKER_HEIGHT = 2.0f;
 	constexpr float BLIP_TOLERANCE_SQ = 9.0f;
