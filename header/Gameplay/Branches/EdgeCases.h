@@ -54,14 +54,13 @@ private:
 	static constexpr int SAN_FIERRO_OFFSET = 1988;
 };
 
-// Wu Zi Mu and Farewell, My Love. One mission script re-entered at five counter stages with two
-// races between, and the second marker is a literal the script holds in no global.
 class BcesarController : public EdgeCase
 {
 public:
 	BcesarController();
 
 	void update() override;
+	void whileClosed() override;
 
 private:
 	static constexpr int FAREWELL_FIRST = 5;

@@ -178,6 +178,11 @@ void BcesarController::update()
 	farewell.raise();
 }
 
+void BcesarController::whileClosed()
+{
+	defaultMarker().remove();
+}
+
 GarageController::GarageController()
 	: EdgeCase({ "GARAGE", 67587, 2164, 2, 2188, 0, 2132,
 		Marker::LEAVE_DISPLAY, "Garage", FIRST_IN_BRANCH, 0 })
