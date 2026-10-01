@@ -3,6 +3,7 @@
 #include "ScriptGlobals.h"
 #include "RunningScripts.h"
 #include <CStats.h>
+#include <Patch.h>
 #include <eScriptCommands.h>
 #include <eStats.h>
 
@@ -20,6 +21,9 @@ namespace
 
 	constexpr int OPENUP_LAST_CITY_CHECK = 99724 + 1577;
 	constexpr int OPENUP_CITY_LATCHES[] = { 680, 684, 688, 692 };
+
+	constexpr uintptr_t NO_RECRUITS_WHILE_CITIES_PASSED_1_OR_2 = 0x60C972;
+	constexpr size_t XOR_SIZE = 2;
 
 	bool keepCitiesPassedFromDropping(CRunningScript* t_script)
 	{
@@ -68,6 +72,7 @@ void OutOfOrderGuards::install()
 	ScriptCommandHook::replaceCommand(COMMAND_SET_INT_STAT, &keepCitiesPassedFromDropping);
 	ScriptCommandHook::blockCommand(COMMAND_IS_INT_VAR_GREATER_THAN_NUMBER, &holdMobLa1UntilGreenSabre);
 	ScriptCommandHook::blockCommand(COMMAND_IS_INT_VAR_GREATER_THAN_NUMBER, &holdOpenUpUntilEveryCityOpened);
+	plugin::patch::Nop(NO_RECRUITS_WHILE_CITIES_PASSED_1_OR_2, XOR_SIZE);
 }
 
 void OutOfOrderGuards::update()
