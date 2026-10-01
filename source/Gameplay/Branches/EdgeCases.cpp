@@ -20,7 +20,7 @@ namespace
 
 	constexpr int DESERT_COUNTER_OFFSET = 2372;
 
-	constexpr char RETURN_BRANCH[] = "Return";
+	constexpr char MANSION_BRANCH[] = "Mansion";
 
 	constexpr PhoneCall TORENO_CALLS[] = {
 		{ 5600, DESERT_COUNTER_OFFSET, 1, { MOB_SF + 1565, MOB_SF + 1593 } },
@@ -293,7 +293,7 @@ MansionController::MansionController()
 
 bool MansionController::gateOpen(const BranchProgress& t_progress) const
 {
-	return EdgeCase::gateOpen(t_progress) || t_progress.received(RETURN_BRANCH) > 0;
+	return EdgeCase::gateOpen(t_progress) || t_progress.received(MANSION_BRANCH) > 0;
 }
 
 bool MansionController::homeInTheHillsDone()

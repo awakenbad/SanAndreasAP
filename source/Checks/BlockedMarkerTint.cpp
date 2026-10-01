@@ -3,6 +3,7 @@
 #include "BranchProgress.h"
 #include "EndOfTheLine.h"
 #include <C3dMarkers.h>
+#include <CTheScripts.h>
 #include <CVector.h>
 #include <CRGBA.h>
 #include <Patch.h>
@@ -34,7 +35,7 @@ namespace
 		C3dMarkers::PlaceMarkerSet(t_id, t_type, t_posn, t_size, t_red, t_green, t_blue, t_alpha,
 			t_pulsePeriod, t_pulseFraction, t_rotateRate);
 
-		if (!g_progress) return;
+		if (!g_progress || CTheScripts::IsPlayerOnAMission()) return;
 
 		bool blocked = false;
 		if (EndOfTheLine::markerAt(t_posn))

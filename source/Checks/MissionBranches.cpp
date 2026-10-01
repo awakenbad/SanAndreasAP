@@ -25,7 +25,7 @@ namespace
         {87, "Four Dragons Casino"}, {88, "Four Dragons Casino"}, {89, "Caligula's Palace"},
         {90, "Caligula's Palace"}, {91, "Caligula's Palace"}, {92, "Caligula's Palace"},
         {93, "C.R.A.S.H."}, {94, "C.R.A.S.H."}, {95, "Madd Dogg"}, {102, "Four Dragons Casino"},
-        {103, "Return"}, {104, "Return"}, {105, "Return"}, {106, "Sweet"}, {107, "Sweet"},
+        {103, "Mansion"}, {104, "Mansion"}, {105, "Mansion"}, {106, "Sweet"}, {107, "Sweet"},
         {108, "Sweet"}, {109, "Sweet"}, {112, "Sweet"}, {135, "Cesar"},
     };
 
@@ -62,7 +62,7 @@ namespace
 
     const char* activeBranchAtMaddDoggMansion(const BranchProgress& t_progress)
     {
-        if (!t_progress.missionCompleted(105)) return "Return";  // 103, 104, then 105
+        if (!t_progress.missionCompleted(105)) return "Mansion";  // 103, 104, then 105
         if (!t_progress.missionCompleted(108)) return "Sweet";   // Riot
         return nullptr;
     }
@@ -148,16 +148,9 @@ int branchRadarSprite(const std::string& t_branch)
         {"Four Dragons Casino", RADAR_SPRITE_TRIADSCASINO},
         {"Caligula's Palace", RADAR_SPRITE_MAFIACASINO},
         {"Madd Dogg", RADAR_SPRITE_MADDOG},
-        {"Return", RADAR_SPRITE_CJ},
+        {"Mansion", RADAR_SPRITE_CJ},
     };
 
     auto it = BRANCH_SPRITE.find(t_branch);
     return it == BRANCH_SPRITE.end() ? RADAR_SPRITE_CJ : it->second;
-}
-
-const std::string& branchDisplayName(const std::string& t_branch)
-{
-    static const std::string GARAGE_AS_CJ = "CJ";
-    if (t_branch == "Garage") return GARAGE_AS_CJ;
-    return t_branch;
 }

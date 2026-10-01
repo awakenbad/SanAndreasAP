@@ -418,7 +418,7 @@ bool Mod::applyItemEffect(const std::string& t_effectName, const std::string& t_
     if (t_isNew)
     {
         bool isProgressive = spec->effect == ItemEffect::ProgressiveMission;
-        std::string message = formatItemMessage(*spec, isProgressive ? branchDisplayName(t_value) : t_value);
+        std::string message = formatItemMessage(*spec, t_value);
         if (!message.empty())
         {
             int radarSprite = isProgressive ? branchRadarSprite(t_value) : -1;
