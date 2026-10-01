@@ -1,6 +1,19 @@
 #pragma once
 #include "EdgeCase.h"
 
+// Drive-By's ending puts Ryder's blip
+class RyderController : public EdgeCase
+{
+public:
+	RyderController();
+
+	void update() override;
+	void whileClosed() override;
+
+private:
+	static constexpr int INT_COUNTER_OFFSET = 1792;
+};
+
 // Body Harvest puts King in Exile's market on the spot where badlands is, so it has to be deleted first
 class BcrashController : public EdgeCase
 {

@@ -29,6 +29,22 @@ namespace
 	};
 }
 
+RyderController::RyderController()
+	: EdgeCase({ "RYDER", 63143, 1812, 3, 1860, 1772, 1744,
+		Marker::LEAVE_DISPLAY, "Ryder", 1792, 2 })
+{
+}
+
+void RyderController::update()
+{
+	if (!finished()) defaultMarker().raise();
+}
+
+void RyderController::whileClosed()
+{
+	if (ScriptGlobals::readAt(INT_COUNTER_OFFSET) == 0) defaultMarker().remove();
+}
+
 BcrashController::BcrashController()
 	: EdgeCase({ "BCRASH", 65160, 1972, 1, 1976, 1776, 1936,
 		Marker::LEAVE_DISPLAY, "C.R.A.S.H.", 1824, 2 })

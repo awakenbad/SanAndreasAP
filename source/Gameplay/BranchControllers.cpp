@@ -21,7 +21,6 @@ namespace
 
 	constexpr BranchRow LINEAR_BRANCHES[] = {
 		{ "SWEET", 62090, 1808, 9, 1848, 1768, 1740, LEAVE, "Sweet", FIRST, 0 },
-		{ "RYDER", 63143, 1812, 3, 1860, 1772, 1744, LEAVE, "Ryder", 1792, 2 },
 		{ "SMOKE", 63492, 1816, 4, 1872, 1780, 1736, LEAVE, "Big Smoke", FIRST, 0 },
 		{ "STRAP", 63835, 1820, 5, 1884, 1784, 1748, LEAVE, "OG Loc", FIRST, 0 },
 		{ "CRASH", 62904, 1824, 2, 1908, 1776, 1752, LEAVE, "C.R.A.S.H.", FIRST, 0 },
@@ -37,6 +36,7 @@ namespace
 			controllers.push_back(std::make_unique<BranchController>(row));
 		}
 
+		controllers.push_back(std::make_unique<RyderController>());
 		controllers.push_back(std::make_unique<BcrashController>());
 		controllers.push_back(std::make_unique<CatController>());
 		controllers.push_back(std::make_unique<TruController>());
