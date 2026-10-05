@@ -27,8 +27,6 @@ int HorseshoeTracker::identifyCollected() const
 	float bestDistance = 0.0f;
 	for (int i = 0; i < static_cast<int>(horseshoePositions.size()); ++i)
 	{
-		if (isClaimed(i)) continue;
-
 		float distance = CVector::Distance(playerPos, horseshoePositions[i]);
 		if (best == -1 || distance < bestDistance)
 		{

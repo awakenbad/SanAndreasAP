@@ -69,6 +69,7 @@ public:
 	void locateCollectible(const std::string& t_type, int t_index);
 
 	void setIncludedCollectibles(const std::string& t_types);
+	void setCheckedCollectibles(const std::string& t_types);
 
 	int getPendingSubmissionId();
 	void confirmSubmissionSent();
@@ -112,6 +113,8 @@ private:
 	PendingChecks<int> m_pendingSubmissionLevels;
 
 	void resyncBaselines();
+	void applyCollectibleLists(const std::string& t_config,
+		void (CollectibleTracker::*t_setter)(const std::vector<int>&));
 
 	SubmissionTracker* findTracker(int t_submissionID);
 	bool missionChecker();

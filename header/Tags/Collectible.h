@@ -35,6 +35,7 @@ public:
 
 	virtual void setLocated(int t_index) = 0;
 	virtual void setIncluded(const std::vector<int>& t_indices) = 0;
+	virtual void setCheckedOnServer(const std::vector<int>& t_indices) = 0;
 };
 
 template <int N>
@@ -67,7 +68,7 @@ public:
 			if (index < 0) break;
 
 			m_lastCount += 1.0f;
-			if (m_claimed[index]) continue;
+			if (isDone(index)) continue;
 
 			if (!isIncluded(index)) continue;
 
@@ -91,7 +92,7 @@ public:
 		if (m_positions.empty()) return;
 		for (int i = 0; i < N; ++i)
 		{
-			bool claimed = m_claimed[i] || !isIncluded(i) || !isUnlocked();
+			bool claimed = isDone(i) || !isIncluded(i) || !isUnlocked();
 			t_out.push_back({ m_positions[i], getHeightIndicatorColor(), m_sprite, i + 1, claimed, i == locatedIndex(), INT_MAX });
 		}
 	}
@@ -120,6 +121,17 @@ public:
 	}
 
 	bool isIncluded(int t_index) const { return !m_hasInclusionMask || m_included[t_index]; }
+
+	void setCheckedOnServer(const std::vector<int>& t_indices) override
+	{
+		m_checkedOnServer.fill(false);
+		for (int index : t_indices)
+		{
+			if (index >= 0 && index < N) m_checkedOnServer[index] = true;
+		}
+	}
+
+	bool isDone(int t_index) const { return m_claimed[t_index] || m_checkedOnServer[t_index]; }
 
 	void save(SaveDataManager& t_saveData) const override
 	{
@@ -161,6 +173,7 @@ private:
 	const char* m_saveKey;
 	const char* m_checkType;
 	std::array<bool, N> m_claimed{};
+	std::array<bool, N> m_checkedOnServer{};
 	PendingChecks<int> m_pending;
 	std::array<bool, N> m_included{};
 	bool m_hasInclusionMask = false;

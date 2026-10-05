@@ -61,7 +61,8 @@ void CheckListener::locateCollectible(const std::string& t_type, int t_index)
 	}
 }
 
-void CheckListener::setIncludedCollectibles(const std::string& t_config)
+void CheckListener::applyCollectibleLists(const std::string& t_config,
+	void (CollectibleTracker::*t_setter)(const std::vector<int>&))
 {
 	std::map<std::string, std::vector<int>> byType;
 
@@ -80,8 +81,18 @@ void CheckListener::setIncludedCollectibles(const std::string& t_config)
 	for (CollectibleTracker* collectible : m_collectibles)
 	{
 		auto it = byType.find(collectible->checkType());
-		collectible->setIncluded(it == byType.end() ? std::vector<int>{} : it->second);
+		(collectible->*t_setter)(it == byType.end() ? std::vector<int>{} : it->second);
 	}
+}
+
+void CheckListener::setIncludedCollectibles(const std::string& t_config)
+{
+	applyCollectibleLists(t_config, &CollectibleTracker::setIncluded);
+}
+
+void CheckListener::setCheckedCollectibles(const std::string& t_config)
+{
+	applyCollectibleLists(t_config, &CollectibleTracker::setCheckedOnServer);
 }
 
 void CheckListener::save(SaveDataManager& t_saveData)

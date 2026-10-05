@@ -42,8 +42,6 @@ int SnapshotTracker::identifyCollected() const
 
 	for (int i = 0; i < static_cast<int>(snapshotPositions.size()); ++i)
 	{
-		if (isClaimed(i)) continue;
-
 		float distance = snapshotPositions[i].Distance(lastCompletedSnapshot->GetPosn());
 
 		if (best != -1 && distance >= bestDistance) continue;
