@@ -317,6 +317,10 @@ void Mod::applyControlMessage(const std::string& t_name, const std::string& t_va
     {
         m_checkListener.setIncludedCollectibles(t_value);
     }
+    else if (t_name == "collectibles_checked")
+    {
+        m_checkListener.setCheckedCollectibles(t_value);
+    }
     else if (t_name == "gated")
     {
         m_checkListener.setGatedContent(t_value);

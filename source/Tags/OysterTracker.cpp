@@ -27,8 +27,6 @@ int OysterTracker::identifyCollected() const
 	float bestDistance = 0.0f;
 	for (int i = 0; i < static_cast<int>(oysterPositions.size()); ++i)
 	{
-		if (isClaimed(i)) continue;
-
 		float distance = CVector::Distance(playerPos, oysterPositions[i]);
 		if (best == -1 || distance < bestDistance)
 		{
