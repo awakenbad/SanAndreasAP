@@ -53,6 +53,7 @@ namespace
 		{ 66412 + 191, &always },
 		{ 66700 + 483, &always },
 		{ 68612 + 464, &always },
+		{ 95290 + 829, &always },
 		{ 67844 + 184, &snailTrailAfterBadlands },
 		{ 95290 + 680, &snailTrailAfterBadlands },
 		{ MANSION + 132, &homeInTheHillsNext },
