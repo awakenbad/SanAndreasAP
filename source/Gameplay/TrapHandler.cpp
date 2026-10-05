@@ -294,6 +294,7 @@ void TrapHandler::drawTimers() const
 		CFont::SetProportional(true);
 		CFont::SetOrientation(ALIGN_RIGHT);
 		CFont::SetDropShadowPosition(1);
+		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
 		CFont::SetBackground(false, false);
 		CFont::SetRightJustifyWrap(0.0f);
 

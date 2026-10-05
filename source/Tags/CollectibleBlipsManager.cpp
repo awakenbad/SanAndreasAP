@@ -267,6 +267,7 @@ void CollectibleBlipsManager::drawRadarNumbers() const
 	CFont::SetProportional(true);
 	CFont::SetOrientation(ALIGN_CENTER);
 	CFont::SetDropShadowPosition(1);
+	CFont::SetDropColor(CRGBA(0, 0, 0, 255));
 	CFont::SetBackground(false, false);
 
 	CPlayerPed* player = FindPlayerPed();
@@ -361,6 +362,7 @@ void CollectibleBlipsManager::drawMapOverlay()
 	CFont::SetProportional(true);
 	CFont::SetOrientation(ALIGN_CENTER);
 	CFont::SetDropShadowPosition(1);
+	CFont::SetDropColor(CRGBA(0, 0, 0, 255));
 	CFont::SetBackground(false, false);
 
 	const float offset = SCREEN_MULTIPLIER(7.0f);
