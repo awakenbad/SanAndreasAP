@@ -59,7 +59,7 @@ private:
 
 	static constexpr float MISSION_BLIP_TOLERANCE_SQ = 25.0f;
 
-	const char* MOD_VERSION = "1.0.0-alpha";
+	const char* MOD_VERSION = "1.0.0-beta";
 
 	CheckListener m_checkListener;
 	CheckGiver m_checkGiver;
