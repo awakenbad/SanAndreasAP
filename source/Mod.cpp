@@ -481,6 +481,7 @@ void Mod::drawMissionCountsImpl(bool t_menuMap)
     CFont::SetProportional(true);
     CFont::SetOrientation(ALIGN_CENTER);
     CFont::SetDropShadowPosition(1);
+    CFont::SetDropColor(CRGBA(0, 0, 0, 255));
     CFont::SetBackground(false, false);
 
     for (unsigned int t = 0; t < MAX_RADAR_TRACES; ++t)
@@ -553,6 +554,7 @@ void Mod::drawMenuOverlay()
     CFont::SetProportional(true);
     CFont::SetOrientation(ALIGN_LEFT);
     CFont::SetDropShadowPosition(1);
+    CFont::SetDropColor(CRGBA(0, 0, 0, 255));
     CFont::SetBackground(false, false);
     CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
@@ -586,6 +588,7 @@ void Mod::drawMenuOverlay()
     CFont::SetProportional(true);
     CFont::SetOrientation(ALIGN_LEFT);
     CFont::SetDropShadowPosition(1);
+    CFont::SetDropColor(CRGBA(0, 0, 0, 255));
     CFont::SetBackground(false, false);
 
     CFont::PrintString(SCREEN_MULTIPLIER(20.0f), bottom - SCREEN_MULTIPLIER(75.0f),

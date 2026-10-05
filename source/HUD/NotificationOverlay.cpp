@@ -65,6 +65,7 @@ void NotificationOverlay::drawAboveRadar(std::chrono::steady_clock::time_point n
 	CFont::SetProportional(true);
 	CFont::SetOrientation(ALIGN_LEFT);
 	CFont::SetDropShadowPosition(1);
+	CFont::SetDropColor(CRGBA(0, 0, 0, alpha));
 	CFont::SetBackground(false, false);
 	CFont::SetWrapx(static_cast<float>(RsGlobal.maximumWidth));
 
@@ -156,6 +157,7 @@ void NotificationOverlay::drawOne(const Notification& notification, int slot, st
 	CFont::SetProportional(true);
 	CFont::SetOrientation(ALIGN_RIGHT);
 	CFont::SetDropShadowPosition(1);
+	CFont::SetDropColor(CRGBA(0, 0, 0, alpha));
 	CFont::SetBackground(false, false);
 
 	float x = static_cast<float>(RsGlobal.maximumWidth) - SCREEN_MULTIPLIER(RIGHT_MARGIN);
