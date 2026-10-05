@@ -1,4 +1,7 @@
 #include "CityUnlock.h"
+#include "ScriptCommandHook.h"
+#include "ScriptGlobals.h"
+#include <CRunningScript.h>
 #include <CIplStore.h>
 #include <IplDef.h>
 #include <eScriptCommands.h>
@@ -13,6 +16,9 @@ namespace
 {
 	const std::vector<uintptr_t> FORBIDDEN_TERRITORY_CALLS = { 0x442AE5, 0x562E3A };
 	constexpr size_t CALL_SIZE = 5;
+
+	constexpr int CITIES_PASSED_OFFSET = 100;
+	constexpr const char* CITY_LOCKED_SUBMISSIONS[] = { "ambulan", "firetru", "copcar", "burgjb", "truck" };
 
 	class RoadArea
 	{
@@ -58,6 +64,36 @@ namespace
 		{ -1742.906f, 500.7302f, 30.4679f, -1650.312f, 551.8201f, 40.7455f, true },
 		{ -1761.95f, 507.8931f, 35.0533f, -1751.361f, 531.5917f, 41.3335f, false },
 	};
+
+	bool isCityLockedSubmission(const CRunningScript* t_script)
+	{
+		if (!t_script->m_bIsMission) return false;
+
+		for (const char* name : CITY_LOCKED_SUBMISSIONS)
+		{
+			if (_strnicmp(t_script->m_szName, name, 8) == 0) return true;
+		}
+		return false;
+	}
+
+	bool nextOperandIsCitiesPassed(CRunningScript* t_script)
+	{
+		tScriptParam* variable = t_script->GetPointerToScriptVariable(2);
+		return variable == ScriptGlobals::address(ScriptGlobals::slotOf(CITIES_PASSED_OFFSET));
+	}
+
+	bool ignoreCityLockVarFirst(CRunningScript* t_script)
+	{
+		return isCityLockedSubmission(t_script) && nextOperandIsCitiesPassed(t_script);
+	}
+
+	bool ignoreCityLockNumberFirst(CRunningScript* t_script)
+	{
+		if (!isCityLockedSubmission(t_script)) return false;
+
+		t_script->CollectParameters(1);
+		return nextOperandIsCitiesPassed(t_script);
+	}
 
 	bool barrierIplLoaded(const char* t_name)
 	{
@@ -106,6 +142,8 @@ void CityUnlock::install()
 	if (installed) return;
 
 	patch::Nop(FORBIDDEN_TERRITORY_CALLS, CALL_SIZE);
+	ScriptCommandHook::blockCommand(COMMAND_IS_INT_VAR_EQUAL_TO_NUMBER, &ignoreCityLockVarFirst);
+	ScriptCommandHook::blockCommand(COMMAND_IS_NUMBER_GREATER_THAN_INT_VAR, &ignoreCityLockNumberFirst);
 	installed = true;
 }
 
