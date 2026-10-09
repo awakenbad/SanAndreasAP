@@ -21,7 +21,9 @@ void CheckGiver::giveWeapon(const std::string& t_weaponType, bool t_equip)
 	if (!player) return;
 
 	const WeaponInfo& info = it->second;
+	const bool isSatchel = info.type == WEAPONTYPE_SATCHEL_CHARGE;
 	CStreaming::RequestModel(info.model, 2);
+	if (isSatchel) CStreaming::RequestModel(MODEL_BOMB, 2);
 	CStreaming::LoadAllRequestedModels(false);
 	player->GiveWeapon(info.type, info.ammo, true);
 	if (t_equip)
@@ -29,6 +31,7 @@ void CheckGiver::giveWeapon(const std::string& t_weaponType, bool t_equip)
 		player->SetCurrentWeapon(info.type);
 	}
 	CStreaming::SetModelIsDeletable(info.model);
+	if (isSatchel) CStreaming::SetModelIsDeletable(MODEL_BOMB);
 }
 
 void CheckGiver::giveProgressiveMap()
