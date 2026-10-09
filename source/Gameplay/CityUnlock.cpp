@@ -17,6 +17,9 @@ namespace
 	const std::vector<uintptr_t> FORBIDDEN_TERRITORY_CALLS = { 0x442AE5, 0x562E3A };
 	constexpr size_t CALL_SIZE = 5;
 
+	const std::vector<uintptr_t> RESTART_POINT_CITY_CHECKS = { 0x460984, 0x460B84 };
+	constexpr size_t JNP_SIZE = 2;
+
 	constexpr int CITIES_PASSED_OFFSET = 100;
 	constexpr const char* CITY_LOCKED_SUBMISSIONS[] = { "ambulan", "firetru", "copcar", "burgjb", "truck" };
 
@@ -142,6 +145,7 @@ void CityUnlock::install()
 	if (installed) return;
 
 	patch::Nop(FORBIDDEN_TERRITORY_CALLS, CALL_SIZE);
+	patch::Nop(RESTART_POINT_CITY_CHECKS, JNP_SIZE);
 	ScriptCommandHook::blockCommand(COMMAND_IS_INT_VAR_EQUAL_TO_NUMBER, &ignoreCityLockVarFirst);
 	ScriptCommandHook::blockCommand(COMMAND_IS_NUMBER_GREATER_THAN_INT_VAR, &ignoreCityLockNumberFirst);
 	installed = true;
