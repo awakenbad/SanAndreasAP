@@ -139,13 +139,17 @@ namespace
 	}
 }
 
+void CityUnlock::installNops()
+{
+	patch::Nop(FORBIDDEN_TERRITORY_CALLS, CALL_SIZE);
+	patch::Nop(RESTART_POINT_CITY_CHECKS, JNP_SIZE);
+}
+
 void CityUnlock::install()
 {
 	static bool installed = false;
 	if (installed) return;
 
-	patch::Nop(FORBIDDEN_TERRITORY_CALLS, CALL_SIZE);
-	patch::Nop(RESTART_POINT_CITY_CHECKS, JNP_SIZE);
 	ScriptCommandHook::blockCommand(COMMAND_IS_INT_VAR_EQUAL_TO_NUMBER, &ignoreCityLockVarFirst);
 	ScriptCommandHook::blockCommand(COMMAND_IS_NUMBER_GREATER_THAN_INT_VAR, &ignoreCityLockNumberFirst);
 	installed = true;
