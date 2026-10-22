@@ -666,8 +666,6 @@ void Mod::persistAndRestoreState(bool t_worldWiped, bool t_loadHooked)
 	if (firstInGameTick || t_worldWiped || t_loadHooked)
 	{
 		spawnCollectiblePickups();
-
-		LegacyBlockerCleanup::removeStaleBlockers();
 	}
 
 	if (restoreNeeded)

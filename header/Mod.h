@@ -8,7 +8,6 @@
 #include "BranchProgress.h"
 #include "MissionLocateBlocked.h"
 #include "BlockedMarkerTint.h"
-#include "LegacyBlockerCleanup.h"
 #include "CStats.h"
 #include "EntityIDs.h"
 #include "CRunningScript.h"
