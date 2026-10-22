@@ -4,6 +4,7 @@
 #include "RunningScripts.h"
 #include "ScriptGlobals.h"
 #include <CRadar.h>
+#include <CVector2D.h>
 #include <unordered_map>
 
 namespace
@@ -79,7 +80,7 @@ namespace
         return nullptr;
     }
 
-    constexpr float MARKER_TOLERANCE_SQ = 9.0f;
+    constexpr float MARKER_TOLERANCE = 3.0f;
 }
 
 int missionMarkerIndexAt(float t_x, float t_y)
@@ -89,9 +90,8 @@ int missionMarkerIndexAt(float t_x, float t_y)
 
     for (size_t i = 0; i < count; ++i)
     {
-        float dx = t_x - missionStartPos[i].x;
-        float dy = t_y - missionStartPos[i].y;
-        if (dx * dx + dy * dy <= MARKER_TOLERANCE_SQ) return static_cast<int>(i);
+        CVector2D start(missionStartPos[i].x, missionStartPos[i].y);
+        if (start.Distance({t_x, t_y}) <= MARKER_TOLERANCE) return static_cast<int>(i);
     }
     return -1;
 }

@@ -14,6 +14,7 @@
 #include "CPools.h"
 #include "CPickups.h"
 #include <CRadar.h>
+#include <CVector2D.h>
 #include <CTimer.h>
 #include <CFont.h>
 #include <CRGBA.h>
@@ -452,9 +453,8 @@ const char* Mod::branchAtBlip(const CVector& t_pos) const
 
     for (size_t i = 0; i < count; ++i)
     {
-        float dx = t_pos.x - missionStartPos[i].x;
-        float dy = t_pos.y - missionStartPos[i].y;
-        if (dx * dx + dy * dy < MISSION_BLIP_TOLERANCE_SQ) return activeBranchAtMarker(i, m_branchProgress);
+        CVector2D start(missionStartPos[i].x, missionStartPos[i].y);
+        if (t_pos.Distance2D(start) < MISSION_BLIP_TOLERANCE) return activeBranchAtMarker(i, m_branchProgress);
     }
     return nullptr;
 }

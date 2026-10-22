@@ -27,9 +27,9 @@ namespace
 	constexpr short LOCATE_PARAM_COUNT = 8;
 
 	const CVector MARKER_POSITION(2256.0f, -1260.7f, 23.0f);
-	constexpr float MARKER_RADIUS_SQ = 1.44f;
+	constexpr float MARKER_RADIUS = 1.2f;
 	constexpr float MARKER_HEIGHT = 2.0f;
-	constexpr float BLIP_TOLERANCE_SQ = 9.0f;
+	constexpr float BLIP_TOLERANCE = 3.0f;
 
 	const BranchProgress* g_progress = nullptr;
 
@@ -59,10 +59,7 @@ namespace
 		if (!player || player->bInVehicle) return false;
 
 		CVector position = player->GetPosition();
-		float dx = position.x - MARKER_POSITION.x;
-		float dy = position.y - MARKER_POSITION.y;
-
-		return dx * dx + dy * dy <= MARKER_RADIUS_SQ
+		return position.Distance2D(MARKER_POSITION) <= MARKER_RADIUS
 			&& std::fabs(position.z - MARKER_POSITION.z) <= MARKER_HEIGHT;
 	}
 
@@ -125,9 +122,7 @@ bool EndOfTheLine::markerAt(const CVector& t_position)
 {
 	if (!BranchControllers::enabled() || !configured()) return false;
 
-	float dx = t_position.x - MARKER_POSITION.x;
-	float dy = t_position.y - MARKER_POSITION.y;
-	return dx * dx + dy * dy <= BLIP_TOLERANCE_SQ;
+	return t_position.Distance2D(MARKER_POSITION) <= BLIP_TOLERANCE;
 }
 
 int EndOfTheLine::missionsCompleted()
