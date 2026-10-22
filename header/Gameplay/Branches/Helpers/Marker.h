@@ -23,6 +23,8 @@ public:
 	void clearForeign() const;
 	void clearAll() const;
 	void remove() const;
+	// remove(), but only while that blip sits at this marker's position
+	void removeIfHere() const;
 
 private:
 	void clear(bool t_includeOurSprite) const;

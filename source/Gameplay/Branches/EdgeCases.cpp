@@ -29,6 +29,17 @@ namespace
 	};
 }
 
+SweetController::SweetController()
+	: EdgeCase({ "SWEET", 62090, 1808, 9, 1848, 1768, 1740,
+		Marker::LEAVE_DISPLAY, "Sweet", FIRST_IN_BRANCH, 0 })
+{
+}
+
+void SweetController::update()
+{
+	if (!finished()) defaultMarker().raise();
+}
+
 RyderController::RyderController()
 	: EdgeCase({ "RYDER", 63143, 1812, 3, 1860, 1772, 1744,
 		Marker::LEAVE_DISPLAY, "Ryder", 1792, 2 })
@@ -37,7 +48,13 @@ RyderController::RyderController()
 
 void RyderController::update()
 {
-	if (!finished()) defaultMarker().raise();
+	if (finished())
+	{
+		defaultMarker().remove();
+		return;
+	}
+
+	defaultMarker().raise();
 }
 
 void RyderController::whileClosed()
@@ -351,14 +368,23 @@ GroveController::GroveController()
 {
 }
 
+Marker GroveController::house() const
+{
+	return { positionAt(m_row.positionOffset), RADAR_SPRITE_SWEET,
+		m_row.blipHandleOffset, Marker::LEAVE_DISPLAY, true };
+}
+
 void GroveController::update()
 {
-	if (counter() != 0) return;
+	if (counter() != 0)
+	{
+		house().removeIfHere();
+		return;
+	}
+
 	if (ScriptGlobals::readAt(INT_COUNTER_OFFSET) == 0) return;
 
-	Marker house{ positionAt(m_row.positionOffset), RADAR_SPRITE_SWEET,
-		m_row.blipHandleOffset, Marker::LEAVE_DISPLAY, true };
-	house.raise();
+	house().raise();
 }
 
 void GroveController::whileClosed()
@@ -386,4 +412,9 @@ void RiotController::update()
 	}
 
 	mansion.clearAll();
+	if (counter() < END_OF_THE_LINE_STAGE) return;
+
+	Marker sweetsHouse{ positionAt(SWEET_HOUSE_OFFSET), RADAR_SPRITE_SWEET,
+		SWEET_BLIP_HANDLE_OFFSET, Marker::LEAVE_DISPLAY, true };
+	sweetsHouse.removeIfHere();
 }
