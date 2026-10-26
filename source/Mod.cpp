@@ -125,7 +125,7 @@ void Mod::updateGameplaySystems()
 {
     m_ammuNationShop.update();
     m_trapHandler.update();
-	//m_chaosModHandler.update();
+    m_chaosModHandler.update();
     m_checkGiver.update();
     CityUnlock::update();
     if (ModSettings::fastTravelEnabled()) FastTravel::update();
