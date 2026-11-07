@@ -37,7 +37,25 @@ SweetController::SweetController()
 
 void SweetController::update()
 {
-	if (!finished()) defaultMarker().raise();
+	if (finished()) return;
+
+	if (counter() == DOBERMAN_STAGE && ScriptGlobals::readAt(DOBERMAN_CALLED_OFFSET) != 0)
+	{
+		keepDobermanBlip();
+		return;
+	}
+
+	defaultMarker().raise();
+}
+
+void SweetController::keepDobermanBlip() const
+{
+	defaultMarker().removeIfHere();
+
+	Marker doberman = defaultMarker();
+	doberman.position = CVector(1365.2507f, -1280.12f, 12.5469f);
+	doberman.handleMayBeStale = true;
+	doberman.raise();
 }
 
 RyderController::RyderController()

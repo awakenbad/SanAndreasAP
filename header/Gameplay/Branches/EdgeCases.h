@@ -8,6 +8,13 @@ public:
 	SweetController();
 
 	void update() override;
+
+private:
+	static constexpr int DOBERMAN_STAGE = 7;
+	static constexpr int DOBERMAN_CALLED_OFFSET = 5384;
+
+	// Ryder's ending moves the blip back to Sweet's house after Doberman's call
+	void keepDobermanBlip() const;
 };
 
 // Drive-By's ending puts Ryder's blip
