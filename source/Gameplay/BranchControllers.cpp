@@ -7,6 +7,7 @@
 #include "ScriptCommandHook.h"
 #include "BranchProgress.h"
 #include "CTheScripts.h"
+#include "ScriptGlobals.h"
 #include <eScriptCommands.h>
 #include <memory>
 #include <vector>
@@ -64,8 +65,7 @@ namespace
 	{
 		if (t_controller.running()) return;
 
-		CTheScripts::StartNewScript(
-			reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace) + t_controller.address());
+		CTheScripts::StartNewScript(ScriptGlobals::scriptSpace() + t_controller.address());
 	}
 
 	constexpr unsigned char END_OF_ARGUMENTS = 0;

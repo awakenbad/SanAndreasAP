@@ -67,7 +67,7 @@ namespace
 	{
 		if (RunningScripts::isRunningOrStarting("RIOT", RIOT_ADDRESS)) return;
 
-		CTheScripts::StartNewScript(reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace) + RIOT_ADDRESS);
+		CTheScripts::StartNewScript(ScriptGlobals::scriptSpace() + RIOT_ADDRESS);
 	}
 
 	bool takeShortcut(CRunningScript* t_script)

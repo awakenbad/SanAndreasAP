@@ -56,7 +56,7 @@ void WangCarsUnlock::update(bool t_itemReceived)
 	if (ScriptGlobals::read(WANG_CARS_AVAILABLE_ID) == 1) return;
 	if (ScriptGlobals::readFloat(STEAL_MARKER_X_GLOBAL) == 0.0f) return;
 
-	unsigned char* scriptSpace = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace);
+	unsigned char* scriptSpace = ScriptGlobals::scriptSpace();
 	unsigned char* scriptBase = scriptSpace + SCRIPT_BASE_OFFSET;
 	unsigned char* buyBase = scriptSpace + BUY1_BASE_OFFSET;
 
