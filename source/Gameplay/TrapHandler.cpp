@@ -9,6 +9,7 @@
 #include "CAutomobile.h"
 #include "CBike.h"
 #include "CWeather.h"
+#include "CPools.h"
 #include <CFont.h>
 #include <CRGBA.h>
 #include <CSprite2d.h>
@@ -38,6 +39,9 @@ namespace
 	constexpr short BAD_WEATHER_TYPES[] = { WEATHER_RAINY_SF, WEATHER_FOGGY_SF, WEATHER_SANDSTORM_DESERT };
 
 	constexpr short WEATHER_NOT_FORCED = -1;
+
+	constexpr int WHEEL_STATUS_OK = 0;
+	constexpr int WHEEL_STATUS_BURST = 1;
 
 	int randomBetween(int t_low, int t_high)
 	{
@@ -81,6 +85,8 @@ void TrapHandler::save(SaveDataManager& t_saveData)
 
 void TrapHandler::load(const SaveDataManager& t_saveData)
 {
+	m_poppedVehicleRef = -1;
+
 	m_fatTrapActive = t_saveData.getValue(FAT_ACTIVE_KEY, "0") == "1";
 	m_fatTrapEnd = Clock::time_point{};
 
@@ -222,13 +228,24 @@ void TrapHandler::update()
 		}
 	}
 
+	if (m_poppedVehicleRef != -1 && now >= m_tireTrapEnd)
+	{
+		repairPoppedVehicle();
+	}
+
 	if (!player) return;
 	CVehicle* vehicle = player->bInVehicle ? player->m_pVehicle : nullptr;
 	if (!vehicle) return;
 
 	if (now < m_tireTrapEnd)
 	{
-		burstTires(vehicle);
+		int vehicleRef = CPools::GetVehicleRef(vehicle);
+		if (vehicleRef != m_poppedVehicleRef)
+		{
+			repairPoppedVehicle();
+			m_poppedVehicleRef = vehicleRef;
+		}
+		setWheelStatus(vehicle, WHEEL_STATUS_BURST);
 	}
 
 	if (m_carFirePending && !PlayerControl::isInHighStakesDriveway())
@@ -241,16 +258,14 @@ void TrapHandler::update()
 	}
 }
 
-void TrapHandler::burstTires(CVehicle* t_vehicle)
+void TrapHandler::setWheelStatus(CVehicle* t_vehicle, int t_status)
 {
-	const int WHEEL_STATUS_BURST = 1;
-
 	if (t_vehicle->m_nVehicleClass == VEHICLE_AUTOMOBILE)
 	{
 		CAutomobile* car = reinterpret_cast<CAutomobile*>(t_vehicle);
 		for (int wheel = 0; wheel < 4; ++wheel)
 		{
-			car->m_damageManager.SetWheelStatus(wheel, WHEEL_STATUS_BURST);
+			car->m_damageManager.SetWheelStatus(wheel, t_status);
 		}
 	}
 	else if (t_vehicle->m_nVehicleClass == VEHICLE_BIKE)
@@ -258,9 +273,20 @@ void TrapHandler::burstTires(CVehicle* t_vehicle)
 		CBike* bike = reinterpret_cast<CBike*>(t_vehicle);
 		for (int wheel = 0; wheel < CBike::NUM_WHEELS; ++wheel)
 		{
-			bike->m_nWheelStatus[wheel] = static_cast<uint8_t>(WHEEL_STATUS_BURST);
+			bike->m_nWheelStatus[wheel] = static_cast<uint8_t>(t_status);
 		}
 	}
+}
+
+void TrapHandler::repairPoppedVehicle()
+{
+	if (m_poppedVehicleRef == -1) return;
+
+	if (CVehicle* vehicle = CPools::GetVehicle(m_poppedVehicleRef))
+	{
+		setWheelStatus(vehicle, WHEEL_STATUS_OK);
+	}
+	m_poppedVehicleRef = -1;
 }
 
 void TrapHandler::drawTimers() const
