@@ -3,8 +3,8 @@
 <img width="1200" height="287" alt="sanandreasap short" src="https://github.com/user-attachments/assets/798c85bf-3415-4400-b931-c2777475073a" />
 
 An [Archipelago](https://archipelago.gg) multiworld randomizer for Grand Theft
-Auto: San Andreas (PC, v1.0). Story missions are gated behind Progressive
-Mission items; collectibles, Ammu-Nation purchases, and side activities send
+Auto: San Andreas (PC, v1.0 US). Story missions are gated behind Progressive
+Mission items; collectibles, side activities and Ammu-Nation purchases send
 checks to the multiworld.
 
 > [!NOTE]
@@ -15,11 +15,15 @@ checks to the multiworld.
 
 The randomizer logic (locations, items, rules) is developed in my
 [Archipelago fork](https://github.com/awakenbad/Archipelago) under
-`worlds/gta_sa` — that's where `gta_sa.apworld` comes from. This repo only has
-the C++ mod.
+`worlds/gta_sa`. 
 
-## Current scope (v0.9.0)
+This repo only has the C++ mod.
 
+## Current scope (v1.0.0)
+
+- **Story:**
+    - **Linear** - vanilla mission order.
+    - **Out of Order** (Experimental) - every mission branch can be started as soon as its Progressive item is received.
 - **Goal:**
     - **The Green Sabre** (Los Santos only)
     - **Are You Going to San Fierro?** (Los Santos → Badlands)
@@ -57,12 +61,9 @@ the C++ mod.
 
 ### Prerequisites
 
-- Grand Theft Auto: San Andreas **v1.0** — If you own Steam version: watch
-  [this video](https://youtu.be/sAgqTbCScmQ?si=OrUAvIKqTjmyFgJl&t=158)
-  (2:39–8:27) to downpatch
-- An ASI Loader — any should work; tested with
+- [Grand Theft Auto: San Andreas](https://store.rockstargames.com/game/buy-grand-theft-auto-the-trilogy) **v1.0 US** — [Downpatching guide](https://steamcommunity.com/sharedfiles/filedetails/?id=3036381821) by TJGM
+- An ASI Loader — any works; tested with
   [Silent's ASI Loader](https://github.com/GTAmodding/ASI-Loader/releases/tag/v1.3.0)
-- ~~[ThirteenAG's Widescreen Fix](https://gtaforums.com/topic/547841-gtanfsmpother-widescreen-fixes-pack/)~~ (not required anymore)
 - [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases) 0.6.7+
 
 ### Install
@@ -90,6 +91,7 @@ the C++ mod.
 Not required, but they improve the experience:
 - [SilentPatch](https://gtaforums.com/topic/669045-silentpatch/) - a large collection of bug
   fixes, including mouse input not being detected.
+- [Widescreen Fix](https://gtaforums.com/topic/547841-gtanfsmpother-widescreen-fixes-pack/) - scales the game properly at 16:9 resolutions
 - [FramerateVigilante](https://www.moddb.com/downloads/iiivcsa-framerate-vigilante) - fixes the
   framerate-dependent bugs that show up with the frame limiter off, so the game works correctly at 60 FPS.
 - [WindowedMode](https://github.com/ThirteenAG/III.VC.SA.WindowedMode) - windowed and borderless
@@ -99,6 +101,20 @@ Not required, but they improve the experience:
 > **CLEO 4** and older completely break the mod.
 >
 > If you already run CLEO for other mods, it has to be [CLEO 5](https://cleo.li/) (tested with 5.4.0)
+
+### Using Chaos Mod traps
+Required only if `Chaos Mod Traps` is turned on in your yaml. With it on, Chaos traps activate
+effects from [Chaos Mod](https://github.com/gta-chaos-mod/Trilogy-ASI-Script) when received.
+
+1. Download `Trilogy.Chaos.Mod.SA.v3.4.0.7z` (or newer) from the
+   [Chaos Mod releases](https://github.com/gta-chaos-mod/Trilogy-ASI-Script/releases).
+2. Extract the `ChaosMod` folder, the `scripts` folder and `bass.dll` into your GTA San Andreas
+   installation directory.
+3. Archipelago triggers Chaos Mod effects on its own, so `Trilogy Chaos Mod.exe` is
+   not needed. If you'd like Chaos Mod to also roll its own effects on a timer, on top of the ones
+   coming from the multiworld, run `Trilogy Chaos Mod.exe` and press `Start`.
+4. *(Optional)* If you're not running `Trilogy Chaos Mod.exe`, you can hide its timer bar:
+   open `scripts/TrilogyChaosMod.SA.toml` and set `DrawRemainingTimeBar = false`.
 
 ### Using Starting point save files
 Starting point saves now live inside `scripts/Archipelago`, leave them there. On a non Los Santos start they will appear in the load list.
@@ -141,9 +157,6 @@ Starting point saves now live inside `scripts/Archipelago`, leave them there. On
 ## Support
 If you ever feel like supporting the project, there's a Sponsor button at the top of the
 repo. It's completely optional and not required for the mod's development.
-
-## Roadmap
-- All missions startable from `In The Beginning`
 
 ## Credits
 
