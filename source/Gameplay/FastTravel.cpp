@@ -297,6 +297,11 @@ void FastTravel::update()
 	}
 }
 
+bool FastTravel::isBusy()
+{
+	return g_menuOpen || g_phase != TravelPhase::None;
+}
+
 void FastTravel::draw()
 {
 	if (!g_menuOpen) return;

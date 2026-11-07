@@ -20,21 +20,12 @@ namespace
 	constexpr char COLLECTIBLE_HEIGHT_INDICATOR_KEY[] = "CollectibleHeightIndicator";
 
 	constexpr float NOTIFICATION_DEFAULT = 8.0f;
-	constexpr float NOTIFICATION_MIN = 1.0f;
-	constexpr float NOTIFICATION_MAX = 60.0f;
-
 	constexpr float SCALE_DEFAULT = 0.5f;
-	constexpr float SCALE_MIN = 0.1f;
-	constexpr float SCALE_MAX = 2.0f;
-
 	constexpr int FAST_TRAVEL_DEFAULT = 1;
 	constexpr int COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT = (int) ModSettings::CollectibleHeightIndicator::OnBlip;
-
 	constexpr int DIM_DEFAULT = 60;
-	constexpr int DIM_MIN = 10;
-	constexpr int DIM_MAX = 100;
 
-	constexpr int COLOUR_COUNT = static_cast<int>(ModSettings::ItemColour::Count);
+	constexpr int COLOUR_COUNT = ModSettings::ITEM_COLOUR_COUNT;
 
 	const char* const COLOUR_KEYS[COLOUR_COUNT] = { "Progression", "Useful", "Trap", "Filler" };
 	constexpr unsigned long COLOUR_DEFAULTS[COLOUR_COUNT] = { 0xAF99EF, 0x6D8BE8, 0xFA8072, 0x00EEEE };
@@ -75,13 +66,15 @@ namespace
 		"; close enough to them (0 = off, 1 = on top of blip, 2 = alternating with number, default = 1).\r\n"
 		"CollectibleHeightIndicator=1\r\n";
 
-	float g_notificationSeconds = NOTIFICATION_DEFAULT;
-	float g_collectibleNumberScale = SCALE_DEFAULT;
-	float g_missionCounterScale = SCALE_DEFAULT;
-	int g_unselectedDimPercent = DIM_DEFAULT;
-	bool g_fastTravelEnabled = FAST_TRAVEL_DEFAULT != 0;
-	int g_collectibleHeightIndicatorMode = COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT;
-	CRGBA g_itemColours[COLOUR_COUNT];
+	ModSettings::Values g_values{
+		NOTIFICATION_DEFAULT,
+		SCALE_DEFAULT,
+		SCALE_DEFAULT,
+		{},
+		DIM_DEFAULT,
+		FAST_TRAVEL_DEFAULT != 0,
+		COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT,
+	};
 
 	std::string settingsPath()
 	{
@@ -157,7 +150,7 @@ void ModSettings::load()
 {
 	for (int i = 0; i < COLOUR_COUNT; ++i)
 	{
-		g_itemColours[i] = unpack(COLOUR_DEFAULTS[i]);
+		g_values.itemColours[i] = unpack(COLOUR_DEFAULTS[i]);
 	}
 
 	std::string path = settingsPath();
@@ -173,52 +166,57 @@ void ModSettings::load()
 		}
 	}
 
-	g_notificationSeconds = readFloat(path, NOTIFICATION_KEY, NOTIFICATION_DEFAULT,
+	g_values.notificationSeconds = readFloat(path, NOTIFICATION_KEY, NOTIFICATION_DEFAULT,
 		NOTIFICATION_MIN, NOTIFICATION_MAX);
-	g_collectibleNumberScale = readFloat(path, NUMBER_SCALE_KEY, SCALE_DEFAULT, SCALE_MIN, SCALE_MAX);
-	g_missionCounterScale = readFloat(path, COUNTER_SCALE_KEY, SCALE_DEFAULT, SCALE_MIN, SCALE_MAX);
+	g_values.collectibleNumberScale = readFloat(path, NUMBER_SCALE_KEY, SCALE_DEFAULT, SCALE_MIN, SCALE_MAX);
+	g_values.missionCounterScale = readFloat(path, COUNTER_SCALE_KEY, SCALE_DEFAULT, SCALE_MIN, SCALE_MAX);
 
 	for (int i = 0; i < COLOUR_COUNT; ++i)
 	{
-		g_itemColours[i] = readColour(path, COLOUR_KEYS[i], COLOUR_DEFAULTS[i]);
+		g_values.itemColours[i] = readColour(path, COLOUR_KEYS[i], COLOUR_DEFAULTS[i]);
 	}
-	g_unselectedDimPercent = readInt(path, COLOURS_SECTION, DIM_KEY, DIM_DEFAULT, DIM_MIN, DIM_MAX);
+	g_values.unselectedDimPercent = readInt(path, COLOURS_SECTION, DIM_KEY, DIM_DEFAULT, DIM_MIN, DIM_MAX);
 
-	g_fastTravelEnabled = readInt(path, GAMEPLAY_SECTION, FAST_TRAVEL_KEY, FAST_TRAVEL_DEFAULT, 0, 1) != 0;
-	g_collectibleHeightIndicatorMode = readInt(path, GAMEPLAY_SECTION, COLLECTIBLE_HEIGHT_INDICATOR_KEY, COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT, 0, 2);
+	g_values.fastTravelEnabled = readInt(path, GAMEPLAY_SECTION, FAST_TRAVEL_KEY, FAST_TRAVEL_DEFAULT, 0, 1) != 0;
+	g_values.collectibleHeightIndicator = readInt(path, GAMEPLAY_SECTION, COLLECTIBLE_HEIGHT_INDICATOR_KEY, COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT, 0, 2);
+}
+
+ModSettings::Values& ModSettings::values()
+{
+	return g_values;
 }
 
 float ModSettings::notificationSeconds()
 {
-	return g_notificationSeconds;
+	return g_values.notificationSeconds;
 }
 
 float ModSettings::collectibleNumberScale()
 {
-	return SCREEN_MULTIPLIER(g_collectibleNumberScale);
+	return SCREEN_MULTIPLIER(g_values.collectibleNumberScale);
 }
 
 float ModSettings::missionCounterScale()
 {
-	return SCREEN_MULTIPLIER(g_missionCounterScale);
+	return SCREEN_MULTIPLIER(g_values.missionCounterScale);
 }
 
 const CRGBA& ModSettings::itemColour(ItemColour t_which)
 {
-	return g_itemColours[static_cast<int>(t_which)];
+	return g_values.itemColours[static_cast<int>(t_which)];
 }
 
 int ModSettings::unselectedDimPercent()
 {
-	return g_unselectedDimPercent;
+	return g_values.unselectedDimPercent;
 }
 
 bool ModSettings::fastTravelEnabled()
 {
-	return g_fastTravelEnabled;
+	return g_values.fastTravelEnabled;
 }
 
 ModSettings::CollectibleHeightIndicator ModSettings::collectibleHeightIndicatorMode()
 {
-	return (ModSettings::CollectibleHeightIndicator) g_collectibleHeightIndicatorMode;
+	return (ModSettings::CollectibleHeightIndicator) g_values.collectibleHeightIndicator;
 }

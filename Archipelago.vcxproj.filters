@@ -73,6 +73,9 @@
     <Filter Include="Source\Gameplay\Branches\Helpers">
       <UniqueIdentifier>{aa70c6c1-e60f-4acf-b57e-73b20aa9f071}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{09e75043-ebe2-4722-b4f0-e2c34c606062}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Mod.h">
@@ -375,6 +378,12 @@
     <ClInclude Include="header\Gameplay\Branches\Helpers\HeldCheck.h">
       <Filter>Header\Gameplay\Branches\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="header\HUD\UIManager.h">
+      <Filter>Header\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="header\HUD\SettingsMenu.h">
+      <Filter>Header\HUD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Main.cpp">
@@ -619,6 +628,33 @@
     </ClCompile>
     <ClCompile Include="source\Gameplay\Branches\Helpers\PhoneCall.cpp">
       <Filter>Source\Gameplay\Branches\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\HUD\UIManager.cpp">
+      <Filter>Source\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="source\HUD\SettingsMenu.cpp">
+      <Filter>Source\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\imgui.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\imgui_demo.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\imgui_draw.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\imgui_tables.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\imgui_widgets.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\backends\imgui_impl_dx9.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\imgui\backends\imgui_impl_win32.cpp">
+      <Filter>Dependencies</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

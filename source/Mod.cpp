@@ -128,7 +128,7 @@ void Mod::updateGameplaySystems()
     m_chaosModHandler.update();
     m_checkGiver.update();
     CityUnlock::update();
-    if (ModSettings::fastTravelEnabled()) FastTravel::update();
+    if (ModSettings::fastTravelEnabled() || FastTravel::isBusy()) FastTravel::update();
     if (BranchControllers::enabled()) BranchControllers::update(m_branchProgress);
 
     if (m_autoSaveManager.update())
@@ -440,6 +440,9 @@ void Mod::drawOverlay()
     if (ModSettings::fastTravelEnabled())
     {
         FastTravel::placeMarkers();
+    }
+    if (ModSettings::fastTravelEnabled() || FastTravel::isBusy())
+    {
         FastTravel::draw();
     }
 
@@ -538,6 +541,21 @@ void Mod::drawCollectiblesOnRadar()
 void Mod::drawCollectiblesOnMap()
 {
     m_blipManager.drawMapOverlay();
+}
+
+void Mod::initGUIOverlay()
+{
+    m_uiManager.init();
+}
+
+void Mod::drawGUIOverlay()
+{
+    m_uiManager.update();
+}
+
+void Mod::cleanUpGUIOverlay()
+{
+    m_uiManager.cleanUp();
 }
 
 void Mod::drawMenuOverlay()

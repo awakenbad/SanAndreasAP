@@ -32,6 +32,7 @@
 #include "GameStorageHook.h"
 #include "WaypointTeleport.h"
 #include "ChaosModHandler.h"
+#include "UIManager.h"
 
 class Mod
 {
@@ -44,6 +45,9 @@ public:
 	void drawCollectiblesOnRadar();
 	void drawMissionCountsOnMap();
 	void drawCollectiblesOnMap();
+	void initGUIOverlay();
+	void drawGUIOverlay();
+	void cleanUpGUIOverlay();
 
 	void updateMenuState();
 
@@ -74,6 +78,7 @@ private:
 	ChaosModHandler m_chaosModHandler;
 	ReceivedItemLog m_receivedItemLog;
 	PendingChecks<int> m_pendingShopChecks;
+	UIManager m_uiManager;
 
 	std::vector<PersistentState*> m_persistentSubsystems;
 

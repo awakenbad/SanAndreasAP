@@ -16,6 +16,8 @@
     <ClInclude Include="header\Gameplay\Branches\Helpers\Marker.h" />
     <ClInclude Include="header\Gameplay\ChaosModHandler.h" />
     <ClInclude Include="header\Gameplay\WangCarsUnlock.h" />
+    <ClInclude Include="header\HUD\UIManager.h" />
+    <ClInclude Include="header\HUD\SettingsMenu.h" />
     <ClInclude Include="header\Persistence\AutoSaveManager.h" />
     <ClInclude Include="header\Protocol\APSocket.h" />
     <ClInclude Include="header\Checks\Submissions\BurglaryTracker.h" />
@@ -113,6 +115,13 @@
     <ClInclude Include="header\Gameplay\Branches\Helpers\HeldCheck.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dependencies\imgui\backends\imgui_impl_dx9.cpp" />
+    <ClCompile Include="dependencies\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_demo.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_tables.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="source\Checks\Submissions\TrainTracker.cpp" />
     <ClCompile Include="source\Gameplay\AmmuNationShop.cpp" />
     <ClCompile Include="source\Gameplay\Branches\Helpers\Marker.cpp" />
@@ -120,6 +129,8 @@
     <ClCompile Include="source\Gameplay\Branches\Helpers\PhoneCall.cpp" />
     <ClCompile Include="source\Gameplay\ChaosModHandler.cpp" />
     <ClCompile Include="source\Gameplay\WangCarsUnlock.cpp" />
+    <ClCompile Include="source\HUD\UIManager.cpp" />
+    <ClCompile Include="source\HUD\SettingsMenu.cpp" />
     <ClCompile Include="source\Persistence\AutoSaveManager.cpp" />
     <ClCompile Include="source\Protocol\APSocket.cpp" />
     <ClCompile Include="source\Checks\Submissions\BurglaryTracker.cpp" />
@@ -233,7 +244,7 @@
     <IntDir>$(ProjectDir)obj\GTA-SA\Release\</IntDir>
     <TargetName>Archipelago.SA</TargetName>
     <TargetExt>.asi</TargetExt>
-    <IncludePath>$(ProjectDir)header;$(ProjectDir)header\Checks;$(ProjectDir)header\Checks\Submissions;$(ProjectDir)header\Common;$(ProjectDir)header\Dev;$(ProjectDir)header\Gameplay;$(ProjectDir)header\Gameplay\Branches;$(ProjectDir)header\Gameplay\Branches\Helpers;$(ProjectDir)header\HUD;$(ProjectDir)header\Persistence;$(ProjectDir)header\Protocol;$(ProjectDir)header\Tags;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)header;$(ProjectDir)header\Checks;$(ProjectDir)header\Checks\Submissions;$(ProjectDir)header\Common;$(ProjectDir)header\Dev;$(ProjectDir)header\Gameplay;$(ProjectDir)header\Gameplay\Branches;$(ProjectDir)header\Gameplay\Branches\Helpers;$(ProjectDir)header\HUD;$(ProjectDir)header\Persistence;$(ProjectDir)header\Protocol;$(ProjectDir)header\Tags;$(ProjectDir)dependencies\imgui;$(ProjectDir)dependencies\imgui\backends;$(IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GTA-SA|Win32'">
@@ -243,7 +254,7 @@
     <IntDir>$(ProjectDir)obj\GTA-SA\Debug\</IntDir>
     <TargetName>Archipelago.SA</TargetName>
     <TargetExt>.asi</TargetExt>
-    <IncludePath>$(ProjectDir)header;$(ProjectDir)header\Checks;$(ProjectDir)header\Checks\Submissions;$(ProjectDir)header\Common;$(ProjectDir)header\Dev;$(ProjectDir)header\Gameplay;$(ProjectDir)header\Gameplay\Branches;$(ProjectDir)header\Gameplay\Branches\Helpers;$(ProjectDir)header\HUD;$(ProjectDir)header\Persistence;$(ProjectDir)header\Protocol;$(ProjectDir)header\Tags;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)header;$(ProjectDir)header\Checks;$(ProjectDir)header\Checks\Submissions;$(ProjectDir)header\Common;$(ProjectDir)header\Dev;$(ProjectDir)header\Gameplay;$(ProjectDir)header\Gameplay\Branches;$(ProjectDir)header\Gameplay\Branches\Helpers;$(ProjectDir)header\HUD;$(ProjectDir)header\Persistence;$(ProjectDir)header\Protocol;$(ProjectDir)header\Tags;$(ProjectDir)dependencies/imgui;$(ProjectDir)dependencies/imgui/backends;$(IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release GTA-SA|Win32'">
