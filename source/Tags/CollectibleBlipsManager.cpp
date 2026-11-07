@@ -16,7 +16,7 @@ namespace
 {
 	constexpr char SHOW_BLIPS_KEY[] = "show_tag_blips";
 
-	constexpr float POSITION_TOLERANCE_SQ = 0.0001f;
+	constexpr float POSITION_TOLERANCE = 0.01f;
 }
 
 void CollectibleBlipsManager::save(SaveDataManager& t_saveData)
@@ -33,9 +33,7 @@ int CollectibleBlipsManager::targetIndexAt(const CVector& t_pos) const
 {
 	for (int i = 0; i < static_cast<int>(m_targets.size()); ++i)
 	{
-		float dx = t_pos.x - m_targets[i].position.x;
-		float dy = t_pos.y - m_targets[i].position.y;
-		if (dx * dx + dy * dy < POSITION_TOLERANCE_SQ) return i;
+		if (t_pos.Distance2D(m_targets[i].position) < POSITION_TOLERANCE) return i;
 	}
 	return -1;
 }
@@ -68,9 +66,7 @@ int CollectibleBlipsManager::findExistingBlipAt(const CVector& t_pos, int t_spri
 		if (!trace.m_bInUse) continue;
 		if (trace.m_nRadarSprite != t_sprite) continue;
 
-		float dx = t_pos.x - trace.m_vecPos.x;
-		float dy = t_pos.y - trace.m_vecPos.y;
-		if (dx * dx + dy * dy < POSITION_TOLERANCE_SQ)
+		if (t_pos.Distance2D(trace.m_vecPos) < POSITION_TOLERANCE)
 		{
 			return CRadar::GetNewUniqueBlipIndex(static_cast<int>(i));
 		}

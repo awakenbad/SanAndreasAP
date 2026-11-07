@@ -1,5 +1,6 @@
 #pragma once
 #include "CTheScripts.h"
+#include "ScriptGlobals.h"
 #include <cstring>
 
 namespace RunningScripts
@@ -17,7 +18,7 @@ namespace RunningScripts
 
 	inline bool isRunningOrStarting(const char* t_scriptName, int t_address)
 	{
-		unsigned char* entry = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace) + t_address;
+		unsigned char* entry = ScriptGlobals::scriptSpace() + t_address;
 
 		for (CRunningScript* script = CTheScripts::pActiveScripts; script; script = script->m_pNext)
 		{
@@ -29,8 +30,7 @@ namespace RunningScripts
 
 	inline bool isAtInstruction(CRunningScript* t_script, int t_offset)
 	{
-		unsigned char* instruction = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace)
-			+ t_offset + OPCODE_SIZE;
+		unsigned char* instruction = ScriptGlobals::scriptSpace() + t_offset + OPCODE_SIZE;
 
 		return t_script->m_pCurrentIP == instruction;
 	}
@@ -49,7 +49,7 @@ namespace RunningScripts
 		int savedParams[32];
 		memcpy(savedParams, ScriptParams, sizeof(savedParams));
 
-		unsigned char* scriptSpace = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace);
+		unsigned char* scriptSpace = ScriptGlobals::scriptSpace();
 
 		CRunningScript script;
 		script.Init();

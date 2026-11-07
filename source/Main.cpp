@@ -7,6 +7,7 @@
 #include "GameStorageHook.h"
 #include "SaveRedirect.h"
 #include "SnapshotLock.h"
+#include "CityUnlock.h"
 
 using namespace plugin;
 
@@ -20,6 +21,7 @@ struct Main
         GameStorageHook::install();
         SaveRedirect::install();
         SnapshotLock::install();
+        CityUnlock::installNops();
 
         // register event callbacks
         Events::gameProcessEvent += []{ gInstance.OnGameProcess(); };

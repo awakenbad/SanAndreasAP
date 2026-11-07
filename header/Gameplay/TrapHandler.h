@@ -27,6 +27,7 @@ private:
 	int randomWantedStars() const;
 
 	Clock::time_point m_tireTrapEnd{};
+	int m_poppedVehicleRef = -1;
 
 	Clock::time_point m_fatTrapEnd{};
 	bool m_fatTrapActive = false;
@@ -45,5 +46,6 @@ private:
 
 	void startWeatherTrap(short t_weather);
 
-	void burstTires(CVehicle* t_vehicle);
+	void setWheelStatus(CVehicle* t_vehicle, int t_status);
+	void repairPoppedVehicle();
 };

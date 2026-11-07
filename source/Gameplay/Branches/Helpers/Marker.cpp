@@ -7,7 +7,7 @@ namespace
 {
 	constexpr bool FOREIGN_SPRITES_ONLY = false;
 	constexpr bool EVERY_SPRITE = true;
-	constexpr float TOLERANCE_SQ = 9.0f;
+	constexpr float TOLERANCE = 3.0f;
 }
 
 bool Marker::isDrawnHere() const
@@ -18,9 +18,7 @@ bool Marker::isDrawnHere() const
 		if (!trace.m_bInUse) continue;
 		if (trace.m_nBlipType != BLIP_CONTACTPOINT) continue;
 
-		float dx = position.x - trace.m_vecPos.x;
-		float dy = position.y - trace.m_vecPos.y;
-		if (dx * dx + dy * dy <= TOLERANCE_SQ) return true;
+		if (position.Distance2D(trace.m_vecPos) <= TOLERANCE) return true;
 	}
 	return false;
 }
@@ -71,6 +69,22 @@ void Marker::remove() const
 	ScriptGlobals::write(handleSlot, 0);
 }
 
+void Marker::removeIfHere() const
+{
+	if (blipHandleOffset == NO_HANDLE_GLOBAL) return;
+
+	int handle = ScriptGlobals::readAt(blipHandleOffset);
+	if (handle == 0) return;
+
+	int index = CRadar::GetActualBlipArrayIndex(handle);
+	if (index < 0 || !CRadar::ms_RadarTrace[index].m_bInUse) return;
+
+	const tRadarTrace& trace = CRadar::ms_RadarTrace[index];
+	if (position.Distance2D(trace.m_vecPos) > TOLERANCE) return;
+
+	remove();
+}
+
 void Marker::clearForeign() const
 {
 	clear(FOREIGN_SPRITES_ONLY);
@@ -92,9 +106,7 @@ void Marker::clear(bool t_includeOurSprite) const
 		if (trace.m_nBlipType != BLIP_CONTACTPOINT) continue;
 		if (!t_includeOurSprite && trace.m_nRadarSprite == sprite) continue;
 
-		float dx = position.x - trace.m_vecPos.x;
-		float dy = position.y - trace.m_vecPos.y;
-		if (dx * dx + dy * dy > TOLERANCE_SQ) continue;
+		if (position.Distance2D(trace.m_vecPos) > TOLERANCE) continue;
 
 		int blip = CRadar::GetNewUniqueBlipIndex(static_cast<int>(i));
 		if (blipHandleOffset != NO_HANDLE_GLOBAL && blip == ScriptGlobals::read(handleSlot))

@@ -99,5 +99,8 @@ void CheckGiver::update()
 
 	m_carRepairPending = false;
 	player->m_pVehicle->Fix();
-	player->m_pVehicle->m_fHealth = 1000.0f;
+	if (player->m_pVehicle->m_fHealth < 1000.0f)
+	{
+		player->m_pVehicle->m_fHealth = 1000.0f;
+	}
 }

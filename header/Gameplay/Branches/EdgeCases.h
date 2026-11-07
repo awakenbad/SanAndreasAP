@@ -1,6 +1,22 @@
 #pragma once
 #include "EdgeCase.h"
 
+// Its blip global is reused for Sweet's house in Return to Los Santos, so it can't be cleared once finished
+class SweetController : public EdgeCase
+{
+public:
+	SweetController();
+
+	void update() override;
+
+private:
+	static constexpr int DOBERMAN_STAGE = 7;
+	static constexpr int DOBERMAN_CALLED_OFFSET = 5384;
+
+	// Ryder's ending moves the blip back to Sweet's house after Doberman's call
+	void keepDobermanBlip() const;
+};
+
 // Drive-By's ending puts Ryder's blip
 class RyderController : public EdgeCase
 {
@@ -164,6 +180,8 @@ public:
 
 private:
 	static constexpr int INT_COUNTER_OFFSET = 1792;
+
+	Marker house() const;
 };
 
 class RiotController : public EdgeCase
@@ -172,4 +190,9 @@ public:
 	RiotController();
 
 	void update() override;
+
+private:
+	static constexpr int END_OF_THE_LINE_STAGE = 2;
+	static constexpr int SWEET_HOUSE_OFFSET = 1848;
+	static constexpr int SWEET_BLIP_HANDLE_OFFSET = 1740;
 };

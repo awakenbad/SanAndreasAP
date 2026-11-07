@@ -21,7 +21,7 @@ namespace
 	{
 		if (_strnicmp(t_script->m_szName, "oddveh", 8) != 0) return false;
 
-		unsigned char* base = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace) + ODDVEH_BASE;
+		unsigned char* base = ScriptGlobals::scriptSpace() + ODDVEH_BASE;
 		auto offset = t_script->m_pCurrentIP - base;
 		return offset >= ODDVEH_COURIER_LAUNCH_START && offset < ODDVEH_COURIER_END;
 	}

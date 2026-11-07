@@ -8,7 +8,6 @@
 #include "BranchProgress.h"
 #include "MissionLocateBlocked.h"
 #include "BlockedMarkerTint.h"
-#include "LegacyBlockerCleanup.h"
 #include "CStats.h"
 #include "EntityIDs.h"
 #include "CRunningScript.h"
@@ -57,9 +56,9 @@ private:
 
 	const CVector JETPACK_PICKUP_POS{ 2030.0f, 1007.7f, 10.6f };
 
-	static constexpr float MISSION_BLIP_TOLERANCE_SQ = 25.0f;
+	static constexpr float MISSION_BLIP_TOLERANCE = 5.0f;
 
-	const char* MOD_VERSION = "1.0.0-beta";
+	const char* MOD_VERSION = "1.0.0";
 
 	CheckListener m_checkListener;
 	CheckGiver m_checkGiver;

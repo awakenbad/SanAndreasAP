@@ -47,14 +47,14 @@ void StreetRaceUnlock::update(bool t_itemReceived)
 	if (ScriptGlobals::read(STREET_RACES_UNLOCKED_GLOBAL) != 0) return;
 	if (ScriptGlobals::read(TRACE_MARKER_X_GLOBAL) == 0) return;
 
-	unsigned char* scriptBase = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace) + SCRIPT_BASE_OFFSET;
+	unsigned char* scriptBase = ScriptGlobals::scriptSpace() + SCRIPT_BASE_OFFSET;
 
 	int savedParams[32];
 	memcpy(savedParams, ScriptParams, sizeof(savedParams));
 
 	CRunningScript script;
 	script.Init();
-	script.m_pBaseIP = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace);
+	script.m_pBaseIP = ScriptGlobals::scriptSpace();
 
 	if (ScriptGlobals::read(DRIVING_SCHOOL_UNLOCKED_GLOBAL) == 0)
 	{
@@ -72,7 +72,7 @@ void StreetRaceUnlock::updateDrivingSchoolBlip()
 	if (ScriptGlobals::read(DRIVING_SCHOOL_UNLOCKED_GLOBAL) == 0) return;
 	if (ScriptGlobals::read(GARAGE_MISSIONS_GLOBAL) == 0) return;
 
-	unsigned char* scriptSpace = reinterpret_cast<unsigned char*>(CTheScripts::ScriptSpace);
+	unsigned char* scriptSpace = ScriptGlobals::scriptSpace();
 
 	int savedParams[32];
 	memcpy(savedParams, ScriptParams, sizeof(savedParams));

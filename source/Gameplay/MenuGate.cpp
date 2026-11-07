@@ -9,6 +9,7 @@ namespace
 	constexpr int LOAD_GAME_ENTRY = 1;
 
 	constexpr uintptr_t REFRESH_SAVE_SLOT_LIST = 0x619140;
+	constexpr uintptr_t MENU_SCREENS_OPERAND = 0x576B38;
 
 	constexpr unsigned int EXPLANATION_MS = 5000;
 
@@ -41,7 +42,8 @@ namespace
 
 void MenuGate::update(bool t_playAllowed)
 {
-	CMenuScreen::CMenuEntry* entries = aScreens[MENUPAGE_NEW_GAME].m_aEntries;
+	CMenuScreen* screens = *reinterpret_cast<CMenuScreen**>(MENU_SCREENS_OPERAND);
+	CMenuScreen::CMenuEntry* entries = screens[MENUPAGE_NEW_GAME].m_aEntries;
 
 	if (!g_captured)
 	{

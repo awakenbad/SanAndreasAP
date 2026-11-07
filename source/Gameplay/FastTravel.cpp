@@ -4,6 +4,7 @@
 #include "EdgeTriggeredKey.h"
 #include "common.h"
 #include <C3dMarkers.h>
+#include <CVector2D.h>
 #include <CTheScripts.h>
 #include <CGame.h>
 #include <CPad.h>
@@ -71,7 +72,7 @@ namespace
 	unsigned int g_phaseStartedMs = 0;
 	int g_pendingTarget = -1;
 
-	constexpr float ACTIVATE_RADIUS_SQ = 1.0f;
+	constexpr float ACTIVATE_RADIUS = 1.0f;
 
 	EdgeTriggeredKey g_upKey{ 'W' };
 	EdgeTriggeredKey g_downKey{ 'S' };
@@ -133,9 +134,8 @@ namespace
 		{
 			if (TRAVEL_POINTS[i].areaCode != CGame::currArea) continue;
 
-			float dx = playerPos.x - TRAVEL_POINTS[i].x;
-			float dy = playerPos.y - TRAVEL_POINTS[i].y;
-			if (dx * dx + dy * dy < ACTIVATE_RADIUS_SQ) return i;
+			CVector2D point(TRAVEL_POINTS[i].x, TRAVEL_POINTS[i].y);
+			if (playerPos.Distance2D(point) < ACTIVATE_RADIUS) return i;
 		}
 		return -1;
 	}

@@ -72,7 +72,6 @@
     <ClInclude Include="header\Checks\MissionBranches.h" />
     <ClInclude Include="header\Checks\MissionLocateBlocked.h" />
     <ClInclude Include="header\Checks\BlockedMarkerTint.h" />
-    <ClInclude Include="header\Checks\LegacyBlockerCleanup.h" />
     <ClInclude Include="header\Mod.h" />
     <ClInclude Include="header\HUD\NotificationOverlay.h" />
     <ClInclude Include="header\Checks\Submissions\ParamedicTracker.h" />
@@ -168,7 +167,6 @@
     <ClCompile Include="source\Checks\MissionBranches.cpp" />
     <ClCompile Include="source\Checks\MissionLocateBlocked.cpp" />
     <ClCompile Include="source\Checks\BlockedMarkerTint.cpp" />
-    <ClCompile Include="source\Checks\LegacyBlockerCleanup.cpp" />
     <ClCompile Include="source\Mod.cpp" />
     <ClCompile Include="source\HUD\NotificationOverlay.cpp" />
     <ClCompile Include="source\Checks\Submissions\ParamedicTracker.cpp" />
