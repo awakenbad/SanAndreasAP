@@ -16,7 +16,8 @@ namespace
 		{ ChaosModHandler::LOW, "effect_one_bullet_magazines", "One Bullet Magazines" },
 		{ ChaosModHandler::LOW, "effect_pedal_to_the_metal", "Pedal To The Metal" },
 		{ ChaosModHandler::LOW, "effect_shaky_hands", "Shaky Hands" },
-		{ ChaosModHandler::LOW, "effect_struck_by_truck", "You've been struck by...", 0 },
+		// Crashes the game if received right before a Death effect since dying clears the truck
+		// { ChaosModHandler::LOW, "effect_struck_by_truck", "You've been struck by...", 0 },
 
 		{ ChaosModHandler::MEDIUM, "effect_half_game_speed", "0.5x Game Speed" },
 		{ ChaosModHandler::MEDIUM, "effect_double_game_speed", "2x Game Speed" },
@@ -68,7 +69,7 @@ const ChaosModHandler::Effect* ChaosModHandler::getRandomEffect(const EffectSeve
 
 	for (const auto& effect : effects)
 	{
-		if (effect.severity <= t_maxEffectSeverity)
+		if (effect.severity == t_maxEffectSeverity)
 		{
 			eligibleEffects.push_back(&effect);
 		}
