@@ -1,6 +1,7 @@
 #include "UIManager.h"
 
 #include "FastTravel.h"
+#include <CMenuManager.h>
 #include <filesystem>
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -27,6 +28,11 @@ namespace
 
 
 	constexpr uintptr_t UPDATE_MOUSE_CALL_SITE = 0x541DD7;
+	constexpr uintptr_t CENTRE_MOUSE_CALL_SITE = 0x53E9F1;
+	constexpr uintptr_t RS_MOUSE_SET_POS = 0x6194A0;
+	constexpr uintptr_t DI_RELEASE_MOUSE = 0x746F70;
+	constexpr uintptr_t DI_MOUSE_INIT = 0x7469A0;
+	constexpr uintptr_t IS_VIDEO_MODE_EXCLUSIVE = 0x745CA0;
 	const char* const MENU_FONT = "Archipelago\\fonts\\exo-2.ttf";
 
 	void loadMenuFont(ImGuiIO& io)
@@ -57,11 +63,24 @@ namespace
 			CPad::OldMouseControllerState = CMouseControllerState{};
 		}
 	}
+
+	void __cdecl onCentreMouse(RwV2d* t_position)
+	{
+		if (!overlayVisible) plugin::Call<RS_MOUSE_SET_POS, RwV2d*>(t_position);
+	}
+
+	void reinitialiseMouse(bool t_exclusive)
+	{
+		if (!plugin::CallAndReturn<bool, IS_VIDEO_MODE_EXCLUSIVE>()) return;
+		plugin::Call<DI_RELEASE_MOUSE>();
+		plugin::Call<DI_MOUSE_INIT, bool>(t_exclusive);
+	}
 }
 
 void UIManager::init()
 {
 	plugin::patch::RedirectCall(UPDATE_MOUSE_CALL_SITE, &onUpdateMouse);
+	plugin::patch::RedirectCall(CENTRE_MOUSE_CALL_SITE, &onCentreMouse);
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -96,11 +115,28 @@ void UIManager::update(const ItemHistory& t_itemHistory)
 
 void UIManager::toggleWindow()
 {
-	if (m_toggleVisible.justPressed())
-	{
-		overlayVisible = !overlayVisible;
-		ImGui::GetIO().MouseDrawCursor = overlayVisible;
-	}
+	if (!m_toggleVisible.justPressed()) return;
+
+	overlayVisible = !overlayVisible;
+	ImGui::GetIO().MouseDrawCursor = overlayVisible;
+	if (overlayVisible) releaseMouse();
+	else restoreMouse();
+}
+
+void UIManager::releaseMouse()
+{
+	if (FrontEndMenuManager.m_bMenuActive) return;
+
+	reinitialiseMouse(false);
+	m_releasedMouse = true;
+}
+
+void UIManager::restoreMouse()
+{
+	if (!m_releasedMouse) return;
+
+	m_releasedMouse = false;
+	reinitialiseMouse(true);
 }
 
 void UIManager::cleanUp()

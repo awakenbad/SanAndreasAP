@@ -25,7 +25,7 @@ struct Main
 
         // register event callbacks
         Events::initRwEvent += []{ gInstance.mod.initGUIOverlay(); };
-        Events::drawMenuBackgroundEvent += []{ gInstance.mod.drawGUIOverlay(); };
+        Events::drawAfterFadeEvent += []{ gInstance.mod.drawGUIOverlay(); };
         Events::shutdownRwEvent += []{ gInstance.mod.cleanUpGUIOverlay(); };
         Events::gameProcessEvent += []{ gInstance.OnGameProcess(); };
         Events::drawHudEvent += []{ gInstance.mod.drawOverlay(); };

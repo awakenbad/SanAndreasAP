@@ -19,7 +19,11 @@ public:
 	void cleanUp();
 
 private:
+	void releaseMouse();
+	void restoreMouse();
+
 	SettingsMenu m_settingsMenu;
 	EdgeTriggeredKey m_toggleVisible{ VK_F9 };
+	bool m_releasedMouse = false;
 };
 
