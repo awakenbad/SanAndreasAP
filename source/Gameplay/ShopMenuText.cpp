@@ -16,20 +16,6 @@ namespace
 
 	const AmmuNationShop* g_shop = nullptr;
 
-	constexpr int FLAG_PROGRESSION = 1;
-	constexpr int FLAG_USEFUL = 2;
-	constexpr int FLAG_TRAP = 4;
-
-	using ModSettings::ItemColour;
-
-	CRGBA colourForFlags(int t_flags)
-	{
-		if (t_flags & FLAG_PROGRESSION) return ModSettings::itemColour(ItemColour::Progression);
-		if (t_flags & FLAG_USEFUL) return ModSettings::itemColour(ItemColour::Useful);
-		if (t_flags & FLAG_TRAP) return ModSettings::itemColour(ItemColour::Trap);
-		return ModSettings::itemColour(ItemColour::Filler);
-	}
-
 	unsigned char dimChannel(unsigned char t_channel)
 	{
 		return static_cast<unsigned char>(t_channel * ModSettings::unselectedDimPercent() / 100);
@@ -80,7 +66,7 @@ namespace
 				int flags = g_shop->shopItemFlags(t_key);
 				if (flags >= 0)
 				{
-					CRGBA colour = colourForFlags(flags);
+					CRGBA colour = ModSettings::itemColourForFlags(flags);
 					CFont::SetColor(selected ? colour : dimmed(colour));
 				}
 				return const_cast<char*>(replacement);

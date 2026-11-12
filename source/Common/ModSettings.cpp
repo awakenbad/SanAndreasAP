@@ -27,6 +27,10 @@ namespace
 
 	constexpr int COLOUR_COUNT = ModSettings::ITEM_COLOUR_COUNT;
 
+	constexpr int AP_FLAG_PROGRESSION = 1;
+	constexpr int AP_FLAG_USEFUL = 2;
+	constexpr int AP_FLAG_TRAP = 4;
+
 	const char* const COLOUR_KEYS[COLOUR_COUNT] = { "Progression", "Useful", "Trap", "Filler" };
 	constexpr unsigned long COLOUR_DEFAULTS[COLOUR_COUNT] = { 0xAF99EF, 0x6D8BE8, 0xFA8072, 0x00EEEE };
 
@@ -204,6 +208,14 @@ float ModSettings::missionCounterScale()
 const CRGBA& ModSettings::itemColour(ItemColour t_which)
 {
 	return g_values.itemColours[static_cast<int>(t_which)];
+}
+
+const CRGBA& ModSettings::itemColourForFlags(int t_flags)
+{
+	if (t_flags & AP_FLAG_PROGRESSION) return itemColour(ItemColour::Progression);
+	if (t_flags & AP_FLAG_USEFUL) return itemColour(ItemColour::Useful);
+	if (t_flags & AP_FLAG_TRAP) return itemColour(ItemColour::Trap);
+	return itemColour(ItemColour::Filler);
 }
 
 int ModSettings::unselectedDimPercent()

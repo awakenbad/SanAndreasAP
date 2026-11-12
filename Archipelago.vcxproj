@@ -83,6 +83,7 @@
     <ClInclude Include="header\Persistence\PersistentState.h" />
     <ClInclude Include="header\Common\PlayerControl.h" />
     <ClInclude Include="header\Protocol\ReceivedItemLog.h" />
+    <ClInclude Include="header\Protocol\ItemHistory.h" />
     <ClInclude Include="header\Checks\PendingChecks.h" />
     <ClInclude Include="header\Common\Position.h" />
     <ClInclude Include="header\Persistence\SaveDataManager.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="source\Common\PlayerControl.cpp" />
     <ClCompile Include="source\Common\Position.cpp" />
     <ClCompile Include="source\Protocol\ReceivedItemLog.cpp" />
+    <ClCompile Include="source\Protocol\ItemHistory.cpp" />
     <ClCompile Include="source\Persistence\SaveDataManager.cpp" />
     <ClCompile Include="source\Persistence\SaveRedirect.cpp" />
     <ClCompile Include="source\Persistence\StartingSaves.cpp" />

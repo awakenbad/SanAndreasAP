@@ -46,6 +46,7 @@ namespace ModSettings
 	float collectibleNumberScale();
 	float missionCounterScale();
 	const CRGBA& itemColour(ItemColour t_which);
+	const CRGBA& itemColourForFlags(int t_flags);
 	int unselectedDimPercent();
 	bool fastTravelEnabled();
 	ModSettings::CollectibleHeightIndicator collectibleHeightIndicatorMode();

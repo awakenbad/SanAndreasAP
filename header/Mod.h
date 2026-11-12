@@ -15,6 +15,7 @@
 #include "DeathLinkHandler.h"
 #include "PersistentState.h"
 #include "ReceivedItemLog.h"
+#include "ItemHistory.h"
 #include "SaveDataManager.h"
 #include "AutoSaveManager.h"
 #include "NotificationOverlay.h"
@@ -77,6 +78,7 @@ private:
 	TrapHandler m_trapHandler;
 	ChaosModHandler m_chaosModHandler;
 	ReceivedItemLog m_receivedItemLog;
+	ItemHistory m_itemHistory;
 	PendingChecks<int> m_pendingShopChecks;
 	UIManager m_uiManager;
 

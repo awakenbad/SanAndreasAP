@@ -98,9 +98,24 @@ APProtocol::Message APProtocol::parse(const std::string& t_line)
 		return message;
 	}
 
+	if (stripPrefix(t_line, "ITEMINFO:", rest))
+	{
+		size_t afterIndex = rest.find(':');
+		if (afterIndex == std::string::npos) return message;
+		size_t afterFlags = rest.find(':', afterIndex + 1);
+		if (afterFlags == std::string::npos) return message;
+
+		message.index = parseIntOr(rest.substr(0, afterIndex), -1);
+		if (message.index < 0) return message;
+
+		message.kind = MessageKind::ItemInfo;
+		message.flags = parseIntOr(rest.substr(afterIndex + 1, afterFlags - afterIndex - 1), 0);
+		message.text = rest.substr(afterFlags + 1);
+		return message;
+	}
+
 	if (stripPrefix(t_line, "CTRL:", rest))
 	{
-		// The value is optional: "CTRL:deathlink_kill" carries no colon.
 		size_t colon = rest.find(':');
 		message.kind = MessageKind::Control;
 		message.effect = (colon == std::string::npos) ? rest : rest.substr(0, colon);

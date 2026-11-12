@@ -78,7 +78,7 @@ void UIManager::init()
 			reinterpret_cast<LONG_PTR>(HookedWndProc)));
 }
 
-void UIManager::update()
+void UIManager::update(const ItemHistory& t_itemHistory)
 {
 	toggleWindow();
 	ImGui_ImplDX9_NewFrame();
@@ -86,7 +86,7 @@ void UIManager::update()
 	ImGui::NewFrame();
 	if (overlayVisible)
 	{
-		m_settingsMenu.draw();
+		m_settingsMenu.draw(t_itemHistory);
 	}
 	
 	ImGui::EndFrame();

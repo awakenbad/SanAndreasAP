@@ -295,6 +295,10 @@ void Mod::handleMessage(const std::string& t_rawLine)
         m_receivedItemLog.recordDelivered(message.index, message.effect, message.text);
         break;
 
+    case APProtocol::MessageKind::ItemInfo:
+        m_itemHistory.record(message.index, message.flags, message.text);
+        break;
+
     case APProtocol::MessageKind::Control:
         applyControlMessage(message.effect, message.text);
         break;
@@ -550,7 +554,7 @@ void Mod::initGUIOverlay()
 
 void Mod::drawGUIOverlay()
 {
-    m_uiManager.update();
+    m_uiManager.update(m_itemHistory);
 }
 
 void Mod::cleanUpGUIOverlay()

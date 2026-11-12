@@ -315,6 +315,9 @@
     <ClInclude Include="header\Protocol\ReceivedItemLog.h">
       <Filter>Header\Protocol</Filter>
     </ClInclude>
+    <ClInclude Include="header\Protocol\ItemHistory.h">
+      <Filter>Header\Protocol</Filter>
+    </ClInclude>
     <ClInclude Include="header\Persistence\AutoSaveManager.h">
       <Filter>Header\Persistence</Filter>
     </ClInclude>
@@ -402,6 +405,9 @@
       <Filter>Source\Protocol</Filter>
     </ClCompile>
     <ClCompile Include="source\Protocol\ReceivedItemLog.cpp">
+      <Filter>Source\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Protocol\ItemHistory.cpp">
       <Filter>Source\Protocol</Filter>
     </ClCompile>
     <ClCompile Include="source\Checks\CheckListener.cpp">

@@ -7,13 +7,14 @@
 
 #include "EdgeTriggeredKey.h"
 #include "SettingsMenu.h"
+#include "ItemHistory.h"
 
 class UIManager
 {
 public:
 	UIManager() = default;
 	void init();
-	void update();
+	void update(const ItemHistory& t_itemHistory);
 	void toggleWindow();
 	void cleanUp();
 

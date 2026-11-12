@@ -20,6 +20,7 @@ namespace APProtocol
 		ShopSold,  // SHOPSOLD:<slot>:<0|1>
 		ShopFlags, // SHOPFLAGS:<slot>:<n>
 		Give,      // GIVE:<index>:<effect>[:<value>]  an item granted to us, at its list position
+		ItemInfo,  // ITEMINFO:<index>:<flags>:<item>\t<sender>\t<game>\t<location>  item log entry for that GIVE
 		Control,   // CTRL:<name>[:<value>]          not an item - see below
 	};
 
@@ -30,6 +31,7 @@ namespace APProtocol
 		std::string text;
 		std::string effect;
 		int index = -1;
+		int flags = 0;
 	};
 
 	Message parse(const std::string& t_line);
