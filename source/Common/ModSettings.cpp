@@ -148,6 +148,30 @@ namespace
 
 		return unpack(value);
 	}
+
+	void writeRaw(const std::string& t_path, const char* t_section, const char* t_key, const char* t_value)
+	{
+		WritePrivateProfileStringA(t_section, t_key, t_value, t_path.c_str());
+	}
+
+	void writeFloat(const std::string& t_path, const char* t_key, float t_value)
+	{
+		char buffer[32]{};
+		std::snprintf(buffer, sizeof(buffer), "%g", t_value);
+		writeRaw(t_path, DISPLAY_SECTION, t_key, buffer);
+	}
+
+	void writeInt(const std::string& t_path, const char* t_section, const char* t_key, int t_value)
+	{
+		writeRaw(t_path, t_section, t_key, std::to_string(t_value).c_str());
+	}
+
+	void writeColour(const std::string& t_path, const char* t_key, const CRGBA& t_colour)
+	{
+		char buffer[8]{};
+		std::snprintf(buffer, sizeof(buffer), "%02X%02X%02X", t_colour.r, t_colour.g, t_colour.b);
+		writeRaw(t_path, COLOURS_SECTION, t_key, buffer);
+	}
 }
 
 void ModSettings::load()
@@ -183,6 +207,25 @@ void ModSettings::load()
 
 	g_values.fastTravelEnabled = readInt(path, GAMEPLAY_SECTION, FAST_TRAVEL_KEY, FAST_TRAVEL_DEFAULT, 0, 1) != 0;
 	g_values.collectibleHeightIndicator = readInt(path, GAMEPLAY_SECTION, COLLECTIBLE_HEIGHT_INDICATOR_KEY, COLLECTIBLE_HEIGHT_INDICATOR_DEFAULT, 0, 2);
+}
+
+void ModSettings::save()
+{
+	std::string path = settingsPath();
+	if (path.empty()) return;
+
+	writeFloat(path, NOTIFICATION_KEY, g_values.notificationSeconds);
+	writeFloat(path, NUMBER_SCALE_KEY, g_values.collectibleNumberScale);
+	writeFloat(path, COUNTER_SCALE_KEY, g_values.missionCounterScale);
+
+	for (int i = 0; i < COLOUR_COUNT; ++i)
+	{
+		writeColour(path, COLOUR_KEYS[i], g_values.itemColours[i]);
+	}
+	writeInt(path, COLOURS_SECTION, DIM_KEY, g_values.unselectedDimPercent);
+
+	writeInt(path, GAMEPLAY_SECTION, FAST_TRAVEL_KEY, g_values.fastTravelEnabled ? 1 : 0);
+	writeInt(path, GAMEPLAY_SECTION, COLLECTIBLE_HEIGHT_INDICATOR_KEY, g_values.collectibleHeightIndicator);
 }
 
 ModSettings::Values& ModSettings::values()

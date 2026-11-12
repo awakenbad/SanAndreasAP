@@ -41,6 +41,7 @@ namespace ModSettings
 	};
 
 	void load();
+	void save();
 	Values& values();
 	float notificationSeconds();
 	float collectibleNumberScale();

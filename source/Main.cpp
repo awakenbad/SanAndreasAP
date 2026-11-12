@@ -11,7 +11,7 @@
 
 using namespace plugin;
 
-struct Main 
+struct Main
 {
     size_t m_frame = 0; // render frame counter
     Mod mod;
@@ -24,9 +24,9 @@ struct Main
         CityUnlock::installNops();
 
         // register event callbacks
-        Events::initRwEvent += [] { gInstance.mod.initGUIOverlay(); };
-        Events::drawMenuBackgroundEvent += [] { gInstance.mod.drawGUIOverlay(); };
-        Events::shutdownRwEvent += [] {gInstance.mod.cleanUpGUIOverlay(); };
+        Events::initRwEvent += []{ gInstance.mod.initGUIOverlay(); };
+        Events::drawMenuBackgroundEvent += []{ gInstance.mod.drawGUIOverlay(); };
+        Events::shutdownRwEvent += []{ gInstance.mod.cleanUpGUIOverlay(); };
         Events::gameProcessEvent += []{ gInstance.OnGameProcess(); };
         Events::drawHudEvent += []{ gInstance.mod.drawOverlay(); };
         Events::drawMenuBackgroundEvent += []{ gInstance.mod.updateMenuState(); };
@@ -34,7 +34,7 @@ struct Main
         Events::drawBlipsEvent += []{ gInstance.mod.drawMissionCountsOnRadar(); };
         Events::drawBlipsEvent += []{ gInstance.mod.drawMissionCountsOnMap(); };
         Events::drawBlipsEvent += []{ gInstance.mod.drawCollectiblesOnRadar(); };
-        Events::drawBlipsEvent += [] { gInstance.mod.drawCollectiblesOnMap(); };
+        Events::drawBlipsEvent += []{ gInstance.mod.drawCollectiblesOnMap(); };
     }
 
     void OnGameProcess()

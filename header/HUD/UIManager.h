@@ -21,6 +21,5 @@ public:
 private:
 	SettingsMenu m_settingsMenu;
 	EdgeTriggeredKey m_toggleVisible{ VK_F9 };
-	bool test = false;
 };
 
