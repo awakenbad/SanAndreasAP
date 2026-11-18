@@ -8,7 +8,8 @@ Mission items; collectibles, side activities and Ammu-Nation purchases send
 checks to the multiworld.
 
 > [!NOTE]
-> All regions and planned side-activities are randomized (Big Smoke → End of the Line), however the mod still remains unstable. 
+> All regions and planned side-activities are randomized (Big Smoke → End of the Line). 
+>
 > Feel free to bug report either through `Issues` or using [GTA SA Thread](https://discord.com/channels/1085716850370957462/1098055987648282717) in Archipelago After Dark
 
 ## Related repositories
